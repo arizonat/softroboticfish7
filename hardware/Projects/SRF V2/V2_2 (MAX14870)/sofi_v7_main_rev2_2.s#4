@@ -1397,18 +1397,18 @@ Warning: This is the KIT version of the AXIAL-0.3 package. This package has a sm
 <pad name="P$40" x="0.508" y="-2.1336" drill="0.3302" diameter="0.6096"/>
 <pad name="P$41" x="1.4986" y="-2.1336" drill="0.3302" diameter="0.6096"/>
 <pad name="P$42" x="2.4892" y="-2.1336" drill="0.3302" diameter="0.6096"/>
-<pad name="P$43" x="-2.4638" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$44" x="-1.4732" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$45" x="-0.4826" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$46" x="0.508" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$47" x="1.4986" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$48" x="2.4892" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$49" x="-2.4638" y="-4.1148" drill="0.254" diameter="0.4064"/>
-<pad name="P$50" x="-1.4732" y="-4.1148" drill="0.254" diameter="0.4064"/>
-<pad name="P$51" x="-0.4826" y="-4.1148" drill="0.254" diameter="0.4064"/>
-<pad name="P$52" x="0.508" y="-4.1148" drill="0.254" diameter="0.4064"/>
-<pad name="P$53" x="1.4986" y="-4.1148" drill="0.254" diameter="0.4064"/>
-<pad name="P$54" x="2.4892" y="-4.1148" drill="0.254" diameter="0.4064"/>
+<pad name="P$43" x="-2.4638" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$44" x="-1.4732" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$45" x="-0.4826" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$46" x="0.508" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$47" x="1.4986" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$48" x="2.4892" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$49" x="-2.4638" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$50" x="-1.4732" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$51" x="-0.4826" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$52" x="0.508" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$53" x="1.4986" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$54" x="2.4892" y="-4.1148" drill="0.3302" diameter="0.6096"/>
 <polygon width="0.127" layer="1">
 <vertex x="1.905" y="1.27"/>
 <vertex x="5.08" y="1.27"/>
@@ -16725,7 +16725,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <part name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="1 nF"/>
 <part name="C15" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="2.7 uF"/>
 <part name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="0.1 uF"/>
-<part name="U3_BCU" library="acs715" deviceset="ACS715LLCTR-20A-T" device=""/>
+<part name="ACS715_BCU" library="acs715" deviceset="ACS715LLCTR-20A-T" device=""/>
 <part name="R24" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="M0805" package3d_urn="urn:adsk.eagle:package:23556/2" value="75K"/>
 <part name="GND24" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C11" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="1 nF"/>
@@ -17031,7 +17031,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <attribute name="NAME" x="24.384" y="-70.739" size="1.778" layer="95"/>
 <attribute name="VALUE" x="24.384" y="-75.819" size="1.778" layer="96"/>
 </instance>
-<instance part="U3_BCU" gate="A" x="-40.64" y="-101.6" smashed="yes">
+<instance part="ACS715_BCU" gate="A" x="-40.64" y="-101.6" smashed="yes">
 <attribute name="VALUE" x="-31.7246" y="-95.0214" size="2.0828" layer="96" ratio="6" rot="SR0"/>
 </instance>
 <instance part="R24" gate="G$1" x="7.62" y="-104.14" smashed="yes">
@@ -17303,7 +17303,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <label x="22.86" y="-58.42" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U3_BCU" gate="A" pin="VCC"/>
+<pinref part="ACS715_BCU" gate="A" pin="VCC"/>
 <wire x1="22.86" y1="-101.6" x2="17.78" y2="-101.6" width="0.1524" layer="91"/>
 <wire x1="17.78" y1="-101.6" x2="-2.54" y2="-101.6" width="0.1524" layer="91"/>
 <pinref part="C16" gate="G$1" pin="1"/>
@@ -17578,7 +17578,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <pinref part="C10" gate="G$1" pin="2"/>
 </segment>
 <segment>
-<pinref part="U3_BCU" gate="A" pin="GND"/>
+<pinref part="ACS715_BCU" gate="A" pin="GND"/>
 <wire x1="-2.54" y1="-109.22" x2="0" y2="-109.22" width="0.1524" layer="91"/>
 <wire x1="0" y1="-109.22" x2="0" y2="-116.84" width="0.1524" layer="91"/>
 <wire x1="0" y1="-116.84" x2="2.54" y2="-116.84" width="0.1524" layer="91"/>
@@ -18514,14 +18514,14 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <net name="N$20" class="0">
 <segment>
 <pinref part="R24" gate="G$1" pin="1"/>
-<pinref part="U3_BCU" gate="A" pin="VIOUT"/>
+<pinref part="ACS715_BCU" gate="A" pin="VIOUT"/>
 <wire x1="2.54" y1="-104.14" x2="-2.54" y2="-104.14" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$21" class="0">
 <segment>
 <pinref part="C11" gate="G$1" pin="1"/>
-<pinref part="U3_BCU" gate="A" pin="FILTER"/>
+<pinref part="ACS715_BCU" gate="A" pin="FILTER"/>
 <wire x1="2.54" y1="-109.22" x2="2.54" y2="-106.68" width="0.1524" layer="91"/>
 <wire x1="2.54" y1="-106.68" x2="-2.54" y2="-106.68" width="0.1524" layer="91"/>
 </segment>
@@ -18628,8 +18628,8 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 </net>
 <net name="BCU_MOTOR_V2" class="0">
 <segment>
-<pinref part="U3_BCU" gate="A" pin="IP+_2"/>
-<pinref part="U3_BCU" gate="A" pin="IP+"/>
+<pinref part="ACS715_BCU" gate="A" pin="IP+_2"/>
+<pinref part="ACS715_BCU" gate="A" pin="IP+"/>
 <wire x1="-38.1" y1="-101.6" x2="-38.1" y2="-104.14" width="0.1524" layer="91"/>
 <wire x1="-38.1" y1="-101.6" x2="-40.64" y2="-101.6" width="0.1524" layer="91"/>
 <junction x="-38.1" y="-101.6"/>
@@ -18682,11 +18682,11 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 </net>
 <net name="BCU_I_OUT" class="0">
 <segment>
-<pinref part="U3_BCU" gate="A" pin="IP-_2"/>
+<pinref part="ACS715_BCU" gate="A" pin="IP-_2"/>
 <wire x1="-38.1" y1="-106.68" x2="-40.64" y2="-106.68" width="0.1524" layer="91"/>
 <wire x1="-40.64" y1="-106.68" x2="-38.1" y2="-106.68" width="0.1524" layer="91"/>
 <junction x="-38.1" y="-106.68"/>
-<pinref part="U3_BCU" gate="A" pin="IP-"/>
+<pinref part="ACS715_BCU" gate="A" pin="IP-"/>
 <wire x1="-38.1" y1="-109.22" x2="-38.1" y2="-106.68" width="0.1524" layer="91"/>
 <label x="-40.64" y="-106.68" size="1.778" layer="95" rot="MR0"/>
 </segment>

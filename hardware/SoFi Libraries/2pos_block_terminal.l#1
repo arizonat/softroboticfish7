@@ -128,10 +128,6 @@
 </technologies>
 </device>
 <device name="2POS_BLOCK_NOSTANDS" package="2POS_BLOCK_NOSTANDS">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
 <technologies>
 <technology name=""/>
 </technologies>

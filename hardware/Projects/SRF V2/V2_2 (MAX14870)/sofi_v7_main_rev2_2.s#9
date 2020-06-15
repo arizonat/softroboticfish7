@@ -16692,7 +16692,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <part name="R11" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="56K"/>
 <part name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.1 uF"/>
 <part name="GND17" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="TP1" library="testpad" library_urn="urn:adsk.eagle:library:385" deviceset="TP" device="B1,27" package3d_urn="urn:adsk.eagle:package:27944/2"/>
+<part name="5V" library="testpad" library_urn="urn:adsk.eagle:library:385" deviceset="TP" device="B1,27" package3d_urn="urn:adsk.eagle:package:27944/2"/>
 <part name="TP2" library="testpad" library_urn="urn:adsk.eagle:library:385" deviceset="TP" device="B1,27" package3d_urn="urn:adsk.eagle:package:27944/2"/>
 <part name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value=".47 uF"/>
 <part name="C13" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="C-EU" device="C1206" package3d_urn="urn:adsk.eagle:package:26140/1" value="220 uF"/>
@@ -16775,7 +16775,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <part name="U1" library="MAX14870" deviceset="MAX14870ETC+T" device=""/>
 <part name="GND39" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="TP3" library="testpad" library_urn="urn:adsk.eagle:library:385" deviceset="TP" device="B1,27" package3d_urn="urn:adsk.eagle:package:27944/2"/>
+<part name="NFAULT" library="testpad" library_urn="urn:adsk.eagle:library:385" deviceset="TP" device="B1,27" package3d_urn="urn:adsk.eagle:package:27944/2"/>
 <part name="R22" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="M0805" package3d_urn="urn:adsk.eagle:package:23556/2" value="1.1K"/>
 </parts>
 <sheets>
@@ -16921,7 +16921,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <instance part="GND17" gate="1" x="314.96" y="73.66" smashed="yes">
 <attribute name="VALUE" x="312.42" y="71.12" size="1.778" layer="96"/>
 </instance>
-<instance part="TP1" gate="G$1" x="33.02" y="106.68" smashed="yes">
+<instance part="5V" gate="G$1" x="33.02" y="106.68" smashed="yes">
 <attribute name="NAME" x="31.75" y="107.95" size="1.778" layer="95"/>
 <attribute name="TP_SIGNAL_NAME" x="34.29" y="105.41" size="1.778" layer="97"/>
 </instance>
@@ -17225,7 +17225,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <instance part="GND36" gate="1" x="236.22" y="-93.98" smashed="yes">
 <attribute name="VALUE" x="233.68" y="-96.52" size="1.778" layer="96"/>
 </instance>
-<instance part="TP3" gate="G$1" x="294.64" y="-68.58" smashed="yes" rot="R270">
+<instance part="NFAULT" gate="G$1" x="294.64" y="-68.58" smashed="yes" rot="R270">
 <attribute name="NAME" x="291.592" y="-72.136" size="1.778" layer="95"/>
 <attribute name="TP_SIGNAL_NAME" x="293.37" y="-69.85" size="1.778" layer="97" rot="R270"/>
 </instance>
@@ -17266,7 +17266,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <wire x1="55.88" y1="93.98" x2="55.88" y2="91.44" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="101.6" x2="33.02" y2="104.14" width="0.1524" layer="91"/>
 <junction x="33.02" y="101.6"/>
-<pinref part="TP1" gate="G$1" pin="TP"/>
+<pinref part="5V" gate="G$1" pin="TP"/>
 <pinref part="C13" gate="G$1" pin="1"/>
 <pinref part="C17" gate="G$1" pin="1"/>
 <wire x1="45.72" y1="101.6" x2="53.34" y2="101.6" width="0.1524" layer="91"/>
@@ -18788,7 +18788,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <pinref part="U1" gate="A" pin="!FAULT"/>
 <pinref part="R22" gate="G$1" pin="2"/>
 <wire x1="289.56" y1="-68.58" x2="289.56" y2="-71.12" width="0.1524" layer="91"/>
-<pinref part="TP3" gate="G$1" pin="TP"/>
+<pinref part="NFAULT" gate="G$1" pin="TP"/>
 <wire x1="289.56" y1="-68.58" x2="292.1" y2="-68.58" width="0.1524" layer="91"/>
 <junction x="289.56" y="-68.58"/>
 </segment>
