@@ -1,0 +1,7 @@
+   <launch>
+     <node pkg="rosbag" type="play" name="rosbag" required="true" args="$(find image_view)/bagfiles/video1.bag"/>
+     <node name="extract" pkg="image_view" type="extract_images" respawn="false" required="true" output="screen" cwd="ROS_HOME">
+       <remap from="image" to="/camera_out/image"/>
+     </node>
+   </launch>
+
