@@ -394,13 +394,13 @@
 <wire x1="1.0414" y1="0.1016" x2="1.0414" y2="0.4064" width="0.1524" layer="51"/>
 <wire x1="1.0414" y1="0.6096" x2="1.0414" y2="0.889" width="0.1524" layer="51"/>
 <wire x1="1.0414" y1="1.0922" x2="1.0414" y2="1.397" width="0.1524" layer="51"/>
-<wire x1="-1.0414" y1="-1.5494" x2="1.0414" y2="-1.5494" width="0.1524" layer="51"/>
+<wire x1="-1.0414" y1="-1.5494" x2="1.0414" y2="-1.5494" width="0.1524" layer="21"/>
 <wire x1="1.0414" y1="-1.5494" x2="1.0414" y2="1.5494" width="0.1524" layer="51"/>
-<wire x1="1.0414" y1="1.5494" x2="0.3048" y2="1.5494" width="0.1524" layer="51"/>
-<wire x1="0.3048" y1="1.5494" x2="-0.3048" y2="1.5494" width="0.1524" layer="51"/>
-<wire x1="-0.3048" y1="1.5494" x2="-1.0414" y2="1.5494" width="0.1524" layer="51"/>
+<wire x1="1.0414" y1="1.5494" x2="0.3048" y2="1.5494" width="0.1524" layer="21"/>
+<wire x1="0.3048" y1="1.5494" x2="-0.3048" y2="1.5494" width="0.1524" layer="21"/>
+<wire x1="-0.3048" y1="1.5494" x2="-1.0414" y2="1.5494" width="0.1524" layer="21"/>
 <wire x1="-1.0414" y1="1.5494" x2="-1.0414" y2="-1.5494" width="0.1524" layer="51"/>
-<wire x1="0.3048" y1="1.5494" x2="-0.3048" y2="1.5494" width="0.1524" layer="51" curve="-180"/>
+<wire x1="0.3048" y1="1.5494" x2="-0.3048" y2="1.5494" width="0.1524" layer="21" curve="-180"/>
 <text x="-1.3716" y="0.254" size="1.27" layer="51" ratio="6" rot="SR0">*</text>
 <polygon width="0.0254" layer="21">
 <vertex x="1.8628" y="0.4405"/>
@@ -480,30 +480,6 @@
 <vertex x="0.733553125" y="1.1349375"/>
 <vertex x="1.18389375" y="1.1349375"/>
 <vertex x="1.18389375" y="1.3650625"/>
-</polygon>
-<polygon width="0.1524" layer="31">
-<vertex x="0.1758" y="1.0508"/>
-<vertex x="0.1758" y="1.6492"/>
-<vertex x="0.3242" y="1.6492"/>
-<vertex x="0.3242" y="1.0508"/>
-</polygon>
-<polygon width="0.1524" layer="31">
-<vertex x="-0.1758" y="1.0508"/>
-<vertex x="-0.1758" y="1.6492"/>
-<vertex x="-0.3242" y="1.6492"/>
-<vertex x="-0.3242" y="1.0508"/>
-</polygon>
-<polygon width="0.1524" layer="31">
-<vertex x="-0.1758" y="-1.0508"/>
-<vertex x="-0.1758" y="-1.6492"/>
-<vertex x="-0.3242" y="-1.6492"/>
-<vertex x="-0.3242" y="-1.0508"/>
-</polygon>
-<polygon width="0.1524" layer="31">
-<vertex x="0.1758" y="-1.0508"/>
-<vertex x="0.1758" y="-1.6492"/>
-<vertex x="0.3242" y="-1.6492"/>
-<vertex x="0.3242" y="-1.0508"/>
 </polygon>
 <polygon width="0.0254" layer="31">
 <vertex x="-0.37506875" y="0.925071875"/>
@@ -621,30 +597,6 @@
 <vertex x="1.278784375" y="1.040046875"/>
 <vertex x="1.278784375" y="1.459953125"/>
 </polygon>
-<polygon width="0.1524" layer="29">
-<vertex x="0.125" y="1"/>
-<vertex x="0.125" y="1.7"/>
-<vertex x="0.375" y="1.7"/>
-<vertex x="0.375" y="1"/>
-</polygon>
-<polygon width="0.1524" layer="29">
-<vertex x="-0.125" y="1"/>
-<vertex x="-0.125" y="1.7"/>
-<vertex x="-0.375" y="1.7"/>
-<vertex x="-0.375" y="1"/>
-</polygon>
-<polygon width="0.1524" layer="29">
-<vertex x="-0.125" y="-1"/>
-<vertex x="-0.125" y="-1.7"/>
-<vertex x="-0.375" y="-1.7"/>
-<vertex x="-0.375" y="-1"/>
-</polygon>
-<polygon width="0.1524" layer="29">
-<vertex x="0.125" y="-1"/>
-<vertex x="0.125" y="-1.7"/>
-<vertex x="0.375" y="-1.7"/>
-<vertex x="0.375" y="-1"/>
-</polygon>
 <polygon width="0.0254" layer="29">
 <vertex x="-0.5135" y="1.0635"/>
 <vertex x="0.5135" y="1.0635"/>
@@ -676,16 +628,8 @@
 <vertex x="0.2" y="-1.0635"/>
 </polygon>
 <text x="-3.2766" y="-0.635" size="1.27" layer="25" ratio="6" rot="SR0">&gt;Name</text>
-<pad name="P$1" x="-0.254" y="0.762" drill="0.2032" diameter="0.3048"/>
-<pad name="P$2" x="0.254" y="0.762" drill="0.2032" diameter="0.3048"/>
-<pad name="P$3" x="-0.254" y="0.381" drill="0.2032" diameter="0.3048"/>
-<pad name="P$4" x="0.254" y="0.381" drill="0.2032" diameter="0.3048"/>
-<pad name="P$5" x="-0.254" y="0" drill="0.2032" diameter="0.3048"/>
-<pad name="P$6" x="0.254" y="0" drill="0.2032" diameter="0.3048"/>
-<pad name="P$7" x="-0.254" y="-0.381" drill="0.2032" diameter="0.3048"/>
-<pad name="P$8" x="0.254" y="-0.381" drill="0.2032" diameter="0.3048"/>
-<pad name="P$9" x="-0.254" y="-0.762" drill="0.2032" diameter="0.3048"/>
-<pad name="P$10" x="0.254" y="-0.762" drill="0.2032" diameter="0.3048"/>
+<pad name="P$1" x="0" y="0.508" drill="0.2794" diameter="0.4064"/>
+<pad name="P$2" x="0" y="-0.508" drill="0.2794" diameter="0.4064"/>
 </package>
 </packages>
 <symbols>
@@ -738,6 +682,26 @@
 <attribute name="MANUFACTURER_PART_NUMBER" value="DRV8835DSSR" constant="no"/>
 <attribute name="VENDOR" value="Texas Instruments" constant="no"/>
 </technology>
+</technologies>
+</device>
+<device name="DSS12_P9X2_THERMAL" package="DSS12_P9X2_THERMAL">
+<connects>
+<connect gate="A" pin="AIN1/APHASE" pad="10"/>
+<connect gate="A" pin="AIN2/AENBL" pad="9"/>
+<connect gate="A" pin="AOUT1" pad="2"/>
+<connect gate="A" pin="AOUT2" pad="3"/>
+<connect gate="A" pin="BIN1/BPHASE" pad="8"/>
+<connect gate="A" pin="BIN2/BENBL" pad="7"/>
+<connect gate="A" pin="BOUT1" pad="4"/>
+<connect gate="A" pin="BOUT2" pad="5"/>
+<connect gate="A" pin="EPAD" pad="13 P$1 P$2" route="any"/>
+<connect gate="A" pin="GND" pad="6"/>
+<connect gate="A" pin="MODE" pad="11"/>
+<connect gate="A" pin="VCC" pad="12"/>
+<connect gate="A" pin="VM" pad="1"/>
+</connects>
+<technologies>
+<technology name=""/>
 </technologies>
 </device>
 </devices>
