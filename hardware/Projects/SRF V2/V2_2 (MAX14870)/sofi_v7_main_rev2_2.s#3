@@ -16795,7 +16795,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <part name="HALL" library="3pos_block_terminal" deviceset="3POS_TERMINAL" device=""/>
 <part name="U$4" library="8pos_block_terminal" deviceset="8POS_TERMINAL" device=""/>
 <part name="U$5" library="8pos_block_terminal" deviceset="8POS_TERMINAL" device=""/>
-<part name="PUMP" library="2pos_block_terminal" deviceset="2POS_BLOCK" device=""/>
+<part name="PUMP" library="2pos_block_terminal" deviceset="2POS_BLOCK" device="2POS_BLOCK_NOSTANDS" value="2POS_BLOCK2POS_BLOCK_NOSTANDS"/>
 <part name="MAX14870" library="MAX14870" deviceset="MAX14870ETC+T" device=""/>
 <part name="GND39" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>

@@ -11027,7 +11027,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <smd name="10" x="0.958721875" y="0.25" dx="0.500125" dy="0.279909375" layer="1"/>
 <smd name="11" x="0.958721875" y="0.75" dx="0.500125" dy="0.279909375" layer="1"/>
 <smd name="12" x="0.958721875" y="1.25" dx="0.500125" dy="0.279909375" layer="1"/>
-<smd name="13" x="0" y="0" dx="0.9" dy="2" layer="1"/>
+<smd name="13" x="0" y="0" dx="0.9" dy="2" layer="1" thermals="no"/>
 <wire x1="-1.0414" y1="1.397" x2="-1.0414" y2="1.0922" width="0.1524" layer="51"/>
 <wire x1="-1.0414" y1="0.889" x2="-1.0414" y2="0.6096" width="0.1524" layer="51"/>
 <wire x1="-1.0414" y1="0.4064" x2="-1.0414" y2="0.1016" width="0.1524" layer="51"/>
@@ -11274,8 +11274,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <vertex x="0.2" y="-1.0635"/>
 </polygon>
 <text x="-3.2766" y="-0.635" size="1.27" layer="25" ratio="6" rot="SR0">&gt;Name</text>
-<pad name="P$1" x="0" y="0.508" drill="0.2794" diameter="0.4064"/>
-<pad name="P$2" x="0" y="-0.508" drill="0.2794" diameter="0.4064"/>
+<pad name="P$1" x="0" y="0.508" drill="0.2794" diameter="0.4064" thermals="no"/>
+<pad name="P$2" x="0" y="-0.508" drill="0.2794" diameter="0.4064" thermals="no"/>
 </package>
 </packages>
 <symbols>

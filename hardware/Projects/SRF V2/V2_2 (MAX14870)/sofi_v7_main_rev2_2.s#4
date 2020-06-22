@@ -16092,6 +16092,16 @@ Source: AVX .. aphvc.pdf</description>
 <hole x="1.27" y="-1.27" drill="1.1"/>
 <wire x1="-2.77" y1="-1.85" x2="2.77" y2="-1.85" width="0.254" layer="21"/>
 </package>
+<package name="2POS_BLOCK_NOSTANDS">
+<wire x1="2.77" y1="-1.82" x2="2.77" y2="4.37" width="0.254" layer="21"/>
+<wire x1="2.77" y1="4.37" x2="-2.77" y2="4.37" width="0.254" layer="21"/>
+<wire x1="-2.77" y1="4.37" x2="-2.77" y2="-1.82" width="0.254" layer="21"/>
+<pad name="2" x="1.27" y="1.27" drill="1.1" diameter="1.778" shape="octagon" rot="R90"/>
+<pad name="1" x="-1.27" y="1.27" drill="1.1" diameter="1.778" shape="square" rot="R90"/>
+<text x="-3.175" y="0" size="1.016" layer="25" ratio="18" rot="R90">&gt;NAME</text>
+<text x="3.81" y="0" size="0.8128" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
+<wire x1="-2.77" y1="-1.85" x2="2.77" y2="-1.85" width="0.254" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="2POS_BLOCK">
@@ -16116,6 +16126,15 @@ Source: AVX .. aphvc.pdf</description>
 </gates>
 <devices>
 <device name="" package="2POS_BLOCK">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="2POS_BLOCK_NOSTANDS" package="2POS_BLOCK_NOSTANDS">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
@@ -16772,7 +16791,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <part name="C28" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="0.1 uF"/>
 <part name="GND47" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R32" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="M0805" package3d_urn="urn:adsk.eagle:package:23556/2" value="10K"/>
-<part name="BATT" library="2pos_block_terminal" deviceset="2POS_BLOCK" device=""/>
+<part name="BATT" library="2pos_block_terminal" deviceset="2POS_BLOCK" device="2POS_BLOCK_NOSTANDS" value="2POS_BLOCK2POS_BLOCK_NOSTANDS"/>
 <part name="HALL" library="3pos_block_terminal" deviceset="3POS_TERMINAL" device=""/>
 <part name="U$4" library="8pos_block_terminal" deviceset="8POS_TERMINAL" device=""/>
 <part name="U$5" library="8pos_block_terminal" deviceset="8POS_TERMINAL" device=""/>
