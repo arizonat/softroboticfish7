@@ -8,8 +8,9 @@ from time import time, sleep
 from FishJoystick import FishJoystick
 #from camera import FishCamera
 from std_msgs.msg import String
-from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import Image
 import cv2
+from cv_bridge import CvBridge
 
 CAM_OUTPUT_DIR="/home/pi/fish_recordings"
 DISPLAY_IMAGES = False
@@ -35,7 +36,7 @@ class NaiveColorTargetTracker():
     #image = self.camera.capture()
     success, image = self.camera.read()
     return image.shape
-    
+
   def find_target(self):
     #image = self.camera.capture()
     success, image = self.camera.read()
@@ -82,6 +83,7 @@ class NaiveColorTargetTracker():
     target_found = True
     return (target_found, target_centroid)
 
+"""
 class FishMbed():
   def __init__(self, mbedPort='/dev/ttyAMA0', mbedBaud=115200, mbedUpdateInterval=1.25):
     self.cmd_arr_order = ['start', 'pitch', 'yaw', 'thrust', 'frequency']
@@ -114,19 +116,19 @@ class FishMbed():
     return self.cmdToBytes(cmd, cmdType, nullTerminate)
     
   def cmdToBytes(self, cmd, cmdType='byteArray', nullTerminate=False):
-    """
-    Turns a fish mbed command to bytearray (for sending to mbed)
-    """
+"""
+    #Turns a fish mbed command to bytearray (for sending to mbed)
+"""
     if cmdType == "dict":
       res = [cmd[cmd_key] for cmd_key in self.cmd_arr_order]
     else:
       res = cmd
-      
+
     assert(len(res) == len(self.cmd_arr_order))
     if nullTerminate:
       res.append(8)
     return bytearray(res)
-
+"""
 class FishStateController():
   def __init__(self, update_interval):
     """
@@ -145,21 +147,21 @@ class FishStateController():
     self.SOFT_RIGHT = [1,3,1,3,2]
     self.DO_NOTHING = [1,3,3,0,1]
     self.GO_FORWARD = [1,3,3,3,3]
-    
+
     self.transitionTo("INIT")
-    
+
     self.update_interval = update_interval
 
-    self.mbed = FishMbed()
+    #self.mbed = FishMbed()
     self.camera = cv2.VideoCapture(0)
     #self.camera = FishCamera(CAM_OUTPUT_DIR)
     target_rgb = (255,0,0)
     self.tracker = NaiveColorTargetTracker(self.camera, target_rgb)
     self.image_size = self.tracker.get_image_size()
-    
+
   def run(self):
     lastTime = time()
-    
+
     while True:
       if time() - lastTime > self.update_interval:
         lastTime = time()
@@ -175,7 +177,7 @@ class FishStateController():
     target_found, target_centroid = self.tracker.find_target()
 
     if self.state == "INIT":
-      self.mbed.writeCmdArray(self.DO_NOTHING)
+      #self.mbed.writeCmdArray(self.DO_NOTHING)
       self.transitionTo("SEARCH")
 
     elif self.state == "SEARCH":
@@ -184,7 +186,7 @@ class FishStateController():
         self.transitionTo("ADJUST")
         return
 
-      self.mbed.writeCmdArray(self.HARD_LEFT)
+      #self.mbed.writeCmdArray(self.HARD_LEFT)
 
     elif self.state == "ADJUST":
       # higher yaw is right, lower is left
@@ -210,24 +212,22 @@ class FishStateController():
 
 def callback(ros_data):
   ###Put CV2 information here to analyze image data ###
-
-  msg = CompressedImage()
-  msg.format = "jpeg"
-
+  bridge = CvBridge()
+  cv_image = bridge.imgmsg_to_cv2(ros_data, desired_encoding='passthrough')
+  print(cv_image)
   ###Uncomment below line to publish new image
   #self.image_pub.publish(msg)
 
 if __name__ == '__main__':
   import sys
   ###Is the below line in the correct place?
-  image_pub = rospy.Publisher("/raspicam_node/image/compressed", CompressedImage, queue_size=10)
   update_hz = 30
   rospy.init_node('listener', anonymous=True)
-  rospy.Subscriber('/raspicam_node/image/compressed', CompressedImage, callback)
-  controller = FishStateController(1./update_hz)
+  rospy.Subscriber('/raspicam_node/image', Image, callback)
+  #controller = FishStateController(1./update_hz)
   print '\nStarting Fish State Controller'
   print 'using update interval of ', 1./update_hz, 's'
-  controller.run()
+  #controller.run()
   print '\nAll done!'
   rospy.spin()
 
