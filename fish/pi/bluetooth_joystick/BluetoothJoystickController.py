@@ -7,7 +7,8 @@ class BluetoothJoystickController:
   # @param mbedPort [str] The serial port to use on the mbed
   # @param mbedBaud [int] The baud rate to use with the mbed
   # @param mbedUpdateInterval [float] Time in ms to wait between sending updated state to the mbed
-  def __init__(self, mbedPort='/dev/ttyAMA0', mbedBaud=115200, mbedUpdateInterval=1.25 , useLJ = True):
+  # Raspbian: /dev/ttyAMA0, Ubuntu MATE 18.04: /dev/serial0
+  def __init__(self, mbedPort='/dev/serial0', mbedBaud=115200, mbedUpdateInterval=1.25 , useLJ = True):
     self._mbedSerial = serial.Serial(mbedPort, baudrate=mbedBaud, timeout=None, bytesize=serial.EIGHTBITS, parity = serial.PARITY_NONE, stopbits = serial.STOPBITS_ONE) # timeout = None means blocking, timeout = 0 means non-blocking
     self._mbedUpdateInterval = mbedUpdateInterval
     self._joystick = FishJoystick(joystick='snes', useLJ=useLJ)
