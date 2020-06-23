@@ -1355,60 +1355,60 @@ Warning: This is the KIT version of the AXIAL-0.3 package. This package has a sm
 <wire x1="4.1656" y1="-5.7404" x2="4.1656" y2="-6.4008" width="0.1524" layer="21"/>
 <text x="-5.6642" y="-8.7376" size="1.27" layer="21" ratio="6" rot="SR0">*</text>
 <text x="-3.2766" y="1.905" size="1.27" layer="25" ratio="6" rot="SR0">&gt;Name</text>
-<pad name="P$1" x="-2.4638" y="3.81" drill="0.3302" diameter="0.6096"/>
-<pad name="P$2" x="-1.4732" y="3.81" drill="0.3302" diameter="0.6096"/>
-<pad name="P$3" x="-0.4826" y="3.81" drill="0.3302" diameter="0.6096"/>
-<pad name="P$4" x="0.508" y="3.81" drill="0.3302" diameter="0.6096"/>
-<pad name="P$5" x="1.4986" y="3.81" drill="0.3302" diameter="0.6096"/>
-<pad name="P$6" x="2.4892" y="3.81" drill="0.3302" diameter="0.6096"/>
-<pad name="P$7" x="-2.4638" y="2.8194" drill="0.3302" diameter="0.6096"/>
-<pad name="P$8" x="-1.4732" y="2.8194" drill="0.3302" diameter="0.6096"/>
-<pad name="P$9" x="-0.4826" y="2.8194" drill="0.3302" diameter="0.6096"/>
-<pad name="P$10" x="0.508" y="2.8194" drill="0.3302" diameter="0.6096"/>
-<pad name="P$11" x="1.4986" y="2.8194" drill="0.3302" diameter="0.6096"/>
-<pad name="P$12" x="2.4892" y="2.8194" drill="0.3302" diameter="0.6096"/>
-<pad name="P$13" x="-2.4638" y="1.8288" drill="0.3302" diameter="0.6096"/>
-<pad name="P$14" x="-1.4732" y="1.8288" drill="0.3302" diameter="0.6096"/>
-<pad name="P$15" x="-0.4826" y="1.8288" drill="0.3302" diameter="0.6096"/>
-<pad name="P$16" x="0.508" y="1.8288" drill="0.3302" diameter="0.6096"/>
-<pad name="P$17" x="1.4986" y="1.8288" drill="0.3302" diameter="0.6096"/>
-<pad name="P$18" x="2.4892" y="1.8288" drill="0.3302" diameter="0.6096"/>
-<pad name="P$19" x="-2.4638" y="0.8382" drill="0.3302" diameter="0.6096"/>
-<pad name="P$20" x="-1.4732" y="0.8382" drill="0.3302" diameter="0.6096"/>
-<pad name="P$21" x="-0.4826" y="0.8382" drill="0.3302" diameter="0.6096"/>
-<pad name="P$22" x="0.508" y="0.8382" drill="0.3302" diameter="0.6096"/>
-<pad name="P$23" x="1.4986" y="0.8382" drill="0.3302" diameter="0.6096"/>
-<pad name="P$24" x="2.4892" y="0.8382" drill="0.3302" diameter="0.6096"/>
-<pad name="P$25" x="-2.4638" y="-0.1524" drill="0.3302" diameter="0.6096"/>
-<pad name="P$26" x="-1.4732" y="-0.1524" drill="0.3302" diameter="0.6096"/>
-<pad name="P$27" x="-0.4826" y="-0.1524" drill="0.3302" diameter="0.6096"/>
-<pad name="P$28" x="0.508" y="-0.1524" drill="0.3302" diameter="0.6096"/>
-<pad name="P$29" x="1.4986" y="-0.1524" drill="0.3302" diameter="0.6096"/>
-<pad name="P$30" x="2.4892" y="-0.1524" drill="0.3302" diameter="0.6096"/>
-<pad name="P$31" x="-2.4638" y="-1.143" drill="0.3302" diameter="0.6096"/>
-<pad name="P$32" x="-1.4732" y="-1.143" drill="0.3302" diameter="0.6096"/>
-<pad name="P$33" x="-0.4826" y="-1.143" drill="0.3302" diameter="0.6096"/>
-<pad name="P$34" x="0.508" y="-1.143" drill="0.3302" diameter="0.6096"/>
-<pad name="P$35" x="1.4986" y="-1.143" drill="0.3302" diameter="0.6096"/>
-<pad name="P$36" x="2.4892" y="-1.143" drill="0.3302" diameter="0.6096"/>
-<pad name="P$37" x="-2.4638" y="-2.1336" drill="0.3302" diameter="0.6096"/>
-<pad name="P$38" x="-1.4732" y="-2.1336" drill="0.3302" diameter="0.6096"/>
-<pad name="P$39" x="-0.4826" y="-2.1336" drill="0.3302" diameter="0.6096"/>
-<pad name="P$40" x="0.508" y="-2.1336" drill="0.3302" diameter="0.6096"/>
-<pad name="P$41" x="1.4986" y="-2.1336" drill="0.3302" diameter="0.6096"/>
-<pad name="P$42" x="2.4892" y="-2.1336" drill="0.3302" diameter="0.6096"/>
-<pad name="P$43" x="-2.4638" y="-3.1242" drill="0.3302" diameter="0.6096"/>
-<pad name="P$44" x="-1.4732" y="-3.1242" drill="0.3302" diameter="0.6096"/>
-<pad name="P$45" x="-0.4826" y="-3.1242" drill="0.3302" diameter="0.6096"/>
-<pad name="P$46" x="0.508" y="-3.1242" drill="0.3302" diameter="0.6096"/>
-<pad name="P$47" x="1.4986" y="-3.1242" drill="0.3302" diameter="0.6096"/>
-<pad name="P$48" x="2.4892" y="-3.1242" drill="0.3302" diameter="0.6096"/>
-<pad name="P$49" x="-2.4638" y="-4.1148" drill="0.3302" diameter="0.6096"/>
-<pad name="P$50" x="-1.4732" y="-4.1148" drill="0.3302" diameter="0.6096"/>
-<pad name="P$51" x="-0.4826" y="-4.1148" drill="0.3302" diameter="0.6096"/>
-<pad name="P$52" x="0.508" y="-4.1148" drill="0.3302" diameter="0.6096"/>
-<pad name="P$53" x="1.4986" y="-4.1148" drill="0.3302" diameter="0.6096"/>
-<pad name="P$54" x="2.4892" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$1" x="-2.4638" y="3.81" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$2" x="-1.4732" y="3.81" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$3" x="-0.4826" y="3.81" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$4" x="0.508" y="3.81" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$5" x="1.4986" y="3.81" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$6" x="2.4892" y="3.81" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$7" x="-2.4638" y="2.8194" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$8" x="-1.4732" y="2.8194" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$9" x="-0.4826" y="2.8194" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$10" x="0.508" y="2.8194" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$11" x="1.4986" y="2.8194" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$12" x="2.4892" y="2.8194" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$13" x="-2.4638" y="1.8288" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$14" x="-1.4732" y="1.8288" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$15" x="-0.4826" y="1.8288" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$16" x="0.508" y="1.8288" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$17" x="1.4986" y="1.8288" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$18" x="2.4892" y="1.8288" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$19" x="-2.4638" y="0.8382" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$20" x="-1.4732" y="0.8382" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$21" x="-0.4826" y="0.8382" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$22" x="0.508" y="0.8382" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$23" x="1.4986" y="0.8382" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$24" x="2.4892" y="0.8382" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$25" x="-2.4638" y="-0.1524" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$26" x="-1.4732" y="-0.1524" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$27" x="-0.4826" y="-0.1524" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$28" x="0.508" y="-0.1524" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$29" x="1.4986" y="-0.1524" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$30" x="2.4892" y="-0.1524" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$31" x="-2.4638" y="-1.143" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$32" x="-1.4732" y="-1.143" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$33" x="-0.4826" y="-1.143" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$34" x="0.508" y="-1.143" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$35" x="1.4986" y="-1.143" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$36" x="2.4892" y="-1.143" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$37" x="-2.4638" y="-2.1336" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$38" x="-1.4732" y="-2.1336" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$39" x="-0.4826" y="-2.1336" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$40" x="0.508" y="-2.1336" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$41" x="1.4986" y="-2.1336" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$42" x="2.4892" y="-2.1336" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$43" x="-2.4638" y="-3.1242" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$44" x="-1.4732" y="-3.1242" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$45" x="-0.4826" y="-3.1242" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$46" x="0.508" y="-3.1242" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$47" x="1.4986" y="-3.1242" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$48" x="2.4892" y="-3.1242" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$49" x="-2.4638" y="-4.1148" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$50" x="-1.4732" y="-4.1148" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$51" x="-0.4826" y="-4.1148" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$52" x="0.508" y="-4.1148" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$53" x="1.4986" y="-4.1148" drill="0.3302" diameter="0.6096" thermals="no"/>
+<pad name="P$54" x="2.4892" y="-4.1148" drill="0.3302" diameter="0.6096" thermals="no"/>
 <polygon width="0.127" layer="1">
 <vertex x="1.905" y="1.27"/>
 <vertex x="5.08" y="1.27"/>
@@ -12146,6 +12146,203 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pad name="P$1" x="0" y="0.55" drill="0.199896875" diameter="0.3048"/>
 <pad name="P$2" x="0" y="-0.55" drill="0.199896875" diameter="0.3048"/>
 </package>
+<package name="DSG8_P9X1P6_THERMAL_EXTENDED">
+<smd name="1" x="-1.081" y="0.75" dx="0.762" dy="0.28" layer="1"/>
+<smd name="2" x="-1.081" y="0.25" dx="0.762" dy="0.28" layer="1"/>
+<smd name="3" x="-1.081" y="-0.25" dx="0.762" dy="0.28" layer="1"/>
+<smd name="4" x="-1.081" y="-0.75" dx="0.762" dy="0.28" layer="1"/>
+<smd name="5" x="1.081" y="-0.75" dx="0.762" dy="0.28" layer="1" rot="R180"/>
+<smd name="6" x="1.081" y="-0.25" dx="0.762" dy="0.28" layer="1" rot="R180"/>
+<smd name="7" x="1.081" y="0.25" dx="0.762" dy="0.28" layer="1" rot="R180"/>
+<smd name="8" x="1.081" y="0.75" dx="0.762" dy="0.28" layer="1" rot="R180"/>
+<smd name="9" x="0" y="0" dx="0.889" dy="1.6002" layer="1" thermals="no" cream="no"/>
+<polygon width="0.0254" layer="31">
+<vertex x="-1.175" y="0.865"/>
+<vertex x="-1.175" y="0.635"/>
+<vertex x="-0.725" y="0.635"/>
+<vertex x="-0.725" y="0.865"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="-1.175" y="0.365"/>
+<vertex x="-1.175" y="0.135"/>
+<vertex x="-0.725" y="0.135"/>
+<vertex x="-0.725" y="0.365"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="-1.175" y="-0.135"/>
+<vertex x="-1.175" y="-0.365"/>
+<vertex x="-0.725" y="-0.365"/>
+<vertex x="-0.725" y="-0.135"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="-1.175" y="-0.635"/>
+<vertex x="-1.175" y="-0.865"/>
+<vertex x="-0.725" y="-0.865"/>
+<vertex x="-0.725" y="-0.635"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="0.725" y="-0.635"/>
+<vertex x="0.725" y="-0.865"/>
+<vertex x="1.175" y="-0.865"/>
+<vertex x="1.175" y="-0.635"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="0.725" y="-0.135"/>
+<vertex x="0.725" y="-0.365"/>
+<vertex x="1.175" y="-0.365"/>
+<vertex x="1.175" y="-0.135"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="0.725" y="0.365"/>
+<vertex x="0.725" y="0.135"/>
+<vertex x="1.175" y="0.135"/>
+<vertex x="1.175" y="0.365"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="0.725" y="0.865"/>
+<vertex x="0.725" y="0.635"/>
+<vertex x="1.175" y="0.635"/>
+<vertex x="1.175" y="0.865"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="-0.36956875" y="0.72516875"/>
+<vertex x="-0.36956875" y="0.4937"/>
+<vertex x="-0.241421875" y="0.4937"/>
+<vertex x="-0.1" y="0.635121875"/>
+<vertex x="-0.1" y="0.72516875"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="-0.36956875" y="0.2937"/>
+<vertex x="-0.36956875" y="-0.2937"/>
+<vertex x="-0.241421875" y="-0.2937"/>
+<vertex x="-0.1" y="-0.152278125"/>
+<vertex x="-0.1" y="0.152278125"/>
+<vertex x="-0.241421875" y="0.2937"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="-0.36956875" y="-0.4937"/>
+<vertex x="-0.36956875" y="-0.72516875"/>
+<vertex x="-0.1" y="-0.72516875"/>
+<vertex x="-0.1" y="-0.635121875"/>
+<vertex x="-0.241421875" y="-0.4937"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="0.1" y="0.72516875"/>
+<vertex x="0.1" y="0.635121875"/>
+<vertex x="0.241421875" y="0.4937"/>
+<vertex x="0.36956875" y="0.4937"/>
+<vertex x="0.36956875" y="0.72516875"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="0.241421875" y="0.2937"/>
+<vertex x="0.1" y="0.152278125"/>
+<vertex x="0.1" y="-0.152278125"/>
+<vertex x="0.241421875" y="-0.2937"/>
+<vertex x="0.36956875" y="-0.2937"/>
+<vertex x="0.36956875" y="0.2937"/>
+</polygon>
+<polygon width="0.0254" layer="31">
+<vertex x="0.241421875" y="-0.4937"/>
+<vertex x="0.1" y="-0.635121875"/>
+<vertex x="0.1" y="-0.72516875"/>
+<vertex x="0.36956875" y="-0.72516875"/>
+<vertex x="0.36956875" y="-0.4937"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="-1.27" y="0.96"/>
+<vertex x="-1.27" y="0.54"/>
+<vertex x="-0.63" y="0.54"/>
+<vertex x="-0.63" y="0.96"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="-1.27" y="0.46"/>
+<vertex x="-1.27" y="0.04"/>
+<vertex x="-0.63" y="0.04"/>
+<vertex x="-0.63" y="0.46"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="-1.27" y="-0.04"/>
+<vertex x="-1.27" y="-0.46"/>
+<vertex x="-0.63" y="-0.46"/>
+<vertex x="-0.63" y="-0.04"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="-1.27" y="-0.54"/>
+<vertex x="-1.27" y="-0.96"/>
+<vertex x="-0.63" y="-0.96"/>
+<vertex x="-0.63" y="-0.54"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="0.63" y="-0.54"/>
+<vertex x="0.63" y="-0.96"/>
+<vertex x="1.27" y="-0.96"/>
+<vertex x="1.27" y="-0.54"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="0.63" y="-0.04"/>
+<vertex x="0.63" y="-0.46"/>
+<vertex x="1.27" y="-0.46"/>
+<vertex x="1.27" y="-0.04"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="0.63" y="0.46"/>
+<vertex x="0.63" y="0.04"/>
+<vertex x="1.27" y="0.04"/>
+<vertex x="1.27" y="0.46"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="0.63" y="0.96"/>
+<vertex x="0.63" y="0.54"/>
+<vertex x="1.27" y="0.54"/>
+<vertex x="1.27" y="0.96"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="-0.508" y="0.8636"/>
+<vertex x="0.508" y="0.8636"/>
+<vertex x="0.508" y="0.5937"/>
+<vertex x="-0.508" y="0.5937"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="-0.508" y="0.1937"/>
+<vertex x="0.508" y="0.1937"/>
+<vertex x="0.508" y="-0.1937"/>
+<vertex x="-0.508" y="-0.1937"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="-0.508" y="-0.5937"/>
+<vertex x="0.508" y="-0.5937"/>
+<vertex x="0.508" y="-0.8636"/>
+<vertex x="-0.508" y="-0.8636"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="-0.508" y="0.8636"/>
+<vertex x="-0.2" y="0.8636"/>
+<vertex x="-0.2" y="-0.8636"/>
+<vertex x="-0.508" y="-0.8636"/>
+</polygon>
+<polygon width="0.0254" layer="29">
+<vertex x="0.2" y="0.8636"/>
+<vertex x="0.508" y="0.8636"/>
+<vertex x="0.508" y="-0.8636"/>
+<vertex x="0.2" y="-0.8636"/>
+</polygon>
+<wire x1="-1.4224" y1="-1.4224" x2="1.4224" y2="-1.4224" width="0.1524" layer="21"/>
+<wire x1="1.4224" y1="-1.4224" x2="1.4224" y2="-1.1176" width="0.1524" layer="21"/>
+<wire x1="1.4224" y1="1.4224" x2="-1.4224" y2="1.4224" width="0.1524" layer="21"/>
+<wire x1="-1.4224" y1="1.4224" x2="-1.4224" y2="1.1176" width="0.1524" layer="21"/>
+<wire x1="-1.4224" y1="-1.1176" x2="-1.4224" y2="-1.4224" width="0.1524" layer="21"/>
+<wire x1="1.4224" y1="1.1176" x2="1.4224" y2="1.4224" width="0.1524" layer="21"/>
+<wire x1="-1.0668" y1="-1.0668" x2="1.0668" y2="-1.0668" width="0.1524" layer="21"/>
+<wire x1="1.0668" y1="-1.0668" x2="1.0668" y2="1.0668" width="0.1524" layer="51"/>
+<wire x1="1.0668" y1="1.0668" x2="0.3048" y2="1.0668" width="0.1524" layer="21"/>
+<wire x1="0.3048" y1="1.0668" x2="-1.0668" y2="1.0668" width="0.1524" layer="21"/>
+<wire x1="-1.0668" y1="1.0668" x2="-1.0668" y2="-1.0668" width="0.1524" layer="51"/>
+<wire x1="0.3048" y1="1.0668" x2="-0.3048" y2="1.0414" width="0.1524" layer="51" curve="-180"/>
+<text x="-3.2766" y="1.905" size="1.27" layer="25" ratio="6" rot="SR0">&gt;Name</text>
+<circle x="-1.919865625" y="1.257153125" radius="0.117671875" width="0.1524" layer="21"/>
+<pad name="P$1" x="0" y="0.55" drill="0.199896875" diameter="0.3048" thermals="no"/>
+<pad name="P$2" x="0" y="-0.55" drill="0.199896875" diameter="0.3048" thermals="no"/>
+</package>
 </packages>
 <symbols>
 <symbol name="DRV8838_DSG_8">
@@ -12190,6 +12387,21 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 </technologies>
 </device>
 <device name="DSG8_P9X1P6_THERMAL" package="DSG8_P9X1P6_THERMAL">
+<connects>
+<connect gate="A" pin="EN" pad="5"/>
+<connect gate="A" pin="GND" pad="4 9 P$1 P$2"/>
+<connect gate="A" pin="NSLEEP" pad="7"/>
+<connect gate="A" pin="OUT1" pad="2"/>
+<connect gate="A" pin="OUT2" pad="3"/>
+<connect gate="A" pin="PH" pad="6"/>
+<connect gate="A" pin="VCC" pad="8"/>
+<connect gate="A" pin="VM" pad="1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="DSG8_P9X1P6_THERMAL_EXTENDED" package="DSG8_P9X1P6_THERMAL_EXTENDED">
 <connects>
 <connect gate="A" pin="EN" pad="5"/>
 <connect gate="A" pin="GND" pad="4 9 P$1 P$2"/>
@@ -17067,7 +17279,7 @@ Source: http://cache.national.com/ds/LM/LM158.pdf</description>
 <part name="C27" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="0.1 uF"/>
 <part name="GND32" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="RPI_HEADER" library="con-lsta" library_urn="urn:adsk.eagle:library:161" deviceset="FE20-2" device="" package3d_urn="urn:adsk.eagle:package:8184/1"/>
-<part name="DRV8838" library="DRV8838" deviceset="DRV8838DSGT" device="DSG8_P9X1P6_THERMAL" value="DRV8838DSGTDSG8_P9X1P6_THERMAL"/>
+<part name="DRV8838" library="DRV8838" deviceset="DRV8838DSGT" device="DSG8_P9X1P6_THERMAL_EXTENDED" value="DRV8838DSGTDSG8_P9X1P6_THERMAL_EXTENDED"/>
 <part name="GND45" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C24" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="0.1 uF"/>
 <part name="GND46" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
