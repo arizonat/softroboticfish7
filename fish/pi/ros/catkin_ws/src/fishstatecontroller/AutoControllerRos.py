@@ -5,20 +5,20 @@ import roslib
 import serial # see http://pyserial.readthedocs.org/en/latest/pyserial_api.html
 #import fishcamera
 from time import time, sleep
-from FishJoystick import FishJoystick
+#from FishJoystick import FishJoystick
 #from camera import FishCamera
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge
+import numpy as np
 
 CAM_OUTPUT_DIR="/home/pi/fish_recordings"
 DISPLAY_IMAGES = False
 
 class NaiveColorTargetTracker():
-  def __init__(self, camera, target_color):
+  def __init__(self, target_color):
     self.target_color = target_color
-    self.camera = camera
 
     # red stretches 2 bands in hsv
     # these values are for yellow, keeping the 2 bands for red in the future
@@ -32,17 +32,12 @@ class NaiveColorTargetTracker():
 
     #cv2.namedWindow('Mask')
 
-  def get_image_size(self):
+  def find_target(self, cv_image):
     #image = self.camera.capture()
-    success, image = self.camera.read()
-    return image.shape
-
-  def find_target(self):
-    #image = self.camera.capture()
-    success, image = self.camera.read()
+    image = cv_image 	##CHANGED##
     target_found, target_centroid = self.process_image(image)
     return (target_found, target_centroid)
-    
+
   def process_image(self, image):
     """
     Processes a single image, looks for a circle, return the target centroid in the camera frame
@@ -61,7 +56,7 @@ class NaiveColorTargetTracker():
     #mask = cv2.dilate(mask, None, iterations=2)
 
     #print(mask)
-    cnts, cnt_hier = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    cnts, cnt_hier = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)[-2:]
 
     if len(cnts) == 0:
       return (False, None)
@@ -97,7 +92,7 @@ class FishMbed():
   def writeCmdArray(self, cmd):
     bytecmds = self.safeCmdToBytes(cmd)
     self.writeBytes(bytecmds)
-    
+
   def writeBytes(self, bytecmds):
     self._mbedSerial.write(bytecmds)
     if bytecmds[-1] != 8:
@@ -114,7 +109,7 @@ class FishMbed():
         cmd[k] = max(min(cmd[k],self.CMD_MAX),self.CMD_MIN)
 
     return self.cmdToBytes(cmd, cmdType, nullTerminate)
-    
+
   def cmdToBytes(self, cmd, cmdType='byteArray', nullTerminate=False):
 """
     #Turns a fish mbed command to bytearray (for sending to mbed)
@@ -153,11 +148,12 @@ class FishStateController():
     self.update_interval = update_interval
 
     #self.mbed = FishMbed()
-    self.camera = cv2.VideoCapture(0)
+    self.image = np.zeros((960,1280,3), np.uint8)	##CHANGED##
+    #self.camera = cv2.VideoCapture(0)
     #self.camera = FishCamera(CAM_OUTPUT_DIR)
     target_rgb = (255,0,0)
-    self.tracker = NaiveColorTargetTracker(self.camera, target_rgb)
-    self.image_size = self.tracker.get_image_size()
+    self.tracker = NaiveColorTargetTracker(target_rgb)
+    self.image_size = self.image.shape
 
   def run(self):
     lastTime = time()
@@ -174,7 +170,7 @@ class FishStateController():
 
   def runOnce(self):
     # Mbed command order: ['start', 'pitch', 'yaw', 'thrust', 'frequency']
-    target_found, target_centroid = self.tracker.find_target()
+    target_found, target_centroid = self.tracker.find_target(self.image)	##CHANGED##
 
     if self.state == "INIT":
       #self.mbed.writeCmdArray(self.DO_NOTHING)
@@ -191,7 +187,7 @@ class FishStateController():
     elif self.state == "ADJUST":
       # higher yaw is right, lower is left
       #target_found, target_centroid = self.tracker.find_target()
-      
+
       if target_found and target_centroid[0][0] >= self.image_size[1]*(2./3.):
         print("SOFT RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
         self.mbed.writeCmdArray(self.SOFT_RIGHT)
@@ -210,24 +206,25 @@ class FishStateController():
         return
       self.mbed.writeCmdArray(self.GO_FORWARD)
 
-def callback(ros_data):
-  ###Put CV2 information here to analyze image data ###
-  bridge = CvBridge()
-  cv_image = bridge.imgmsg_to_cv2(ros_data, desired_encoding='passthrough')
-  print(cv_image)
-  ###Uncomment below line to publish new image
-  #self.image_pub.publish(msg)
+  def callback(self, ros_data):		##CHANGED##
+    ###Put CV2 information here to analyze image data ###
+    bridge = CvBridge()
+    cv_image = bridge.imgmsg_to_cv2(ros_data, desired_encoding='passthrough')
+    self.image = cv_image
+    #print(cv_image)
+    ###Uncomment below line to publish new image
+    #self.image_pub.publish(msg)
 
 if __name__ == '__main__':
   import sys
   ###Is the below line in the correct place?
   update_hz = 30
   rospy.init_node('listener', anonymous=True)
-  rospy.Subscriber('/raspicam_node/image', Image, callback)
-  #controller = FishStateController(1./update_hz)
+  controller = FishStateController(1./update_hz)
+  rospy.Subscriber('/raspicam_node/image', Image, controller.callback)
   print '\nStarting Fish State Controller'
   print 'using update interval of ', 1./update_hz, 's'
-  #controller.run()
+  controller.run()
   print '\nAll done!'
   rospy.spin()
 
