@@ -18,6 +18,7 @@ DISPLAY_IMAGES = False
 
 class NaiveColorTargetTracker():
   def __init__(self, target_color):
+    self.pub = rospy.Publisher('color_mask', Image, queue_size=10)
     self.target_color = target_color
 
     # red stretches 2 bands in hsv
@@ -52,9 +53,12 @@ class NaiveColorTargetTracker():
     mask_l = cv2.inRange(hsv_small, self.hsv_lower_lower, self.hsv_lower_upper)
     mask_u = cv2.inRange(hsv_small, self.hsv_upper_lower, self.hsv_upper_upper)
     mask = cv2.bitwise_or(mask_l, mask_u)
+    mask_bgr8 = cv2.cvtColor(mask,cv2.COLOR_GRAY2BGR)
     #mask = cv2.erode(mask, None, iterations=2)
     #mask = cv2.dilate(mask, None, iterations=2)
-
+    bridge = CvBridge()
+    cv_mask = bridge.cv2_to_imgmsg(mask_bgr8, encoding='bgr8')
+    self.pub.publish(cv_mask)
     #print(mask)
     cnts, cnt_hier = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)[-2:]
 
@@ -190,10 +194,10 @@ class FishStateController():
 
       if target_found and target_centroid[0][0] >= self.image_size[1]*(2./3.):
         print("SOFT RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
-        self.mbed.writeCmdArray(self.SOFT_RIGHT)
+        #self.mbed.writeCmdArray(self.SOFT_RIGHT)
       elif target_found and target_centroid[0][0] <= self.image_size[1]*(1./3.):
         print("SOFT LEFT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(1./3.)))
-        self.mbed.writeCmdArray(self.SOFT_LEFT)
+        #self.mbed.writeCmdArray(self.SOFT_LEFT)
       elif target_found:
         self.transitionTo("FOLLOW")
       else:
@@ -204,7 +208,7 @@ class FishStateController():
       if time() - self.state_init_time > self.follow_timeout:
         self.transitionTo("SEARCH")
         return
-      self.mbed.writeCmdArray(self.GO_FORWARD)
+      #self.mbed.writeCmdArray(self.GO_FORWARD)
 
   def callback(self, ros_data):		##CHANGED##
     ###Put CV2 information here to analyze image data ###
