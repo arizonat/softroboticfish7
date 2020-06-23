@@ -449,18 +449,18 @@
 <pad name="P$40" x="0.508" y="-2.1336" drill="0.3302" diameter="0.6096"/>
 <pad name="P$41" x="1.4986" y="-2.1336" drill="0.3302" diameter="0.6096"/>
 <pad name="P$42" x="2.4892" y="-2.1336" drill="0.3302" diameter="0.6096"/>
-<pad name="P$43" x="-2.4638" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$44" x="-1.4732" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$45" x="-0.4826" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$46" x="0.508" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$47" x="1.4986" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$48" x="2.4892" y="-3.1242" drill="0.254" diameter="0.4064"/>
-<pad name="P$49" x="-2.4638" y="-4.1148" drill="0.254" diameter="0.4064"/>
-<pad name="P$50" x="-1.4732" y="-4.1148" drill="0.254" diameter="0.4064"/>
-<pad name="P$51" x="-0.4826" y="-4.1148" drill="0.254" diameter="0.4064"/>
-<pad name="P$52" x="0.508" y="-4.1148" drill="0.254" diameter="0.4064"/>
-<pad name="P$53" x="1.4986" y="-4.1148" drill="0.254" diameter="0.4064"/>
-<pad name="P$54" x="2.4892" y="-4.1148" drill="0.254" diameter="0.4064"/>
+<pad name="P$43" x="-2.4638" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$44" x="-1.4732" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$45" x="-0.4826" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$46" x="0.508" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$47" x="1.4986" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$48" x="2.4892" y="-3.1242" drill="0.3302" diameter="0.6096"/>
+<pad name="P$49" x="-2.4638" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$50" x="-1.4732" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$51" x="-0.4826" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$52" x="0.508" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$53" x="1.4986" y="-4.1148" drill="0.3302" diameter="0.6096"/>
+<pad name="P$54" x="2.4892" y="-4.1148" drill="0.3302" diameter="0.6096"/>
 <polygon width="0.127" layer="1">
 <vertex x="1.905" y="1.27"/>
 <vertex x="5.08" y="1.27"/>

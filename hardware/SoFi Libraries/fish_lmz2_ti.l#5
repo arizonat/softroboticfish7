@@ -461,6 +461,14 @@
 <pad name="P$52" x="0.508" y="-4.1148" drill="0.254" diameter="0.4064"/>
 <pad name="P$53" x="1.4986" y="-4.1148" drill="0.254" diameter="0.4064"/>
 <pad name="P$54" x="2.4892" y="-4.1148" drill="0.254" diameter="0.4064"/>
+<polygon width="0.127" layer="1">
+<vertex x="1.905" y="1.27"/>
+<vertex x="5.08" y="1.27"/>
+<vertex x="6.35" y="2.413"/>
+<vertex x="6.35" y="-2.54"/>
+<vertex x="5.08" y="-1.27"/>
+<vertex x="1.905" y="-1.27"/>
+</polygon>
 </package>
 </packages>
 <symbols>
