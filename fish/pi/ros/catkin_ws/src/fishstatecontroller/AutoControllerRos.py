@@ -146,6 +146,7 @@ class FishStateController():
     self.SOFT_RIGHT = [1,3,1,3,2]
     self.DO_NOTHING = [1,3,3,0,1]
     self.GO_FORWARD = [1,3,3,3,3]
+    self.state_pub = rospy.Publisher('fish_state', String, queue_size=10)
 
     self.transitionTo("INIT")
 
@@ -169,6 +170,7 @@ class FishStateController():
 
   def transitionTo(self, state_name):
     self.state = state_name
+    self.state_pub.publish(state_name)
     self.state_init_time = time()
     print(self.state)
 
