@@ -4,14 +4,15 @@ import time
 
 # TODO: EVERYTHING
 
-inp = raw_input("Enter space separated: port testname\n")
+inp = raw_input("Enter testname: testname\n")
 
-input_list = inp.split(" ")
-params = [i.strip() for i in input_list]
-port = params[0]
-testname = params[1]
+# input_list = inp.split(" ")
+# params = [i.strip() for i in input_list]
+# port = params[0]
+# testname = params[1]
 
-ser = serial.Serial(port, 115200)
+testname = inp
+ser = serial.Serial('/dev/ttyACM0', 115200, timeout=None, bytesize=serial.EIGHTBITS, parity = serial.PARITY_NONE, stopbits = serial.STOPBITS_ONE)
 print(ser.name)
 
 logfile = open("logs/" + testname, "w")
