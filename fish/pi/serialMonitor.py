@@ -16,7 +16,7 @@ import time
 
 def run(argv):
     # Get the COM port of the mbed
-    p = os.popen('ls /dev/ttyAMA0', "r")
+    p = os.popen('ls /dev/serial0', "r")
     port = p.readline().strip()
 
     print 'Connecting to ' + port
@@ -31,9 +31,9 @@ def run(argv):
     printData = True
     filenameBase = ''
     filenameEnd = ''
-    if not os.path.exists('/home/pi/fish_data'):
-        os.mkdir('/home/pi/fish_data')
-    outDir = '/home/pi/fish_data/data_' + str(time.time()).replace('.','_')
+    if not os.path.exists('/home/sofi/fish_data'):
+        os.mkdir('/home/sofi/fish_data')
+    outDir = '/home/sofi/fish_data/data_' + str(time.time()).replace('.','_')
     os.mkdir(outDir)
     fout = None
     fileNum = 0     
