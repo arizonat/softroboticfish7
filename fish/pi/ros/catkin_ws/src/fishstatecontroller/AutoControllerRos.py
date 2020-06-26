@@ -26,7 +26,7 @@ class NaiveColorTargetTracker():
     # red stretches 2 bands in hsv
     # these values are for yellow, keeping the 2 bands for red in the future
     self.hsv_lower_lower = (14,55,55)
-    self.hsv_lower_upper = (150,255,235)
+    self.hsv_lower_upper = (30,255,235)
     self.hsv_upper_lower = self.hsv_lower_lower
     self.hsv_upper_upper = self.hsv_lower_upper
 
