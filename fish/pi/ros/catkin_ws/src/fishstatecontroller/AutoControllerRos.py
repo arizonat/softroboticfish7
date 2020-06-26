@@ -5,6 +5,7 @@ import roslib
 import serial # see http://pyserial.readthedocs.org/en/latest/pyserial_api.html
 #import fishcamera
 from time import time, sleep
+import time as clock
 #from FishJoystick import FishJoystick
 #from camera import FishCamera
 from std_msgs.msg import String
@@ -12,6 +13,7 @@ from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
+from fishstatecontroller.msg import State
 
 CAM_OUTPUT_DIR="/home/pi/fish_recordings"
 DISPLAY_IMAGES = False
@@ -133,6 +135,9 @@ class FishStateController():
     """
     update_interval in seconds
     """
+    self.state_msg = State()
+    self.state_pub = rospy.Publisher('fish_state', State, queue_size=10)
+
     self.states = ("INIT","SEARCH","ADJUST","FOLLOW")
     self.state = None
     self.state_init_time = None
@@ -147,6 +152,10 @@ class FishStateController():
     self.DO_NOTHING = [1,3,3,0,1]
     self.GO_FORWARD = [1,3,3,3,3]
     self.state_pub = rospy.Publisher('fish_state', String, queue_size=10)
+
+    ###To publish state to rostopic
+    #self.state_pub.publish(self.header)
+
 
     self.transitionTo("INIT")
 
@@ -172,11 +181,19 @@ class FishStateController():
     self.state = state_name
     self.state_pub.publish(state_name)
     self.state_init_time = time()
+    #self.state_pub.publish(self.state)
+
+    ###Can use below if adjust direction not important.
+    #self.state_msg.header.stamp = rospy.Time.now()
+    #self.state_msg.state = self.state
+    #self.state_pub.publish(self.state_msg)
+
     print(self.state)
 
   def runOnce(self):
     # Mbed command order: ['start', 'pitch', 'yaw', 'thrust', 'frequency']
     target_found, target_centroid = self.tracker.find_target(self.image)	##CHANGED##
+    self.state_msg.adjust = "NO ADJUST"
 
     if self.state == "INIT":
       #self.mbed.writeCmdArray(self.DO_NOTHING)
@@ -186,6 +203,7 @@ class FishStateController():
 
       if target_found:
         self.transitionTo("ADJUST")
+        self.state_msg.adjust = "ADJUST"
         return
 
       #self.mbed.writeCmdArray(self.HARD_LEFT)
@@ -195,9 +213,11 @@ class FishStateController():
       #target_found, target_centroid = self.tracker.find_target()
 
       if target_found and target_centroid[0][0] >= self.image_size[1]*(2./3.):
+        self.state_msg.adjust = "SOFT RIGHT"
         print("SOFT RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
         #self.mbed.writeCmdArray(self.SOFT_RIGHT)
       elif target_found and target_centroid[0][0] <= self.image_size[1]*(1./3.):
+        self.state_msg.adjust = "SOFT LEFT"
         print("SOFT LEFT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(1./3.)))
         #self.mbed.writeCmdArray(self.SOFT_LEFT)
       elif target_found:
@@ -210,6 +230,12 @@ class FishStateController():
       if time() - self.state_init_time > self.follow_timeout:
         self.transitionTo("SEARCH")
         return
+
+
+    self.state_msg.state = self.state
+    self.state_msg.header.stamp = rospy.Time.now()
+    self.state_pub.publish(self.state_msg)
+
       #self.mbed.writeCmdArray(self.GO_FORWARD)
 
   def callback(self, ros_data):		##CHANGED##
@@ -218,8 +244,6 @@ class FishStateController():
     cv_image = bridge.imgmsg_to_cv2(ros_data, desired_encoding='passthrough')
     self.image = cv_image
     #print(cv_image)
-    ###Uncomment below line to publish new image
-    #self.image_pub.publish(msg)
 
 if __name__ == '__main__':
   import sys

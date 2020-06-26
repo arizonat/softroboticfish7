@@ -6,15 +6,12 @@ import time
 
 inp = raw_input("Enter testname: testname\n")
 
-# input_list = inp.split(" ")
-# params = [i.strip() for i in input_list]
-# port = params[0]
-# testname = params[1]
 # Ports: /dev/serial0 for wired UART, /dev/ttyACM* for USB (use ls -l /dev to find ports)
 # NOTE: REMOVE ANY CONSOLE REFERENCES TO SERIAL0 FROM /boot/cmdline.txt AND REBOOT
+# NOTE: timeout=0 or 1 both seem to work
 
 testname = inp
-ser = serial.Serial('/dev/serial0', 115200, timeout=1, bytesize=serial.EIGHTBITS, parity = serial.PARITY_NONE, stopbits = serial.STOPBITS_ONE)
+ser = serial.Serial('/dev/serial0', 115200, timeout=0, bytesize=serial.EIGHTBITS, parity = serial.PARITY_NONE, stopbits = serial.STOPBITS_ONE)
 print(ser.name)
 
 logfile = open("logs/" + testname, "w")
