@@ -481,30 +481,6 @@
 <vertex x="1.18389375" y="1.1349375"/>
 <vertex x="1.18389375" y="1.3650625"/>
 </polygon>
-<polygon width="0.1524" layer="31">
-<vertex x="0.1758" y="1.0508"/>
-<vertex x="0.1758" y="1.6492"/>
-<vertex x="0.3242" y="1.6492"/>
-<vertex x="0.3242" y="1.0508"/>
-</polygon>
-<polygon width="0.1524" layer="31">
-<vertex x="-0.1758" y="1.0508"/>
-<vertex x="-0.1758" y="1.6492"/>
-<vertex x="-0.3242" y="1.6492"/>
-<vertex x="-0.3242" y="1.0508"/>
-</polygon>
-<polygon width="0.1524" layer="31">
-<vertex x="-0.1758" y="-1.0508"/>
-<vertex x="-0.1758" y="-1.6492"/>
-<vertex x="-0.3242" y="-1.6492"/>
-<vertex x="-0.3242" y="-1.0508"/>
-</polygon>
-<polygon width="0.1524" layer="31">
-<vertex x="0.1758" y="-1.0508"/>
-<vertex x="0.1758" y="-1.6492"/>
-<vertex x="0.3242" y="-1.6492"/>
-<vertex x="0.3242" y="-1.0508"/>
-</polygon>
 <polygon width="0.0254" layer="31">
 <vertex x="-0.37506875" y="0.925071875"/>
 <vertex x="-0.37506875" y="0.4937"/>
@@ -620,30 +596,6 @@
 <vertex x="0.638659375" y="1.040046875"/>
 <vertex x="1.278784375" y="1.040046875"/>
 <vertex x="1.278784375" y="1.459953125"/>
-</polygon>
-<polygon width="0.1524" layer="29">
-<vertex x="0.125" y="1"/>
-<vertex x="0.125" y="1.7"/>
-<vertex x="0.375" y="1.7"/>
-<vertex x="0.375" y="1"/>
-</polygon>
-<polygon width="0.1524" layer="29">
-<vertex x="-0.125" y="1"/>
-<vertex x="-0.125" y="1.7"/>
-<vertex x="-0.375" y="1.7"/>
-<vertex x="-0.375" y="1"/>
-</polygon>
-<polygon width="0.1524" layer="29">
-<vertex x="-0.125" y="-1"/>
-<vertex x="-0.125" y="-1.7"/>
-<vertex x="-0.375" y="-1.7"/>
-<vertex x="-0.375" y="-1"/>
-</polygon>
-<polygon width="0.1524" layer="29">
-<vertex x="0.125" y="-1"/>
-<vertex x="0.125" y="-1.7"/>
-<vertex x="0.375" y="-1.7"/>
-<vertex x="0.375" y="-1"/>
 </polygon>
 <polygon width="0.0254" layer="29">
 <vertex x="-0.5135" y="1.0635"/>

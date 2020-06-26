@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2020-06-26T02:25:08Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.5.1"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "sofi_v7_main_rev2_2"
+        },
+        "Owner": "Salazarj Salazarj <salazarj@mit.edu>",
+        "Size": {
+            "X": 59.692,
+            "Y": 65.667
+        }
+    }
+}

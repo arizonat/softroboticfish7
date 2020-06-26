@@ -1305,7 +1305,7 @@ Warning: This is the KIT version of the AXIAL-0.3 package. This package has a sm
 <smd name="5" x="1.27" y="-7.305" dx="0.89" dy="3.06" layer="1"/>
 <smd name="6" x="2.54" y="-7.305" dx="0.89" dy="3.06" layer="1"/>
 <smd name="7" x="3.81" y="-7.305" dx="0.89" dy="3.06" layer="1"/>
-<smd name="8" x="0" y="0" dx="5.5118" dy="8.6614" layer="1"/>
+<smd name="8" x="0" y="0" dx="5.5118" dy="8.6614" layer="1" thermals="no"/>
 <wire x1="-3.4544" y1="-5.0546" x2="-4.1656" y2="-5.0546" width="0.1524" layer="51"/>
 <wire x1="-4.1656" y1="-5.0546" x2="-4.1656" y2="-9.0678" width="0.1524" layer="51"/>
 <wire x1="-4.1656" y1="-9.0678" x2="-3.429" y2="-9.0678" width="0.1524" layer="51"/>
@@ -11537,8 +11537,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <vertex x="0.2" y="-1.0635"/>
 </polygon>
 <text x="-3.2766" y="-0.635" size="1.27" layer="25" ratio="6" rot="SR0">&gt;Name</text>
-<pad name="P$1" x="0" y="0.508" drill="0.2794" diameter="0.4064" thermals="no"/>
-<pad name="P$2" x="0" y="-0.508" drill="0.2794" diameter="0.4064" thermals="no"/>
+<pad name="P$1" x="0" y="0.508" drill="0.3302" diameter="0.4064" thermals="no"/>
+<pad name="P$2" x="0" y="-0.508" drill="0.3302" diameter="0.4064" thermals="no"/>
 </package>
 </packages>
 <symbols>
@@ -12340,8 +12340,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="0.3048" y1="1.0668" x2="-0.3048" y2="1.0414" width="0.1524" layer="51" curve="-180"/>
 <text x="-3.2766" y="1.905" size="1.27" layer="25" ratio="6" rot="SR0">&gt;Name</text>
 <circle x="-1.919865625" y="1.257153125" radius="0.117671875" width="0.1524" layer="21"/>
-<pad name="P$1" x="0" y="0.55" drill="0.199896875" diameter="0.3048" thermals="no"/>
-<pad name="P$2" x="0" y="-0.55" drill="0.199896875" diameter="0.3048" thermals="no"/>
+<pad name="P$1" x="0" y="0.55" drill="0.3302" diameter="0.4064" thermals="no"/>
+<pad name="P$2" x="0" y="-0.55" drill="0.3302" diameter="0.4064" thermals="no"/>
 </package>
 </packages>
 <symbols>

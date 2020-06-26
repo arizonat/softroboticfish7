@@ -470,10 +470,10 @@
 <smd name="2" x="-1.081" y="0.25" dx="0.762" dy="0.28" layer="1"/>
 <smd name="3" x="-1.081" y="-0.25" dx="0.762" dy="0.28" layer="1"/>
 <smd name="4" x="-1.081" y="-0.75" dx="0.762" dy="0.28" layer="1"/>
-<smd name="5" x="1.216659375" y="-0.75" dx="1.016" dy="0.28" layer="1" rot="R180"/>
-<smd name="6" x="1.216659375" y="-0.25" dx="1.016" dy="0.28" layer="1" rot="R180"/>
-<smd name="7" x="1.216659375" y="0.25" dx="1.016" dy="0.28" layer="1" rot="R180"/>
-<smd name="8" x="1.216659375" y="0.75" dx="1.016" dy="0.28" layer="1" rot="R180"/>
+<smd name="5" x="1.081" y="-0.75" dx="0.762" dy="0.28" layer="1" rot="R180"/>
+<smd name="6" x="1.081" y="-0.25" dx="0.762" dy="0.28" layer="1" rot="R180"/>
+<smd name="7" x="1.081" y="0.25" dx="0.762" dy="0.28" layer="1" rot="R180"/>
+<smd name="8" x="1.081" y="0.75" dx="0.762" dy="0.28" layer="1" rot="R180"/>
 <smd name="9" x="0" y="0" dx="0.889" dy="1.6002" layer="1" cream="no"/>
 <polygon width="0.0254" layer="31">
 <vertex x="-1.175" y="0.865"/>
