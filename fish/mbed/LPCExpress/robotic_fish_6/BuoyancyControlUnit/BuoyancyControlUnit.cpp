@@ -204,7 +204,7 @@ void BuoyancyControlUnit::setEncoderPosition(float setPosIn) {
 }
 
 void BuoyancyControlUnit::setV(float Vin){
-	float setV;
+	float setV = Vin;
 	
 	if(bcuDir == 1){
 		bcuDirA.write(setV);

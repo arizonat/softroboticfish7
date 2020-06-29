@@ -474,7 +474,6 @@ void FishController::setLEDs(char mask, bool turnOn)
     buttonBoard.setLEDs(mask, turnOn);
 }
 
-#ifdef debugBCU
 /* BCU + Pressure Sensor Helper Functions */
 
 float FishController::getBCUVset()
@@ -506,5 +505,3 @@ float FishController::getreadPressure()
 {
 	return buoyancyControlUnit.readPressure();
 }
-
-#endif

@@ -1,8 +1,9 @@
 /*
- * Author: Joseph DelPreto
+ * Original Author: Joseph DelPreto
  */
 
 #include "SerialController.h"
+#include "FishController.h"
 
 #ifdef serialControl
 
@@ -115,8 +116,8 @@ void SerialController::run()
 
     // Moved to ticker instead of interrupt (see comments in init), so don't need this check
     // Check for low battery voltage (also have the interrupt, but check that we're not starting with it low)
-	//if(lowBatteryVoltageInput == 0)
-	//	lowBatteryCallback();
+	if(lowBatteryVoltageInput == 0)
+		lowBatteryCallback();
 
 	#ifdef printStatusSerialController
 	usbSerial->printf("\r\nStarting to listen for serial commands 2\r\n");
@@ -142,12 +143,12 @@ void SerialController::run()
 			serialLEDs[2]->write(1);
 			
 			#endif
-	
-			//int nextByte = serial->putc('t');
+
 			//usbSerial->printf("Processed <%s>: ", nextByte);
 			uint8_t nextByte = serial->getc();
 			serialBuffer[serialBufferIndex++] = nextByte;
 			//usbSerial->printf("%c", serialBufferIndex);
+
 			// If we've received a complete command, process it now
 			if(nextByte == 8)
 			{

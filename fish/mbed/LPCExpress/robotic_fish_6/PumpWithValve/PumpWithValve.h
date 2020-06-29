@@ -11,7 +11,7 @@
 #include "mbed.h"
 
 #define valvePwmPin 		p22
-#define pumpPwmPin 		p23
+#define pumpPwmPin 			p23
 #define hallInterruptPin 	p12
 //#define encoderPinA 		p25
 //#define encoderPinB 		p24
