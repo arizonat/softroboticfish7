@@ -165,11 +165,20 @@ void SerialController::run()
 			serialLEDs[2]->write(0);
 			#endif
 		}
+
 		#ifndef infiniteLoopSerial
 		if(programTimer.read_ms() > runTimeSerial)
 			stop();
 		#endif
 		
+		#ifdef print2Pi
+		if(programTimer.read_ms() - printTime > dataPeriod){
+//			serial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
+		    printTime = programTimer.read_ms();
+		    usbSerial->printf("test");
+		}
+		#endif
+
 		#ifdef debugBCUControl 
 		usbSerial->printf("V %f\t SDepth %f\t CDepth %f\t sPos %f\t CPos %f\r\n", fishController.getBCUVset(), fishController.getBCUSetDepth(), fishController.getBCUCurDepth(), fishController.getBCUSetPos(), fishController.getBCUCurPos());
 		wait_ms(250);
