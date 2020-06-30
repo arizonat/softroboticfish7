@@ -9,7 +9,7 @@ extern "C" void mbed_reset();
 
 // Auto mode
 float autoModeCommands[][4] = {FISH_STRAIGHT, FISH_LEFT, FISH_STRAIGHT, FISH_LEFT};
-uint32_t autoModeDurations[] = {4000, 2000, 2000, 2000}; // durations in milliseconds
+uint32_t autoModeDurations[] = {100, 100, 100, 100}; // durations in milliseconds
 const uint8_t autoModeLength = sizeof(autoModeDurations)/sizeof(autoModeDurations[0]);
 
 //============================================
@@ -25,6 +25,7 @@ FishController::FishController():
 	inTickerCallback(false),
 	servoLeft(servoLeftPin),
     servoRight(servoRightPin),
+
 	#ifdef FISH4
     curTime(0),
     fullCycle(true),
@@ -38,10 +39,12 @@ FishController::FishController():
     //brushlessMotor(p25),
     brushlessOffTime(30000),
 	#endif
+
 /*	#ifdef FISH6 // these are declared in BCU class
 	pressureSensor(pressureSensorPinSDA, pressureSensorPinSCL, ms5837_addr_no_CS),
 	imuSensor(imuSensorPinSDA, imuSensorPinSCL)
 	#endif*/
+
     // Button board
 	buttonBoard(buttonBoardSDAPin, buttonBoardSCLPin, buttonBoardInt1Pin, buttonBoardInt2Pin) // sda, scl, int1, int2
 
@@ -60,6 +63,7 @@ FishController::FishController():
     yaw = newYaw;
     thrust = newThrust;
     frequency = newFrequency;
+
 #ifdef FISH4
     periodHalf = newPeriodHalf;
     thrustCommand = 0;
@@ -148,6 +152,7 @@ void FishController::start()
 
     // Start control ticker callback
     ticker.attach_us(&fishController, &FishController::tickerCallback, tickerInterval);
+
 #ifdef debugFishState
     printf("Starting...\n");
 #endif
@@ -310,15 +315,10 @@ void FishController::tickerCallback()
     
     /* TURNING OFF BCU FOR FIRST OPEN WORLD TEST - AUGUST 21, 2019*/
     //buoyancyControlUnit.set(pitch); //1100 - 1180 seems to follow well
-    
-    //Testing whether fishController.tickerCallback() is running
-	//DigitalOut test(LED1);
-    //test = 1;
-    
 
-#ifdef debugFishState
-    printDebugState();
-#endif
+//	#ifdef debugFishState
+//		printDebugState();
+//	#endif
 
     inTickerCallback = false;
 }
@@ -459,12 +459,15 @@ void FishController::autoModeCallback()
 		autoModeCount = 0;
 		autoModeIndex = (autoModeIndex+1) % autoModeLength; // loop continuously through commands
 	}
+	#ifdef debugFishState
+		printDebugState();
+	#endif
 }
 
 #ifdef debugFishState
 void FishController::printDebugState()
 {
-    printf("pitch: %2.2f yaw: %2.2f thrust: %2.2f frequency: %2.2f\n",
+    printf("pitch: %2.2f yaw: %2.2f thrust: %2.2f frequency: %2.2f\r\n",
             pitch, yaw, thrust, frequency);
 }
 #endif

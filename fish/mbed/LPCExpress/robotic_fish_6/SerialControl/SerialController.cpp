@@ -73,7 +73,7 @@ void SerialController::processSerialWord(uint8_t* word)
 	// Scale the bytes into the desired ranges for each property
 	bool selectButton = (word[0] > 127);
 	float pitch = word[1];
-	pitch = ((pitch) * (serialMaxPitch - serialMinPitch) / 6.0) + serialMinPitch;
+	pitch = ((pitch) * (serialMaxPitch - serialMinPitch)  / 6.0) + serialMinPitch;
 
 	float yaw = word[2];
 	yaw = ((yaw) * (serialMaxYaw - serialMinYaw) / 6.0) + serialMinYaw;
@@ -112,6 +112,11 @@ void SerialController::run()
 	#ifdef serialControllerControlFish
     // Start the fish controller
     fishController.start();
+    #endif
+
+	#ifdef enableAutoMode
+    fishController.streamFishStateEventController = 14;
+    fishController.startAutoMode();
     #endif
 
     // Moved to ticker instead of interrupt (see comments in init), so don't need this check
@@ -200,6 +205,11 @@ void SerialController::run()
 	// Stop the fish controller
 	#ifdef serialControllerControlFish
     fishController.stop();
+
+	#ifdef enableAutoMode
+    fishController.stopAutoMode();
+    #endif
+
     // If battery died, wait a bit for pi to clean up and shutdown and whatnot
     if(lowBatteryVoltageInput == 0)
     {
