@@ -154,6 +154,7 @@ class FishStateController():
     """
     self.state_msg = State()
     self.state_pub = rospy.Publisher('fish_state', State, queue_size=10)
+    #self.state_pub = rospy.Publisher('fish_state', String, queue_size=10)
 
     self.states = ("INIT","SEARCH","ADJUST","FOLLOW")
     self.state = None
@@ -168,7 +169,6 @@ class FishStateController():
     self.SOFT_RIGHT = [1,3,1,3,2]
     self.DO_NOTHING = [1,3,3,0,1]
     self.GO_FORWARD = [1,3,3,3,3]
-    self.state_pub = rospy.Publisher('fish_state', String, queue_size=10)
 
     ###To publish state to rostopic
     #self.state_pub.publish(self.header)
@@ -196,16 +196,14 @@ class FishStateController():
 
   def transitionTo(self, state_name):
     self.state = state_name
-    self.state_pub.publish(state_name)
     self.state_init_time = time()
-    #self.state_pub.publish(self.state)
+    print(self.state)
 
+    #self.state_pub.publish(state_name)
     ###Can use below if adjust direction not important.
     #self.state_msg.header.stamp = rospy.Time.now()
     #self.state_msg.state = self.state
     #self.state_pub.publish(self.state_msg)
-
-    print(self.state)
 
   def runOnce(self):
     # Mbed command order: ['start', 'pitch', 'yaw', 'thrust', 'frequency']
