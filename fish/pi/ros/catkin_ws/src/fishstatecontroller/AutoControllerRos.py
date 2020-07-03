@@ -21,6 +21,7 @@ DISPLAY_IMAGES = False
 class NaiveColorTargetTracker():
   def __init__(self, target_color):
     self.pub = rospy.Publisher('color_mask', Image, queue_size=10)
+    self.position_pub = rospy.Publisher('target_position', String, queue_size=10)
     self.target_color = target_color
 
     # red stretches 2 bands in hsv
@@ -33,6 +34,9 @@ class NaiveColorTargetTracker():
     # amount to shrink image, maintains aspect ratio
     self.subsample_ratio = 0.25
 
+    self.focal_length = 993.0               #the focal length of the camera
+    self.real_height = 1.25                 #the real height of the target object
+    self.image_center = (635.08, 469.80)    #the image center of the camera
     #cv2.namedWindow('Mask')
 
   def find_target(self, cv_image):
@@ -49,24 +53,26 @@ class NaiveColorTargetTracker():
     target_found = False
     target_centroid = None
 
+    #Blur and resize the image, put into HSV color scale, and create an image mask
     img_small = cv2.resize(image, None, fx=self.subsample_ratio, fy=self.subsample_ratio, interpolation=cv2.INTER_LINEAR)
     img_small = cv2.GaussianBlur(img_small, (5,5), 0)
     hsv_small = cv2.cvtColor(img_small, cv2.COLOR_BGR2HSV)
     mask_l = cv2.inRange(hsv_small, self.hsv_lower_lower, self.hsv_lower_upper)
     mask_u = cv2.inRange(hsv_small, self.hsv_upper_lower, self.hsv_upper_upper)
     mask = cv2.bitwise_or(mask_l, mask_u)
-    mask_bgr8 = cv2.cvtColor(mask,cv2.COLOR_GRAY2BGR)
     #mask = cv2.erode(mask, None, iterations=2)
     #mask = cv2.dilate(mask, None, iterations=2)
+
+    #Publish the mask
+    mask_bgr8 = cv2.cvtColor(mask,cv2.COLOR_GRAY2BGR)
     bridge = CvBridge()
     cv_mask = bridge.cv2_to_imgmsg(mask_bgr8, encoding='bgr8')
     self.pub.publish(cv_mask)
-    #print(mask)
-    cnts, cnt_hier = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)[-2:]
 
+    #find the largest contour of the mask or return False,None if target is not there
+    cnts, cnt_hier = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)[-2:]
     if len(cnts) == 0:
       return (False, None)
-
     cnt = max(cnts, key=cv2.contourArea)
     ((x,y),radius) = cv2.minEnclosingCircle(cnt)
 
@@ -82,6 +88,17 @@ class NaiveColorTargetTracker():
 
     target_centroid = ((int(x/self.subsample_ratio),int(y/self.subsample_ratio)),int(radius/self.subsample_ratio))
     target_found = True
+
+    #Calculate the object's distance and offset from center
+    height_px =  2 * target_centroid[1]
+    offset_px = (target_centroid[0][0] - self.image_center[0]) , -1.0*(target_centroid[0][1] - self.image_center[1])
+    distance = (self.focal_length * self.real_height) / height_px
+    x_offset = (offset_px[0] * distance)/self.focal_length
+    y_offset = (offset_px[1] * distance)/self.focal_length
+
+    #Publish the distance and offset information
+    position_buffer = "DIST, OFFSET: " + str(distance) + ", (" + str(x_offset) + "," + str(y_offset) + ")"
+    self.position_pub.publish(position_buffer)
     return (target_found, target_centroid)
 
 """
