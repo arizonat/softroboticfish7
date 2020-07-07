@@ -8,6 +8,7 @@ class BluetoothJoystickController:
   # @param mbedBaud [int] The baud rate to use with the mbed
   # @param mbedUpdateInterval [float] Time in ms to wait between sending updated state to the mbed
   # Raspbian: /dev/ttyAMA0, Ubuntu MATE 18.04: /dev/serial0
+  # In order for this to run, you need at least one USB device plugged into the Pi (try mouse or keyboard).
   def __init__(self, mbedPort='/dev/serial0', mbedBaud=115200, mbedUpdateInterval=1.25 , useLJ = True):
     self._mbedSerial = serial.Serial(mbedPort, baudrate=mbedBaud, timeout=None, bytesize=serial.EIGHTBITS, parity = serial.PARITY_NONE, stopbits = serial.STOPBITS_ONE) # timeout = None means blocking, timeout = 0 means non-blocking
     self._mbedUpdateInterval = mbedUpdateInterval
