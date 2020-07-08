@@ -10,6 +10,7 @@ import time as clock
 #from camera import FishCamera
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
+from geometry_msgs.msg import PoseStamped
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
@@ -27,6 +28,10 @@ class NaiveColorTargetTracker():
     # Initiate position msg instance and new publisher for data
     self.position_msg = Position()
     self.position_pub = rospy.Publisher('fish_position', Position, queue_size=10)
+
+    # Initiate instance for pose
+    self.pose = PoseStamped()
+    self.pose_pub = rospy.Publisher('fish_pose', PoseStamped, queue_size=10)
 
     # red stretches 2 bands in hsv
     # these values are for yellow, keeping the 2 bands for red in the future
@@ -97,7 +102,7 @@ class NaiveColorTargetTracker():
     height_px =  2 * target_centroid[1]
     offset_px = (target_centroid[0][0] - self.image_center[0]) , -1.0*(target_centroid[0][1] - self.image_center[1])
     distance = (self.focal_length * self.real_height) / height_px
-    x_offset = (offset_px[0] * distance)/self.focal_length
+    z_offset = (offset_px[0] * distance)/self.focal_length
     y_offset = (offset_px[1] * distance)/self.focal_length
 
     #Publish the distance and offset information
@@ -107,9 +112,23 @@ class NaiveColorTargetTracker():
 
     # Publish distance and offset information to message file instead
     self.position_msg.distance = str(distance)
-    self.position_msg.x_offset = str(x_offset)
+    self.position_msg.x_offset = str(z_offset)
     self.position_msg.y_offset = str(y_offset)
     self.position_pub.publish(self.position_msg)
+
+    #Publishing a pose message
+    self.pose.header.seq = 1
+    self.pose.header.stamp = rospy.Time.now()
+    self.pose.header.frame_id = "sofi_cam"
+    self.pose.pose.position.x = distance
+    self.pose.pose.position.y = y_offset
+    self.pose.pose.position.z = z_offset
+    self.pose.pose.orientation.x = 0
+    self.pose.pose.orientation.y = 0
+    self.pose.pose.orientation.z = 0
+    self.pose.pose.orientation.w = 1
+
+    self.pose_pub.publish(self.pose)
 """
 class FishMbed():
   def __init__(self, mbedPort='/dev/ttyAMA0', mbedBaud=115200, mbedUpdateInterval=1.25):
