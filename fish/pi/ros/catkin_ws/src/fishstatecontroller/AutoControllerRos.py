@@ -13,7 +13,7 @@ from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
-from fishstatecontroller.msg import State
+from fishstatecontroller.msg import State, Position
 
 CAM_OUTPUT_DIR="/home/pi/fish_recordings"
 DISPLAY_IMAGES = False
@@ -23,6 +23,10 @@ class NaiveColorTargetTracker():
     self.pub = rospy.Publisher('color_mask', Image, queue_size=10)
     self.position_pub = rospy.Publisher('target_position', String, queue_size=10)
     self.target_color = target_color
+
+    # Initiate position msg instance and new publisher for data
+    self.position_msg = Position()
+    self.position_pub = rospy.Publisher('fish_position', Position, queue_size=10)
 
     # red stretches 2 bands in hsv
     # these values are for yellow, keeping the 2 bands for red in the future
@@ -97,10 +101,15 @@ class NaiveColorTargetTracker():
     y_offset = (offset_px[1] * distance)/self.focal_length
 
     #Publish the distance and offset information
-    position_buffer = "DIST, OFFSET: " + str(distance) + ", (" + str(x_offset) + "," + str(y_offset) + ")"
-    self.position_pub.publish(position_buffer)
-    return (target_found, target_centroid)
+    #position_buffer = "DIST, OFFSET: " + str(distance) + ", (" + str(x_offset) + "," + str(y_offset) + ")"
+    #self.position_pub.publish(position_buffer)
+    #return (target_found, target_centroid)
 
+    # Publish distance and offset information to message file instead
+    self.position_msg.distance = str(distance)
+    self.position_msg.x_offset = str(x_offset)
+    self.position_msg.y_offset = str(y_offset)
+    self.position_pub.publish(self.position_msg)
 """
 class FishMbed():
   def __init__(self, mbedPort='/dev/ttyAMA0', mbedBaud=115200, mbedUpdateInterval=1.25):
@@ -170,10 +179,6 @@ class FishStateController():
     self.DO_NOTHING = [1,3,3,0,1]
     self.GO_FORWARD = [1,3,3,3,3]
 
-    ###To publish state to rostopic
-    #self.state_pub.publish(self.header)
-
-
     self.transitionTo("INIT")
 
     self.update_interval = update_interval
@@ -199,7 +204,6 @@ class FishStateController():
     self.state_init_time = time()
     print(self.state)
 
-    #self.state_pub.publish(state_name)
     ###Can use below if adjust direction not important.
     #self.state_msg.header.stamp = rospy.Time.now()
     #self.state_msg.state = self.state
@@ -262,7 +266,6 @@ class FishStateController():
 
 if __name__ == '__main__':
   import sys
-  ###Is the below line in the correct place?
   update_hz = 30
   rospy.init_node('listener', anonymous=True)
   controller = FishStateController(1./update_hz)
