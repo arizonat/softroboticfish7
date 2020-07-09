@@ -22,7 +22,7 @@ DISPLAY_IMAGES = False
 class NaiveColorTargetTracker():
   def __init__(self, target_color):
     self.pub = rospy.Publisher('color_mask', Image, queue_size=10)
-    self.position_pub = rospy.Publisher('target_position', String, queue_size=10)
+    #self.position_pub = rospy.Publisher('target_position', String, queue_size=10)
     self.target_color = target_color
 
     # Initiate position msg instance and new publisher for data
@@ -102,8 +102,8 @@ class NaiveColorTargetTracker():
     height_px =  2 * target_centroid[1]
     offset_px = (target_centroid[0][0] - self.image_center[0]) , -1.0*(target_centroid[0][1] - self.image_center[1])
     distance = (self.focal_length * self.real_height) / height_px
-    z_offset = (offset_px[0] * distance)/self.focal_length
-    y_offset = (offset_px[1] * distance)/self.focal_length
+    y_offset = (offset_px[0] * distance)/self.focal_length
+    z_offset = (offset_px[1] * distance)/self.focal_length
 
     #Publish the distance and offset information
     #position_buffer = "DIST, OFFSET: " + str(distance) + ", (" + str(x_offset) + "," + str(y_offset) + ")"
@@ -129,9 +129,11 @@ class NaiveColorTargetTracker():
     self.pose.pose.orientation.w = 1
 
     self.pose_pub.publish(self.pose)
-"""
+
+    return (target_found, target_centroid)
+
 class FishMbed():
-  def __init__(self, mbedPort='/dev/ttyAMA0', mbedBaud=115200, mbedUpdateInterval=1.25):
+  def __init__(self, mbedPort='/dev/serial0', mbedBaud=115200, mbedUpdateInterval=1.25):
     self.cmd_arr_order = ['start', 'pitch', 'yaw', 'thrust', 'frequency']
 
     self._mbedSerial = serial.Serial(mbedPort, baudrate=mbedBaud, timeout=None, bytesize=serial.EIGHTBITS, parity = serial.PARITY_NONE, stopbits = serial.STOPBITS_ONE)
@@ -162,9 +164,9 @@ class FishMbed():
     return self.cmdToBytes(cmd, cmdType, nullTerminate)
 
   def cmdToBytes(self, cmd, cmdType='byteArray', nullTerminate=False):
-"""
+    """
     #Turns a fish mbed command to bytearray (for sending to mbed)
-"""
+    """
     if cmdType == "dict":
       res = [cmd[cmd_key] for cmd_key in self.cmd_arr_order]
     else:
@@ -174,7 +176,7 @@ class FishMbed():
     if nullTerminate:
       res.append(8)
     return bytearray(res)
-"""
+
 class FishStateController():
   def __init__(self, update_interval):
     """
@@ -202,7 +204,7 @@ class FishStateController():
 
     self.update_interval = update_interval
 
-    #self.mbed = FishMbed()
+    self.mbed = FishMbed()
     self.image = np.zeros((960,1280,3), np.uint8)	##CHANGED##
     #self.camera = cv2.VideoCapture(0)
     #self.camera = FishCamera(CAM_OUTPUT_DIR)
@@ -234,7 +236,7 @@ class FishStateController():
     self.state_msg.adjust = "NO ADJUST"
 
     if self.state == "INIT":
-      #self.mbed.writeCmdArray(self.DO_NOTHING)
+      self.mbed.writeCmdArray(self.DO_NOTHING)
       self.transitionTo("SEARCH")
 
     elif self.state == "SEARCH":
@@ -244,7 +246,7 @@ class FishStateController():
         self.state_msg.adjust = "ADJUST"
         return
 
-      #self.mbed.writeCmdArray(self.HARD_LEFT)
+      self.mbed.writeCmdArray(self.HARD_LEFT)
 
     elif self.state == "ADJUST":
       # higher yaw is right, lower is left
@@ -253,11 +255,11 @@ class FishStateController():
       if target_found and target_centroid[0][0] >= self.image_size[1]*(2./3.):
         self.state_msg.adjust = "SOFT RIGHT"
         print("SOFT RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
-        #self.mbed.writeCmdArray(self.SOFT_RIGHT)
+        self.mbed.writeCmdArray(self.SOFT_RIGHT)
       elif target_found and target_centroid[0][0] <= self.image_size[1]*(1./3.):
         self.state_msg.adjust = "SOFT LEFT"
         print("SOFT LEFT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(1./3.)))
-        #self.mbed.writeCmdArray(self.SOFT_LEFT)
+        self.mbed.writeCmdArray(self.SOFT_LEFT)
       elif target_found:
         self.transitionTo("FOLLOW")
       else:
@@ -268,13 +270,13 @@ class FishStateController():
       if time() - self.state_init_time > self.follow_timeout:
         self.transitionTo("SEARCH")
         return
-
+      self.mbed.writeCmdArray(self.GO_FORWARD)
 
     self.state_msg.state = self.state
     self.state_msg.header.stamp = rospy.Time.now()
     self.state_pub.publish(self.state_msg)
 
-      #self.mbed.writeCmdArray(self.GO_FORWARD)
+      
 
   def callback(self, ros_data):		##CHANGED##
     ###Put CV2 information here to analyze image data ###
