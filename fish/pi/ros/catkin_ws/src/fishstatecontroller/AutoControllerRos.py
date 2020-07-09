@@ -100,7 +100,7 @@ class NaiveColorTargetTracker():
 
     #Calculate the object's distance and offset from center
     height_px =  2 * target_centroid[1]
-    offset_px = (target_centroid[0][0] - self.image_center[0]) , -1.0*(target_centroid[0][1] - self.image_center[1])
+    offset_px = -1.0*(target_centroid[0][0] - self.image_center[0]) , -1.0*(target_centroid[0][1] - self.image_center[1])
     distance = (self.focal_length * self.real_height) / height_px
     y_offset = (offset_px[0] * distance)/self.focal_length
     z_offset = (offset_px[1] * distance)/self.focal_length
