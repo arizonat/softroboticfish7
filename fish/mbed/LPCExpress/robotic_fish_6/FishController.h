@@ -7,7 +7,7 @@
 #define FISH_CONTROLLER_H
 
 // comment out if no debug wanted
-#define debugFishState
+//#define debugFishState
 
 // Fish version (only define one of them)
 #define FISH6
