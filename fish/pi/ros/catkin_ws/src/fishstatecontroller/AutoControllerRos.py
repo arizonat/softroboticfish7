@@ -36,7 +36,7 @@ class NaiveColorTargetTracker():
     # red stretches 2 bands in hsv
     # these values are for yellow, keeping the 2 bands for red in the future
     self.hsv_lower_lower = (14,55,55)
-    self.hsv_lower_upper = (30,255,235)
+    self.hsv_lower_upper = (225,255,235)
     self.hsv_upper_lower = self.hsv_lower_lower
     self.hsv_upper_upper = self.hsv_lower_upper
 
@@ -129,6 +129,7 @@ class NaiveColorTargetTracker():
     self.pose.pose.orientation.w = 1
 
     self.pose_pub.publish(self.pose)
+    self.mbed._mbedSerial.write(self.pose)
 
     return (target_found, target_centroid)
 
@@ -251,7 +252,7 @@ class FishStateController():
     elif self.state == "ADJUST":
       # higher yaw is right, lower is left
       #target_found, target_centroid = self.tracker.find_target()
-
+      """
       if target_found and target_centroid[0][0] >= self.image_size[1]*(2./3.):
         self.state_msg.adjust = "SOFT RIGHT"
         print("SOFT RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
@@ -260,6 +261,26 @@ class FishStateController():
         self.state_msg.adjust = "SOFT LEFT"
         print("SOFT LEFT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(1./3.)))
         self.mbed.writeCmdArray(self.SOFT_LEFT)
+      """
+      #Alternative to above if statement that uses pose to determine whether soft right or left should be taken
+      ###
+      if target_found and self.pose.pose.position.y < 0 and self.pose.pose.position.y > -500:
+        self.state_msg.adjust = "SOFT RIGHT"
+        print("SOFT RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
+        self.mbed.writeCmdArray(self.SOFT_RIGHT)
+      elif target_found and self.pose.pose.position.y > 0 and self.pose.pose.position.y < 500:
+        self.state_msg.adjust = "SOFT LEFT"
+        print("SOFT LEFT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(1./3.)))
+        self.mbed.writeCmdArray(self.SOFT_LEFT)
+      elif target_found and self.pose.pose.position.z < -500:
+        self.state_msg.adjust = "HARD RIGHT"
+        print("HARD RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
+        self.mbed.writeCmdArray(self.HARD_RIGHT)
+      elif target_found and self.pose.pose.position.z > 500:
+        self.state_msg.adjust = "HARD LEFT"
+        print("HARD LEFT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(1./3.)))
+        self.mbed.writeCmdArray(self.SOFT_LEFT)
+      ###
       elif target_found:
         self.transitionTo("FOLLOW")
       else:
@@ -275,8 +296,6 @@ class FishStateController():
     self.state_msg.state = self.state
     self.state_msg.header.stamp = rospy.Time.now()
     self.state_pub.publish(self.state_msg)
-
-      
 
   def callback(self, ros_data):		##CHANGED##
     ###Put CV2 information here to analyze image data ###

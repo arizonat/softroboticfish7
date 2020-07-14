@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/sofi/softroboticfish7/fish/pi/ros/catkin_ws/devel/setup.sh
