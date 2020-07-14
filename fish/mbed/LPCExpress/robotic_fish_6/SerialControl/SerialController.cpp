@@ -121,8 +121,8 @@ void SerialController::run()
 
     // Moved to ticker instead of interrupt (see comments in init), so don't need this check
     // Check for low battery voltage (also have the interrupt, but check that we're not starting with it low)
-	if(lowBatteryVoltageInput == 0)
-		lowBatteryCallback();
+	// if(lowBatteryVoltageInput == 0)
+	//	lowBatteryCallback();
 
 	#ifdef printStatusSerialController
 	usbSerial->printf("\r\nStarting to listen for serial commands 2\r\n");
@@ -206,9 +206,9 @@ void SerialController::run()
 	#ifdef serialControllerControlFish
     fishController.stop();
 
-	#ifdef enableAutoMode
-    fishController.stopAutoMode();
-    #endif
+//	#ifdef enableAutoMode
+//    fishController.stopAutoMode();
+//    #endif
 
     // If battery died, wait a bit for pi to clean up and shutdown and whatnot
     if(lowBatteryVoltageInput == 0)

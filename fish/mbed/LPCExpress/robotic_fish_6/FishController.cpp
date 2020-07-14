@@ -37,7 +37,7 @@ FishController::FishController():
     servoLeft(servoLeftPin),
     servoRight(servoRightPin),
     //brushlessMotor(p25),
-    brushlessOffTime(30000),
+    //brushlessOffTime(30000),
 	#endif
 
 /*	#ifdef FISH6 // these are declared in BCU class
@@ -146,7 +146,7 @@ void FishController::start()
     }
     
 #ifdef FISH6
-    buoyancyControlUnit.start();
+    //buoyancyControlUnit.start();
     pumpWithValve.start();
 #endif
 
@@ -316,9 +316,9 @@ void FishController::tickerCallback()
     /* TURNING OFF BCU FOR FIRST OPEN WORLD TEST - AUGUST 21, 2019*/
     //buoyancyControlUnit.set(pitch); //1100 - 1180 seems to follow well
 
-//	#ifdef debugFishState
-//		printDebugState();
-//	#endif
+	#ifdef debugFishState
+		printDebugState();
+	#endif
 
     inTickerCallback = false;
 }

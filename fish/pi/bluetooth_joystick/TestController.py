@@ -71,14 +71,19 @@ if __name__ == '__main__':
   import sys
   update_hz = 30
   controller = FishMbed()
-  HARD_LEFT = [1,3,6,3,2]
-  HARD_RIGHT = [1,3,0,3,2]
-  SOFT_LEFT = [1,3,5,3,2]
-  SOFT_RIGHT = [1,3,1,3,2]
-  DO_NOTHING = [1,3,3,0,1]
-  GO_FORWARD = [1,3,3,3,3]
 
+  #HARD_LEFT = [1,3,6,3,2]
+  #HARD_RIGHT = [1,3,0,3,2]
+  #SOFT_LEFT = [1,3,5,3,2]
+  #SOFT_RIGHT = [1,3,1,3,2]
+  #DO_NOTHING = [1,3,3,0,1]
+  #GO_FORWARD = [1,3,3,3,3]
+  #PITCH_UP = [1,6,3,3,2]
+  #PITCH_DOWN = [1,0,3,3,2]
+
+  g = raw_input("Enter a command: ")
+  cmds = {"HARD_LEFT": [1,3,6,3,2], "HARD_RIGHT": [1,3,0,3,2], "SOFT_LEFT": [1,3,5,3,2], "SOFT_RIGHT": [1,3,1,3,2], "DO_NOTHING": [1,3,3,0,1], "GO_FORWARD": [1,3,3,3,3], "PITCH_UP": [1,6,3,3,2], "PITCH_DOWN": [1,0,3,3,2]}
   print '\nStarting Test Controller'
   print 'using update interval of ', 1./update_hz, 's'
-  controller.run(HARD_LEFT)
+  controller.run(cmds[g])
   print '\nAll done!'
