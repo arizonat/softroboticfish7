@@ -92,8 +92,8 @@ class FishMbed():
     
   def writeBytes(self, bytecmds):
     self._mbedSerial.write(bytecmds)
-    if bytecmds[-1] != 8:
-      self._mbedSerial.write(bytearray([8]))
+    if bytecmds[-1] != 0:
+      self._mbedSerial.write(bytearray([0]))
     self._mbedSerial.flush()
 
   def safeCmdToBytes(self, cmd, cmdType='byteArray', nullTerminate=False):

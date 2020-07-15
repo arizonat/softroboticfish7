@@ -221,7 +221,7 @@ class FishJoystick:
     res = []
     res = [int(self._state[key]) for key in stateKeys]
     if nullTerminate:
-      res.append(8)
+      res.append(0)
     if resType == 'bytearray':
       res = bytearray(res)
     return res
