@@ -68,21 +68,22 @@ void SerialController::init(Serial* serialObject /* = NULL */, Serial* usbSerial
 // FORMAT: 5 successive bytes indicating selectButton, Pitch, Yaw, Thrust, Frequency
 //         a null termination character (0) ends the word
 //         each one maps 1-255 to the range specified by the min and max values for that property
+//		   Scaling Reference for SNES controls: [*, 6, 6, 3, 3] <-> [select, pitch, yaw, thrust, frequency]
 void SerialController::processSerialWord(uint8_t* word)
 {
 	// Scale the bytes into the desired ranges for each property
 	bool selectButton = (word[0] > 127);
 	float pitch = word[1];
-	pitch = ((pitch) * (serialMaxPitch - serialMinPitch)  / 6.0) + serialMinPitch;
+	pitch = ((pitch-1) * (serialMaxPitch - serialMinPitch)  / 254.0) + serialMinPitch;
 
 	float yaw = word[2];
-	yaw = ((yaw) * (serialMaxYaw - serialMinYaw) / 6.0) + serialMinYaw;
+	yaw = ((yaw-1) * (serialMaxYaw - serialMinYaw) / 254.0) + serialMinYaw;
 
 	float thrust = word[3];
-	thrust = ((thrust) * (serialMaxThrust - serialMinThrust) / 3.0) + serialMinThrust;
+	thrust = ((thrust-1) * (serialMaxThrust - serialMinThrust) / 254.0) + serialMinThrust;
 
 	float frequency = word[4];
-	frequency = ((frequency) * (serialMaxFrequency- serialMinFrequency) / 3.0) + serialMinFrequency;
+	frequency = ((frequency-1) * (serialMaxFrequency- serialMinFrequency) / 254.0) + serialMinFrequency;
 
 	// Apply the new state to the fish
 	fishController.setSelectButton(selectButton);
@@ -155,7 +156,7 @@ void SerialController::run()
 			//usbSerial->printf("%c", serialBufferIndex);
 
 			// If we've received a complete command, process it now
-			if(nextByte == 8)
+			if(nextByte == 0)
 			{
 				//usbSerial->printf("Got zero!\n");
 				//usbSerial->printf((char*) (serialBuffer));
@@ -178,9 +179,9 @@ void SerialController::run()
 		
 		#ifdef print2Pi
 		if(programTimer.read_ms() - printTime > dataPeriod){
-//			serial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
+			serial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
 		    printTime = programTimer.read_ms();
-		    usbSerial->printf("test");
+//		    usbSerial->printf("test");
 		}
 		#endif
 
@@ -193,6 +194,13 @@ void SerialController::run()
 		usbSerial->printf("Pressure: %f\r\n", fishController.getreadPressure());
 		wait_ms(250);
 		#endif 
+
+		#ifdef debugValveControl
+		if (programTimer.read_ms() - valvePrintTime > dataPeriod){
+			usbSerial->printf("Measured Freq: %f Command: %f Error: %f dV: %f Vset: %f Vfreq: %f\r\n", fishController.getActFreq(), fishController.getFreq(), fishController.getError(), fishController.getdVFreq(), fishController.getVset(), fishController.getVfreq());
+			valvePrintTime = programTimer.read_ms();
+		}
+		#endif
 	}
 	programTimer.stop();
 	#ifdef debugLEDsSerial

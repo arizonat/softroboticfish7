@@ -64,7 +64,8 @@
 #endif
 
 #define fishMinFrequency ((float)(0.0000009))
-#define fishMaxFrequency ((float)(0.0000016))
+//#define fishMaxFrequency ((float)(0.0000016))
+#define fishMaxFrequency ((float)(0.0000012))
 
 // Preset states for auto mode definition
 // Each one is pitch, yaw, thrust, frequency
@@ -171,6 +172,14 @@ class FishController
         float getBCUCurPos();
         float getreadPressure(); 
         
+        // Pump w/ Valve Helper Functions
+        float getActFreq();
+        float getFreq();
+        float getdVFreq();
+        float getError();
+        float getVset();
+        float getVfreq();
+
     private:
 		// Misc State
 		volatile bool ignoreExternalCommands;

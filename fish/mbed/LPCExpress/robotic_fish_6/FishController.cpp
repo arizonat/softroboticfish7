@@ -508,3 +508,36 @@ float FishController::getreadPressure()
 {
 	return buoyancyControlUnit.readPressure();
 }
+
+/* Pump w/ Valve Helper Functions*/
+
+float FishController::getActFreq()
+{
+	return pumpWithValve.getActFreq();
+}
+
+float FishController::getFreq()
+{
+	return pumpWithValve.getFreq();
+}
+
+float FishController::getdVFreq()
+{
+	return pumpWithValve.getdVFreq();
+}
+
+float FishController::getError()
+{
+	return pumpWithValve.getError();
+}
+
+float FishController::getVset()
+{
+	return pumpWithValve.getVset();
+}
+
+float FishController::getVfreq()
+{
+	return pumpWithValve.getVfreq();
+}
+

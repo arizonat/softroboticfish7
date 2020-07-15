@@ -102,7 +102,7 @@ void PumpWithValve::setVoid() {
 
 	// set speed of the valve motor through the frequency value
 	if (periodSide1 == 0 || periodSide2 == 0) {
-		Vfreq = frequency * 450000;//470000; //1000000; //400000;;  //just setting directly the voltage, scaled up; need to tune this value
+		Vfreq = frequency * 400000; //450000;//470000; //1000000; //400000;;  //just setting directly the voltage, scaled up; need to tune this value
 		this->calculateYawMethod1();
 	}
 	else { // don't be fooled by initialization values
@@ -164,3 +164,9 @@ void PumpWithValve::calculateYawMethod2()
 
 float PumpWithValve::getVset() { return Vset;}
 bool PumpWithValve::getVside() { return valveSide; }
+
+float PumpWithValve::getActFreq() { return freqAct * 1000000;}
+float PumpWithValve::getFreq() { return frequency * 1000000;}
+float PumpWithValve::getError() { return freqErr * 1000000;}
+float PumpWithValve::getdVFreq() { return dVFreq;}
+float PumpWithValve::getVfreq() { return Vfreq;}
