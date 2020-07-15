@@ -264,22 +264,22 @@ class FishStateController():
       """
       #Alternative to above if statement that uses pose to determine whether soft right or left should be taken
       ###
-      if target_found and self.pose.pose.position.y < 0 and self.pose.pose.position.y > -500:
+      if target_found and self.pose.pose.position.y < 0 and self.pose.pose.position.y > -250:
         self.state_msg.adjust = "SOFT RIGHT"
-        print("SOFT RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
+        print("SOFT RIGHT: %d mm"%(self.pose.pose.position.y)
         self.mbed.writeCmdArray(self.SOFT_RIGHT)
-      elif target_found and self.pose.pose.position.y > 0 and self.pose.pose.position.y < 500:
+      elif target_found and self.pose.pose.position.y > 0 and self.pose.pose.position.y < 250:
         self.state_msg.adjust = "SOFT LEFT"
-        print("SOFT LEFT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(1./3.)))
+        print("SOFT LEFT: %d mm"%(self.pose.pose.position.y)
         self.mbed.writeCmdArray(self.SOFT_LEFT)
       elif target_found and self.pose.pose.position.z < -500:
         self.state_msg.adjust = "HARD RIGHT"
-        print("HARD RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
+        print("HARD RIGHT: %d mm"%(self.pose.pose.position.y)
         self.mbed.writeCmdArray(self.HARD_RIGHT)
       elif target_found and self.pose.pose.position.z > 500:
         self.state_msg.adjust = "HARD LEFT"
-        print("HARD LEFT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(1./3.)))
-        self.mbed.writeCmdArray(self.SOFT_LEFT)
+        print("HARD LEFT: %d mm"%(self.pose.pose.position.y)
+        self.mbed.writeCmdArray(self.HARD_LEFT)
       ###
       elif target_found:
         self.transitionTo("FOLLOW")
