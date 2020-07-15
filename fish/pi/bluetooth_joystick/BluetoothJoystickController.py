@@ -29,8 +29,8 @@ class BluetoothJoystickController:
         stateBytes = self._joystick.getStateBytes('bytearray')
         self._mbedSerial.write(stateBytes)
         #self._mbedSerial.write(bytearray([1, 1, 1, 1, 1, 0]))
-        if stateBytes[-1] != 8:
-          self._mbedSerial.write(bytearray([8]))
+        if stateBytes[-1] != 0:
+          self._mbedSerial.write(bytearray([0]))
         self._mbedSerial.flush() # wait until everything is written
         lastSendTime = time()
       if time() - lastPrintTime > 1:

@@ -24,8 +24,8 @@ class FishMbed():
     
   def writeBytes(self, bytecmds):
     self._mbedSerial.write(bytecmds)
-    if bytecmds[-1] != 8:
-      self._mbedSerial.write(bytearray([8]))
+    if bytecmds[-1] != 0:
+      self._mbedSerial.write(bytearray([0]))
     self._mbedSerial.flush()
 
   def safeCmdToBytes(self, cmd, cmdType='byteArray', nullTerminate=False):
@@ -67,23 +67,35 @@ class FishMbed():
         print cmd
         lastPrintTime = time()
 
+  def runOnce(self, cmd):
+    self._mbedSerial.flushInput()
+    self._mbedSerial.flushOutput()
+    self.writeBytes(cmd)
+
 if __name__ == '__main__':
   import sys
   update_hz = 30
   controller = FishMbed()
 
-  #HARD_LEFT = [1,3,6,3,2]
-  #HARD_RIGHT = [1,3,0,3,2]
-  #SOFT_LEFT = [1,3,5,3,2]
-  #SOFT_RIGHT = [1,3,1,3,2]
+  #HARD_LEFT = [1,3,6,3,0]
+  #HARD_RIGHT = [1,3,0,3,0]
+  #SOFT_LEFT = [1,3,5,3,0]
+  #SOFT_RIGHT = [1,3,1,3,0]
   #DO_NOTHING = [1,3,3,0,1]
   #GO_FORWARD = [1,3,3,3,3]
   #PITCH_UP = [1,6,3,3,2]
   #PITCH_DOWN = [1,0,3,3,2]
 
-  g = raw_input("Enter a command: ")
-  cmds = {"HARD_LEFT": [1,3,6,3,2], "HARD_RIGHT": [1,3,0,3,2], "SOFT_LEFT": [1,3,5,3,2], "SOFT_RIGHT": [1,3,1,3,2], "DO_NOTHING": [1,3,3,0,1], "GO_FORWARD": [1,3,3,3,3], "PITCH_UP": [1,6,3,3,2], "PITCH_DOWN": [1,0,3,3,2]}
+  #g = raw_input("Enter a command: ")
+  # cmds = {"HARD_LEFT": [1,3,6,3,0], "HARD_RIGHT": [1,3,0,3,0], "SOFT_LEFT": [1,3,5,3,0], "SOFT_RIGHT": [1,3,1,3,0], "DO_NOTHING": [1,3,3,0,1], "GO_FORWARD": [1,3,3,3,3], "PITCH_UP": [1,6,3,3,2], "PITCH_DOWN": [1,0,3,3,2]}
   print '\nStarting Test Controller'
   print 'using update interval of ', 1./update_hz, 's'
-  controller.run(cmds[g])
+  # controller.run(cmds[g])
+  while True:
+    g = raw_input("Enter a command: ")
+    arr = g.split(",")
+    for i in range(len(arr)):
+      arr[i] = int(arr[i])
+    controller.runOnce(arr)
+    print(arr)
   print '\nAll done!'
