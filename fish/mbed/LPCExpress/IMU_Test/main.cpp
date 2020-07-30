@@ -1,6 +1,6 @@
-#include "jtwBNO055/AdaBNO055.h"
+#include "AdaBNO055.h"
 #include "mbed.h"
-#include <cmath>
+//#include <cmath>
 
 #define PIN_IMU_TX p28
 #define PIN_IMU_RX p27
@@ -31,7 +31,7 @@ int main() {
   powerIMU = 1;
   bool needData = true;
   pc.printf("Starting the BNO055.\r\n");
-  bool status = imu.begin(OPERATION_MODE_NDOF, pc);
+  bool status = imu.begin(OPERATION_MODE_NDOF);
   pc.printf("SUCCESSFUL? %d\r\n", status);
   while(1) {
     // pc.printf("TEMP: %d\r\n", imu.getTemp());
