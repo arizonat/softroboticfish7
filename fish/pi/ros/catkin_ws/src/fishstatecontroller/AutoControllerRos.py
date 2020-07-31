@@ -129,7 +129,7 @@ class NaiveColorTargetTracker():
     self.pose.pose.orientation.w = 1
 
     self.pose_pub.publish(self.pose)
-    self.mbed._mbedSerial.write(self.pose)
+    #self.mbed._mbedSerial.write(self.pose)
 
     return (target_found, target_centroid)
 
@@ -165,9 +165,7 @@ class FishMbed():
     return self.cmdToBytes(cmd, cmdType, nullTerminate)
 
   def cmdToBytes(self, cmd, cmdType='byteArray', nullTerminate=False):
-    """
     #Turns a fish mbed command to bytearray (for sending to mbed)
-    """
     if cmdType == "dict":
       res = [cmd[cmd_key] for cmd_key in self.cmd_arr_order]
     else:
@@ -251,8 +249,8 @@ class FishStateController():
 
     elif self.state == "ADJUST":
       # higher yaw is right, lower is left
-      #target_found, target_centroid = self.tracker.find_target()
-      """
+      target_found, target_centroid = self.tracker.find_target(self.image)
+
       if target_found and target_centroid[0][0] >= self.image_size[1]*(2./3.):
         self.state_msg.adjust = "SOFT RIGHT"
         print("SOFT RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
@@ -261,26 +259,27 @@ class FishStateController():
         self.state_msg.adjust = "SOFT LEFT"
         print("SOFT LEFT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(1./3.)))
         self.mbed.writeCmdArray(self.SOFT_LEFT)
-      """
       #Alternative to above if statement that uses pose to determine whether soft right or left should be taken
       ###
+        """
       if target_found and self.pose.pose.position.y < 0 and self.pose.pose.position.y > -250:
         self.state_msg.adjust = "SOFT RIGHT"
-        print("SOFT RIGHT: %d mm"%(self.pose.pose.position.y)
+        print("SOFT RIGHT: %d mm"%(self.pose.pose.position.y))
         self.mbed.writeCmdArray(self.SOFT_RIGHT)
       elif target_found and self.pose.pose.position.y > 0 and self.pose.pose.position.y < 250:
         self.state_msg.adjust = "SOFT LEFT"
-        print("SOFT LEFT: %d mm"%(self.pose.pose.position.y)
+        print("SOFT LEFT: %d mm"%(self.pose.pose.position.y))
         self.mbed.writeCmdArray(self.SOFT_LEFT)
       elif target_found and self.pose.pose.position.z < -500:
         self.state_msg.adjust = "HARD RIGHT"
-        print("HARD RIGHT: %d mm"%(self.pose.pose.position.y)
+        print("HARD RIGHT: %d mm"%(self.pose.pose.position.y))
         self.mbed.writeCmdArray(self.HARD_RIGHT)
       elif target_found and self.pose.pose.position.z > 500:
         self.state_msg.adjust = "HARD LEFT"
-        print("HARD LEFT: %d mm"%(self.pose.pose.position.y)
+        print("HARD LEFT: %d mm"%(self.pose.pose.position.y))
         self.mbed.writeCmdArray(self.HARD_LEFT)
       ###
+	"""
       elif target_found:
         self.transitionTo("FOLLOW")
       else:
