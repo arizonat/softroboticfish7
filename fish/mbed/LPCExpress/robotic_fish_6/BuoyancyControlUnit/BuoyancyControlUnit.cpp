@@ -42,11 +42,17 @@ void BuoyancyControlUnit::start()
 	//bcuEncoder.reset(); // gives it a reference to return to
 	
 	pressureSensor.MS5837Init();
-	timer.start();
 	
+
+
+	/* Uncomment this block is using BCU linear actuators. Otherwise just leave commented if just using IMU + depth sensor.
+	 *
+	timer.start();
+
 	// pressure sensor takes just over 0.3 seconds to read
 	depthControl.attach(&buoyancyControlUnit, &BuoyancyControlUnit::setDepthFuncVoid, 0.4);
 	posControl.attach(&buoyancyControlUnit, &BuoyancyControlUnit::setEncoderPosVoid, 0.1);
+	*/
 }
 
 void BuoyancyControlUnit::stop()

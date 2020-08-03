@@ -11,6 +11,7 @@
 #include "mbed.h"
 #include "MS5837/MS5837.h"
 #include "QEI/QEI.h"
+#include "AdaBNO055.h"
 
 
 //#define bcuPwmPin p25

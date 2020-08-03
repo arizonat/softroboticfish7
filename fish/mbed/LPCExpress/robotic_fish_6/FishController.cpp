@@ -146,7 +146,7 @@ void FishController::start()
     }
     
 #ifdef FISH6
-    //buoyancyControlUnit.start();
+    buoyancyControlUnit.start();
     pumpWithValve.start();
 #endif
 
