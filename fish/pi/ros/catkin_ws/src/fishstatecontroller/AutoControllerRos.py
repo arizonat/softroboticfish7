@@ -35,8 +35,8 @@ class NaiveColorTargetTracker():
 
     # red stretches 2 bands in hsv
     # these values are for yellow, keeping the 2 bands for red in the future
-    self.hsv_lower_lower = (14,55,55)
-    self.hsv_lower_upper = (225,255,235)
+    self.hsv_lower_lower = (130,25,25)
+    self.hsv_lower_upper = (145,255,235)
     self.hsv_upper_lower = self.hsv_lower_lower
     self.hsv_upper_upper = self.hsv_lower_upper
 
@@ -192,6 +192,9 @@ class FishStateController():
 
     #['start', 'pitch', 'yaw', 'thrust', 'frequency']
     #[pitch: 0-6, yaw:0-6, thrust: 0-3, frequency: 0-3]
+    #NEW
+    self.STARTUP = [0,3,3,0,1]
+    #NEW
     self.HARD_LEFT = [1,3,6,3,2]
     self.HARD_RIGHT = [1,3,0,3,2]
     self.SOFT_LEFT = [1,3,5,3,2]
@@ -235,7 +238,9 @@ class FishStateController():
     self.state_msg.adjust = "NO ADJUST"
 
     if self.state == "INIT":
-      self.mbed.writeCmdArray(self.DO_NOTHING)
+      self.mbed.writeCmdArray(self.STARTUP)
+      sleep(35)
+      #self.mbed.writeCmdArray(self.DO_NOTHING)
       self.transitionTo("SEARCH")
 
     elif self.state == "SEARCH":
