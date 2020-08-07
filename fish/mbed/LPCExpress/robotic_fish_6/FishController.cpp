@@ -1,5 +1,11 @@
 
 #include "FishController.h"
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+
+//#include <stdlib.h>
+//#include <unistd.h>
 
 // The static instance
 FishController fishController;
@@ -51,18 +57,50 @@ FishController::FishController():
 {
 	streamFishStateEventController = 0;
 
-    newSelectButton = resetSelectButtonValue;
-    newPitch = resetPitchValue;
-    newYaw = resetYawValue;
-    newThrust = resetThrustValue;
-    newFrequency = resetFrequencyValue;
-    newPeriodHalf = resetPeriodHalfValue;
+	//Code block below to ensure fish is idle for initial period of time
+	clock_t startTime = clock();
+	double secondsPassed;
+	secondsPassed = (clock() - startTime)/CLOCKS_PER_SEC;
+	//double startTimer = 0;
+	double timeBeforeStart = 15; //Time in seconds that fish should be in initial state
+	//while(startTimer < timeBeforeStart)
+	while(secondsPassed < timeBeforeStart)
+	{
+		secondsPassed = (clock() - startTime)/CLOCKS_PER_SEC;
 
-    selectButton = newSelectButton;
-    pitch = newPitch;
-    yaw = newYaw;
-    thrust = newThrust;
-    frequency = newFrequency;
+		newSelectButton = 0;
+		newPitch = 0;
+		newYaw = 0;
+		newThrust = 0;
+		newFrequency = 0;
+		newPeriodHalf = 0;
+
+		selectButton = newSelectButton;
+		pitch = newPitch;
+		yaw = newYaw;
+		thrust = newThrust;
+		frequency = newFrequency;
+
+		//unsigned sleep(unsigned seconds);
+		//sleep(1);
+		//startTimer ++;
+	}
+    	//Code block above to ensure fish is idle for initial period of time
+	if(secondsPassed >= timeBeforeStart)
+	{
+		newSelectButton = resetSelectButtonValue;
+		newPitch = resetPitchValue;
+		newYaw = resetYawValue;
+		newThrust = resetThrustValue;
+		newFrequency = resetFrequencyValue;
+		newPeriodHalf = resetPeriodHalfValue;
+
+		selectButton = newSelectButton;
+		pitch = newPitch;
+		yaw = newYaw;
+		thrust = newThrust;
+		frequency = newFrequency;
+	}
 
 #ifdef FISH4
     periodHalf = newPeriodHalf;
@@ -301,17 +339,29 @@ void FishController::tickerCallback()
 {
     inTickerCallback = true; // so we don't asynchronously stop the controller in a bad point of the cycle
 
-    //set current state to newly commanded value
-    frequency = newFrequency;
-    yaw = newYaw;
-    thrust = newThrust;
-    pitch = newPitch;
+    //NEW (If/Else statement taking into account selectButton to turn off fish)//
+    if(newSelectButton ==0)
+    {
+    	pumpWithValve.writeToPins(0.0, 0.0);
+    }
+    else
+    {
+    	//for ensuring pump turned on, even despite reset settings and pi
+    	//newThrust = 1;
+    	//newYaw = 1;
+
+    	//set current state to newly commanded value
+    	frequency = newFrequency;
+    	yaw = newYaw;
+    	thrust = newThrust;
+    	pitch = newPitch;
+
+    	// Update dive planes
+    	servoLeft = pitch - 0.05; // The 0.03 calibrates the angles of the servo
+    	servoRight = (1.0 - pitch) < 0.03 ? 0.03 : (1.0 - pitch);
     
-    // Update dive planes
-    servoLeft = pitch - 0.05; // The 0.03 calibrates the angles of the servo
-    servoRight = (1.0 - pitch) < 0.03 ? 0.03 : (1.0 - pitch);
-    
-    pumpWithValve.set(frequency, yaw, thrust);
+    	pumpWithValve.set(frequency, yaw, thrust);
+    }
     
     /* TURNING OFF BCU FOR FIRST OPEN WORLD TEST - AUGUST 21, 2019*/
     //buoyancyControlUnit.set(pitch); //1100 - 1180 seems to follow well

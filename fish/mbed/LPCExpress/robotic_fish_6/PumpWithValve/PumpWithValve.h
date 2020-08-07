@@ -35,6 +35,7 @@ public:
 	void flipFlowDown();
 	void set(float freq_in, float yaw_in, float thrust_in);
 	void setVoid();
+	void writeToPins(float dutyPump, float dutyValve);
 
 	float getVset();
 	bool getVside();

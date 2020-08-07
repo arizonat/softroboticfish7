@@ -25,8 +25,8 @@
 //#define debugBCUControl			// whether to print BCU control values (setDepth, curDepth, Vset, etc.)
 //#define debugSensor 				// whether to print sensor values being read
 //#define debugValveControl			// whether to print valve control values (actual and commanded frequencies)
-//#define print2Pi					// whether to print data to Pi serial monitor
-#define printStatusSerialController // whether to print what's going on (i.e. when it gets commands, etc.)
+#define print2Pi					// whether to print data to Pi serial monitor
+//#define printStatusSerialController // whether to print what's going on (i.e. when it gets commands, etc.)
 //#define debugLEDsSerial    // LED1: initialized LED2: running LED3: receiving a character LED4: done (others turn off)
 //#define runTimeSerial 10000 	   // how long to run for (in milliseconds) if infiniteLoopSerial is undefined
 #define infiniteLoopSerial // if defined, will run forever (or until stop() is called from another thread)

@@ -4,6 +4,7 @@
 
 #include "SerialController.h"
 #include "FishController.h"
+//#include "unistd.h"
 
 #ifdef serialControl
 
@@ -143,15 +144,25 @@ void SerialController::run()
 	programTimer.start();
 	while(!terminated)
 	{
-		if(serial->readable())
+		if(usbSerial->readable())
 		{
+			/*Code block below to ensure fish is idle for initial period of time
+			if(selectButton == 0)
+			{
+				pumpWithValve.stop();
+				buoyancyControlUnit.stop();
+				unsigned sleep(unsigned seconds);
+				sleep(30);
+			}
+		    //Code block above to ensure fish is idle for initial period of time*/
+
 			#ifdef debugLEDsSerial
 			serialLEDs[2]->write(1);
 			
 			#endif
 
 			//usbSerial->printf("Processed <%s>: ", nextByte);
-			uint8_t nextByte = serial->getc();
+			uint8_t nextByte = usbSerial->getc();
 			serialBuffer[serialBufferIndex++] = nextByte;
 			//usbSerial->printf("%c", serialBufferIndex);
 
@@ -179,7 +190,7 @@ void SerialController::run()
 		
 		#ifdef print2Pi
 		if(programTimer.read_ms() - printTime > dataPeriod){
-			serial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
+			usbSerial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
 		    printTime = programTimer.read_ms();
 //		    usbSerial->printf("test");
 		}
