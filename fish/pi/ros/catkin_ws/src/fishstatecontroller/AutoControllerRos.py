@@ -35,8 +35,8 @@ class NaiveColorTargetTracker():
 
     # red stretches 2 bands in hsv
     # these values are for yellow, keeping the 2 bands for red in the future
-    self.hsv_lower_lower = (14,55,55)
-    self.hsv_lower_upper = (55,255,235)
+    self.hsv_lower_lower = (130,25,25)
+    self.hsv_lower_upper = (145,255,235)
     self.hsv_upper_lower = self.hsv_lower_lower
     self.hsv_upper_upper = self.hsv_lower_upper
 
@@ -134,14 +134,14 @@ class NaiveColorTargetTracker():
     return (target_found, target_centroid)
 
 class FishMbed():
-  def __init__(self, mbedPort='/dev/serial0', mbedBaud=115200, mbedUpdateInterval=1.25):
+  def __init__(self, mbedPort='/dev/ttyACM1', mbedBaud=115200, mbedUpdateInterval=1.25):
     self.cmd_arr_order = ['start', 'pitch', 'yaw', 'thrust', 'frequency']
 
     self._mbedSerial = serial.Serial(mbedPort, baudrate=mbedBaud, timeout=None, bytesize=serial.EIGHTBITS, parity = serial.PARITY_NONE, stopbits = serial.STOPBITS_ONE)
     self._mbedUpdateInterval = mbedUpdateInterval
 
-    self.CMD_MAX = 6
-    self.CMD_MIN = 0
+    self.CMD_MAX = 255
+    self.CMD_MIN = 1
 
   def writeCmdArray(self, cmd):
     bytecmds = self.safeCmdToBytes(cmd)
@@ -149,8 +149,8 @@ class FishMbed():
 
   def writeBytes(self, bytecmds):
     self._mbedSerial.write(bytecmds)
-    if bytecmds[-1] != 8:
-      self._mbedSerial.write(bytearray([8]))
+    if bytecmds[-1] != 0:
+      self._mbedSerial.write(bytearray([0]))
     self._mbedSerial.flush()
 
   def safeCmdToBytes(self, cmd, cmdType='byteArray', nullTerminate=False):
@@ -173,7 +173,7 @@ class FishMbed():
 
     assert(len(res) == len(self.cmd_arr_order))
     if nullTerminate:
-      res.append(8)
+      res.append(0)
     return bytearray(res)
 
 class FishStateController():
@@ -192,15 +192,15 @@ class FishStateController():
 
     #['start', 'pitch', 'yaw', 'thrust', 'frequency']
     #[pitch: 0-6, yaw:0-6, thrust: 0-3, frequency: 0-3]
-    #NEW
-    self.STARTUP = [0,3,3,0,1]
-    #NEW
-    self.HARD_LEFT = [1,3,6,3,2]
-    self.HARD_RIGHT = [1,3,0,3,2]
-    self.SOFT_LEFT = [1,3,5,3,2]
-    self.SOFT_RIGHT = [1,3,1,3,2]
-    self.DO_NOTHING = [1,3,3,0,1]
-    self.GO_FORWARD = [1,3,3,3,3]
+
+    self.STARTUP = [1,1,1,1,1] #[0,3,3,0,1]
+
+    self.HARD_LEFT = [255,135,255,255,170] #[1,3,6,3,2]
+    self.HARD_RIGHT = [255,135,1,255,170] #[1,3,0,3,2]
+    self.SOFT_LEFT = [255,135,220,255,170] #[1,3,5,3,2]
+    self.SOFT_RIGHT = [255,135,45,255,170] #[1,3,1,3,2]
+    self.DO_NOTHING = [255,135,135,1,85] #[1,3,3,0,1]
+    self.GO_FORWARD = [255,135,135,255,255]
 
     self.transitionTo("INIT")
 
@@ -239,7 +239,7 @@ class FishStateController():
 
     if self.state == "INIT":
       self.mbed.writeCmdArray(self.STARTUP)
-      sleep(35)
+      sleep(15)
       #self.mbed.writeCmdArray(self.DO_NOTHING)
       self.transitionTo("SEARCH")
 
@@ -255,7 +255,7 @@ class FishStateController():
     elif self.state == "ADJUST":
       # higher yaw is right, lower is left
       target_found, target_centroid = self.tracker.find_target(self.image)
-
+      """
       if target_found and target_centroid[0][0] >= self.image_size[1]*(2./3.):
         self.state_msg.adjust = "SOFT RIGHT"
         print("SOFT RIGHT: %d, %d"%(target_centroid[0][0], self.image_size[1]*(2./3.)))
@@ -266,25 +266,24 @@ class FishStateController():
         self.mbed.writeCmdArray(self.SOFT_LEFT)
       #Alternative to above if statement that uses pose to determine whether soft right or left should be taken
       ###
-        """
-      if target_found and self.pose.pose.position.y < 0 and self.pose.pose.position.y > -250:
+      """
+      if target_found and self.tracker.pose.pose.position.y < -1 and self.tracker.pose.pose.position.y > -3:
         self.state_msg.adjust = "SOFT RIGHT"
-        print("SOFT RIGHT: %d mm"%(self.pose.pose.position.y))
+        print("SOFT RIGHT: %d mm"%(self.tracker.pose.pose.position.y))
         self.mbed.writeCmdArray(self.SOFT_RIGHT)
-      elif target_found and self.pose.pose.position.y > 0 and self.pose.pose.position.y < 250:
+      elif target_found and self.tracker.pose.pose.position.y > 1 and self.tracker.pose.pose.position.y < 3:
         self.state_msg.adjust = "SOFT LEFT"
-        print("SOFT LEFT: %d mm"%(self.pose.pose.position.y))
+        print("SOFT LEFT: %d mm"%(self.tracker.pose.pose.position.y))
         self.mbed.writeCmdArray(self.SOFT_LEFT)
-      elif target_found and self.pose.pose.position.z < -500:
+      elif target_found and self.tracker.pose.pose.position.y <= -3:
         self.state_msg.adjust = "HARD RIGHT"
-        print("HARD RIGHT: %d mm"%(self.pose.pose.position.y))
+        print("HARD RIGHT: %d mm"%(self.tracker.pose.pose.position.y))
         self.mbed.writeCmdArray(self.HARD_RIGHT)
-      elif target_found and self.pose.pose.position.z > 500:
+      elif target_found and self.tracker.pose.pose.position.y >= 3:
         self.state_msg.adjust = "HARD LEFT"
-        print("HARD LEFT: %d mm"%(self.pose.pose.position.y))
+        print("HARD LEFT: %d mm"%(self.tracker.pose.pose.position.y))
         self.mbed.writeCmdArray(self.HARD_LEFT)
       ###
-	"""
       elif target_found:
         self.transitionTo("FOLLOW")
       else:
