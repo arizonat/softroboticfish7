@@ -413,8 +413,8 @@ void BNO055::setSensorOffsets(const char* calibData) {
 bool BNO055::isFullyCalibrated(void) {
   unsigned char system, gyro, accel, mag;
   getCalibration(&system, &gyro, &accel, &mag);
-  // if (system < 3 || gyro < 3 || accel < 3 || mag < 3) {
-  if(system<3) {
+   if (system < 3 || gyro < 3 || accel < 3 || mag < 3) {
+//  if(system<3) {
     return false;
   }
   return true;

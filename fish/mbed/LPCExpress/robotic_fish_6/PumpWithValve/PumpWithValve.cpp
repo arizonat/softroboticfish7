@@ -108,13 +108,14 @@ void PumpWithValve::setVoid() {
 	else { // don't be fooled by initialization values
 		   // Failure mode - if it has been a full (desired) period since a hall sensor has been read
 		if (timer.read_us() > 1.0 / frequency) {
-			pumpWithValve.stop(); // may have to add a condition that allows for sudden input changes
+//			pumpWithValve.stop(); // may have to add a condition that allows for sudden input changes
 		}
 		else {
 			freqErr = frequency - freqAct;
 			dVFreq = KpFreq * freqErr + KdFreq * (freqErr - prevFreqErr);
 			prevFreqErr = freqErr; //reset previous frequency error
 			Vfreq += dVFreq;
+			if (Vfreq < 0.0) {Vfreq = 0.0;} // constrain Vfreq to prevent building up control output at input limits
 			this->calculateYawMethod1();
 		}
 	}
@@ -132,9 +133,9 @@ void PumpWithValve::calculateYawMethod1()
 
 	// TODO need to decide whether to give up frequency or yaw when we are at input limits
 	if (valveV1 > 1.0) {valveV1 = 1.0;}
-	else if (valveV1 < 0.0) {valveV1 = 0.05;}
+	else if (valveV1 < 0.1) {valveV1 = 0.1;}
 	if (valveV2 > 1.0) {valveV2 = 1.0;}
-	else if (valveV2 < 0.0) {valveV2 = 0.05;}
+	else if (valveV2 < 0.1) {valveV2 = 0.1;}
 
 	// write valve voltage based on which side the hall sensor says we are on
 	if (valveSide) { Vset = valveV1; }
