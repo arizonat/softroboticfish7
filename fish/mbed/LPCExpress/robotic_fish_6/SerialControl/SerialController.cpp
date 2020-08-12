@@ -144,7 +144,7 @@ void SerialController::run()
 	programTimer.start();
 	while(!terminated)
 	{
-		if(usbSerial->readable())
+		if(serial->readable())
 		{
 			/*Code block below to ensure fish is idle for initial period of time
 			if(selectButton == 0)
@@ -162,7 +162,7 @@ void SerialController::run()
 			#endif
 
 			//usbSerial->printf("Processed <%s>: ", nextByte);
-			uint8_t nextByte = usbSerial->getc();
+			uint8_t nextByte = serial->getc();
 			serialBuffer[serialBufferIndex++] = nextByte;
 			//usbSerial->printf("%c", serialBufferIndex);
 
@@ -190,7 +190,7 @@ void SerialController::run()
 		
 		#ifdef print2Pi
 		if(programTimer.read_ms() - printTime > dataPeriod){
-			usbSerial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
+			serial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
 		    printTime = programTimer.read_ms();
 //		    usbSerial->printf("test");
 		}

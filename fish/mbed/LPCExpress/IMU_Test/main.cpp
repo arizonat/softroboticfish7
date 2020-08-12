@@ -48,7 +48,8 @@ int main() {
 
     }
     double tempfloat = 21.2;
-    Vector gyro = imu.getVector(VECTOR_GYROSCOPE);
+//    Vector gyro = imu.getVector(VECTOR_GYROSCOPE);
+    Vector mag = imu.getVector(VECTOR_MAGNETOMETER);
     char calibration[22];
     bool goodData = imu.getSensorOffsets(calibration);
     if(goodData && needData) {
@@ -59,15 +60,17 @@ int main() {
       fclose(fp);
     }
     pc.printf("pitch: %.2f, roll: %.2f, yaw: %.2f, test: %.2f\r\n",euler[2], euler[1], euler[0], tempfloat);
-    pc.printf("gyro_pitch: %.2f, gyro_roll: %.2f, gyro_yaw: %.2f\r\n", gyro[0], gyro[1], gyro[2]);
+//    pc.printf("gyro_pitch: %.2f, gyro_roll: %.2f, gyro_yaw: %.2f\r\n", gyro[0], gyro[1], gyro[2]);
+//    pc.printf("mag_x: %.2f, mag_y: %.2f, mag_z: %.2f\r\n", mag[0], mag[1], mag[2]);
     pc.printf("sys: %d, gyro: %d, accel: %d, mag: %d\r\n", s, g, a, w);
     // pc.printf("tempfloat: %.2f\r\n", tempfloat);
+
+    /* Calculate heading in degrees, then angle to true North*/
+    float heading = atan2(mag[1], mag[0]) * 180/3.1415;
+    float declination = 0;
+    float angle2TrueNorth = heading + declination;
+    pc.printf("Angle to true north: %.2f\r\n", angle2TrueNorth);
   }
-
-
-
-
-
 
   return 0;
 }
