@@ -39,6 +39,9 @@
 #define resetFrequencyValue    0.0000012 // cycles/us
 #define resetPeriodHalfValue   416666    // 1/(2*frequency) -> us
 
+// Wait time setup to control when fish starts running after power on
+#define newTimeBeforeStart 0
+
 // Value ranges
 #ifdef FISH4
 #define fishMinPitch     ((float)(0.2)) // will want to redefine for fish 6 based on depth instead

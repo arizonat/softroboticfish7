@@ -64,6 +64,11 @@ FishController::FishController():
 	//double startTimer = 0;
 	double timeBeforeStart = 15; //Time in seconds that fish should be in initial state
 	//while(startTimer < timeBeforeStart)
+
+#ifdef newTimeBeforeStart
+	timeBeforeStart = newTimeBeforeStart;
+#endif
+
 	while(secondsPassed < timeBeforeStart)
 	{
 		secondsPassed = (clock() - startTime)/CLOCKS_PER_SEC;
