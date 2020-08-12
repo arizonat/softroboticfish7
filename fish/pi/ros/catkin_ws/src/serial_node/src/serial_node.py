@@ -7,18 +7,21 @@ import roslib
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import Imu
+from std_msgs.msg import Float64
 #from geometry_msgs.msg import PoseStamped
 
 class SerialBridge():
     #MEASURE_TOPIC = "measurements"
     #IMU_TOPIC = "imu_data"
+    #COMPASS_TOPIC = "angle_to_true_north"
     #COMMAND_TOPIC = "command"
 
     def __init__(self, mbedPort='/dev/serial0', mbedBaud = 115200, mbedUpdateInterval=1.25):
         #rospy.loginfo("Serial node started.")
         print('Serial node started.')
         
-        self.imu_pub = rospy.Publisher("imu_data", String, queue_size=1)
+        self.imu_pub = rospy.Publisher("imu_data", Imu, queue_size=1)
+        self.compass_pub = rospy.Publisher("angle_to_true_north", Float64, queue_size=1)
         rospy.Subscriber("command", String, self.callback)
 
         self.cmd_arr_order = ['start', 'pitch', 'yaw', 'thrust', 'frequency']
@@ -66,7 +69,7 @@ class SerialBridge():
 
     def parseSensorData(self, data):
         arr = data.split(",")
-        values = [int(i) for i in arr]
+        values = [float(i) for i in arr]
         return values
 
     def listen(self):
@@ -75,8 +78,14 @@ class SerialBridge():
                 bytesToRead = self._mbedSerial.inWaiting()
                 x = self._mbedSerial.read(bytesToRead)
                 print(x),
-                #euler_angles = self.parseSensorData(x)
-                #print(euler_angles)
+                data = self.parseSensorData(x)
+                quaternion = tf.transformations.quaternion_from_euler(data[1], data[0], data[2])
+                imu_msg = Imu()
+                imu_msg.orientation = quaternion
+                self.imu_pub(imu_msg)
+                angle_to_true_north = Float64()
+                angle_to_true_north.data = data[3]
+                #print(data)
 
     def callback(self, msg):
         cmd = msg.data
