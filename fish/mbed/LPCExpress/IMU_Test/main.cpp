@@ -26,6 +26,8 @@ Vector quat_to_euler(Quaternion quat) {
 
 int main() {
   // wait(10);
+  Serial* pi = new Serial(p13, p14);
+  pi->baud(115200);
   powerIMU = 0;
   wait(5);
   powerIMU = 1;
@@ -47,7 +49,7 @@ int main() {
       wait_ms(100);
 
     }
-    double tempfloat = 21.2;
+//    double tempfloat = 21.2;
 //    Vector gyro = imu.getVector(VECTOR_GYROSCOPE);
     Vector mag = imu.getVector(VECTOR_MAGNETOMETER);
     char calibration[22];
@@ -56,20 +58,27 @@ int main() {
       FILE *fp = fopen("/local/calib", "w");
       for(int i = 0; i < 22; i++) {
         fprintf(fp, "%c", calibration[i]);
+
       }
       fclose(fp);
+      needData = false;
     }
-    pc.printf("pitch: %.2f, roll: %.2f, yaw: %.2f, test: %.2f\r\n",euler[2], euler[1], euler[0], tempfloat);
+//    pc.printf("pitch: %.2f, roll: %.2f, yaw: %.2f, test: %.2f\r\n",euler[2], euler[1], euler[0], tempfloat);
 //    pc.printf("gyro_pitch: %.2f, gyro_roll: %.2f, gyro_yaw: %.2f\r\n", gyro[0], gyro[1], gyro[2]);
 //    pc.printf("mag_x: %.2f, mag_y: %.2f, mag_z: %.2f\r\n", mag[0], mag[1], mag[2]);
-    pc.printf("sys: %d, gyro: %d, accel: %d, mag: %d\r\n", s, g, a, w);
+//    pc.printf("sys: %d, gyro: %d, accel: %d, mag: %d\r\n", s, g, a, w);
     // pc.printf("tempfloat: %.2f\r\n", tempfloat);
 
     /* Calculate heading in degrees, then angle to true North*/
     float heading = atan2(mag[1], mag[0]) * 180/3.1415;
-    float declination = 0;
+    float declination = -6.92;
     float angle2TrueNorth = heading + declination;
-    pc.printf("Angle to true north: %.2f\r\n", angle2TrueNorth);
+//    pc.printf("Angle to true north: %.2f\r\n", angle2TrueNorth);
+//    pi->printf("Angle to true north: %.2f\r\n", angle2TrueNorth);
+
+//    pi->printf("%.2f,%.2f,%.2f,%.2f",euler[2], euler[1], euler[0],angle2TrueNorth);
+    pi->printf("%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0]);
+    wait(1.0);
   }
 
   return 0;
