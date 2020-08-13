@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # ObjectTracker:
 # Implementation of state estimation for SoFi (soft robotic fish)
@@ -6,19 +6,17 @@
 # Node name: state_estimation
 # Subscribed topics:
 #   - /raspicam_node/image/compressed
-#   - pid_enable
 # Published topics:
-#   - color_mask
 #   - fish_pose
+#   - color_mask
+#   - target_found
 #   - average_heading
-#   - heading_setpoint
 #   - average_pitch (TODO)
-#   - pitch_setpoint (TODO)
 
 import rospy
 import roslib
-from std_msgs.msg import String, Float64
-from sensor_msgs.msg import Image
+from std_msgs.msg import String, Float64, Bool
+from sensor_msgs.msg import Image, CompressedImage
 for geometry_msgs.msg import PoseStamped
 import cv2
 from cv_bridge import CvBridge
@@ -28,7 +26,6 @@ from fishstatecontroller.msg import State, Position
 class ObjectTracker():
     def __init__(self):
         self.image = np.zeros((960,1280,3), np.uint8)
-        self.heading_setpoint = 0
         self.subsample_ratio = 0.25             # amount to shrink image, maintains aspect ratio
         self.focal_length = 993.0               #the focal length of the camera
         self.real_height = 1.25                 #the real height of the target object
@@ -37,8 +34,9 @@ class ObjectTracker():
         self.pose = PoseStamped()
         self.pose_pub = rospy.Publisher('fish_pose', PoseStamped, queue_size=10)
         self.mask_pub = rospy.Publisher('color_mask', Image, queue_size=10)
+        self.found_pub = rospy.Publisher('target_found', Bool, queue_size=10)
         self.average_heading_pub = rospy.Publisher('average_heading', Float64, queue_size=10)
-        self.heading_setpoint_pub = rospy.Publisher('heading_setpoint', Float64, queue_size=10)
+        #self.average_pitch_pub = TODO
 
         # Initiate position msg instance and new publisher for data
         #self.position_msg = Position()
@@ -137,10 +135,9 @@ class ObjectTracker():
                 self.current_sum += self.current_point
                 self.count += 1
                 self.current_slope = new_slope
+                #TODO pitch averaging
 
                 #Publish everything
-                self.average_heading_pub.publish(self.average)
-                self.heading_setpoint_pub.publish(self.heading_setpoint)
                 self.pose.header.seq = 1
                 self.pose.header.stamp = rospy.Time.now()
                 self.pose.header.frame_id = "sofi_cam"
@@ -151,10 +148,14 @@ class ObjectTracker():
                 self.pose.pose.orientation.y = 0
                 self.pose.pose.orientation.z = 0
                 self.pose.pose.orientation.w = 1
+
                 self.pose_pub.publish(self.pose)
+                self.found_pub.publish(True)
+                self.average_heading_pub.publish(self.average)
+                #TODO publish the pitch average
+
             else:
-                #TODO logic for when the target is not found
-                pass
+                self.found_pub.publish(False)
 
             rate.sleep()
 
