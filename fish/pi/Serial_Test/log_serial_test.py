@@ -17,11 +17,33 @@ print(ser.name)
 logfile = open("logs/" + testname, "w")
 ser.flush()
 
+buf = []
+
+data = ''
+
+def convert(s): 
+  
+    # initialization of string to "" 
+    str1 = "" 
+  
+    # using join function join the list s by  
+    # separating words by str1 
+    return(str1.join(s)) 
+
+
 while True:
     if ser.inWaiting():
-        bytesToRead = ser.inWaiting();
-        x = ser.read(bytesToRead)
-        print(x, end="")
-        logfile.write(x)
+        x = ser.read_until()
+        buf.append(x)
+        #print(buf)
+        #print(len(buf))
+        if len(buf) > 23:
+            ser.flush()
+            data = convert(buf)
+            print(data)
+            buf = []
+        #print(x),
+        #print(x, end="")
+        logfile.write(data)
         # time.sleep(0.25)
         logfile.flush()
