@@ -8,6 +8,7 @@ from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import Imu
 from std_msgs.msg import Float64
+import tf
 #from geometry_msgs.msg import PoseStamped
 
 class SerialBridge():
@@ -87,22 +88,20 @@ class SerialBridge():
                 self.buf.append(x)
                 if len(self.buf) > 23:
                     self._mbedSerial.flush()
-                    data = self.convert(self.buf)
-                    rospy.loginfo(self.parseSensorData(data))
+                    msg = self.convert(self.buf)
+                    data = self.parseSensorData(msg)
+                    rospy.loginfo(data)
                     #rospy.loginfo(data)
+                    quat_array = tf.transformations.quaternion_from_euler(data[1], data[0], data[2])
+                    imu_msg = Imu()
+                    imu_msg.orientation.w = quat_array[0]
+                    imu_msg.orientation.x = quat_array[1]
+                    imu_msg.orientation.y = quat_array[2]
+                    imu_msg.orientation.z = quat_array[3]
+                    self.imu_pub.publish(imu_msg)
+                    #angle_to_true_north = Float64()
+                    #angle_to_true_north.data = data[3]
                     self.buf = []
-                #self._mbedSerial.flush()
-                #self._mbedSerial.flushInput()
-                #rospy.loginfo(x)
-                #data = self.parseSensorData(x)
-                #rospy.loginfo(data)
-                #quaternion = tf.transformations.quaternion_from_euler(data[1], data[0], data[2])
-                #imu_msg = Imu()
-                #imu_msg.orientation = quaternion
-                #self.imu_pub(imu_msg)
-                #angle_to_true_north = Float64()
-                #angle_to_true_north.data = data[3]
-                #print(data)
 
     def callback(self, msg):
         cmd = msg.data
