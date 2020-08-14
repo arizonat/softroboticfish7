@@ -76,8 +76,10 @@ int main() {
 //    pc.printf("Angle to true north: %.2f\r\n", angle2TrueNorth);
 //    pi->printf("Angle to true north: %.2f\r\n", angle2TrueNorth);
 
-//    pi->printf("%.2f,%.2f,%.2f,%.2f",euler[2], euler[1], euler[0],angle2TrueNorth);
-    pi->printf("%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0]);
+    pi->printf("%07.2f,%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0], angle2TrueNorth);
+
+//    pi->printf("%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0]);
+//    pc.printf("%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0]);
     wait(1.0);
   }
 
