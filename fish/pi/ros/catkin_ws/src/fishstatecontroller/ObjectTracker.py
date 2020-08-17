@@ -12,12 +12,19 @@
 #   - target_found
 #   - average_heading
 #   - average_pitch (TODO)
+# Manual Testing Notes
+# The result of each published topic was analyzed for the following inputs:
+#   - No input camera image (raspicam_node not running)
+#   - Target not found in picture
+#   - Stationary target found in picture
+#   - Moving target found in picture
+# All published topics behaved as expected
 
 import rospy
 import roslib
 from std_msgs.msg import String, Float64, Bool
 from sensor_msgs.msg import Image, CompressedImage
-for geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
@@ -44,7 +51,7 @@ class ObjectTracker():
 
         # red stretches 2 bands in hsv
         # these values are for yellow, keeping the 2 bands for red in the future
-        self.hsv_lower_lower = (14,55,55)
+        self.hsv_lower_lower = (14,85,55)
         self.hsv_lower_upper = (30,255,235)
         self.hsv_upper_lower = self.hsv_lower_lower
         self.hsv_upper_upper = self.hsv_lower_upper
@@ -141,7 +148,7 @@ class ObjectTracker():
                 self.pose.header.seq = 1
                 self.pose.header.stamp = rospy.Time.now()
                 self.pose.header.frame_id = "sofi_cam"
-                self.pose.pose.position.x = distance
+                self.pose.pose.position.x = dist
                 self.pose.pose.position.y = offset[0]
                 self.pose.pose.position.z = offset[1]
                 self.pose.pose.orientation.x = 0
