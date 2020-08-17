@@ -121,7 +121,7 @@ class ObjectTracker():
     def run(self):
         """Run the Distance Tracker with the input from the camera"""
         bridge = CvBridge()
-        rate = rospy.Rate(10)
+        rate = rospy.Rate(24)
         while not rospy.is_shutdown():
             target_found, target_centroid, dist, offset = self.find_target()
             #print("EST DISTANCE: " + str(dist) + ' inches')
@@ -174,6 +174,6 @@ if __name__ == '__main__':
     rospy.init_node('state_estimation', anonymous=True)
     tracker = ObjectTracker()
     rospy.Subscriber('/raspicam_node/image/compressed', CompressedImage, tracker.callback)
-    print("Beginning position tracker at 10hz\n")
+    print("Beginning position tracker at 24hz\n")
     tracker.run()
     print("Done\n")
