@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 # ObjectTracker:
 # Implementation of state estimation for SoFi (soft robotic fish)
@@ -6,20 +6,25 @@
 # Node name: state_estimation
 # Subscribed topics:
 #   - /raspicam_node/image/compressed
-#   - pid_enable
 # Published topics:
-#   - color_mask
 #   - fish_pose
+#   - color_mask
+#   - target_found
 #   - average_heading
-#   - heading_setpoint
 #   - average_pitch (TODO)
-#   - pitch_setpoint (TODO)
+# Manual Testing Notes
+# The result of each published topic was analyzed for the following inputs:
+#   - No input camera image (raspicam_node not running)
+#   - Target not found in picture
+#   - Stationary target found in picture
+#   - Moving target found in picture
+# All published topics behaved as expected
 
 import rospy
 import roslib
-from std_msgs.msg import String, Float64
-from sensor_msgs.msg import Image
-for geometry_msgs.msg import PoseStamped
+from std_msgs.msg import String, Float64, Bool
+from sensor_msgs.msg import Image, CompressedImage
+from geometry_msgs.msg import PoseStamped
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
@@ -28,7 +33,6 @@ from fishstatecontroller.msg import State, Position
 class ObjectTracker():
     def __init__(self):
         self.image = np.zeros((960,1280,3), np.uint8)
-        self.heading_setpoint = 0
         self.subsample_ratio = 0.25             # amount to shrink image, maintains aspect ratio
         self.focal_length = 993.0               #the focal length of the camera
         self.real_height = 1.25                 #the real height of the target object
@@ -37,8 +41,9 @@ class ObjectTracker():
         self.pose = PoseStamped()
         self.pose_pub = rospy.Publisher('fish_pose', PoseStamped, queue_size=10)
         self.mask_pub = rospy.Publisher('color_mask', Image, queue_size=10)
+        self.found_pub = rospy.Publisher('target_found', Bool, queue_size=10)
         self.average_heading_pub = rospy.Publisher('average_heading', Float64, queue_size=10)
-        self.heading_setpoint_pub = rospy.Publisher('heading_setpoint', Float64, queue_size=10)
+        #self.average_pitch_pub = TODO
 
         # Initiate position msg instance and new publisher for data
         #self.position_msg = Position()
@@ -46,7 +51,7 @@ class ObjectTracker():
 
         # red stretches 2 bands in hsv
         # these values are for yellow, keeping the 2 bands for red in the future
-        self.hsv_lower_lower = (14,55,55)
+        self.hsv_lower_lower = (14,85,55)
         self.hsv_lower_upper = (30,255,235)
         self.hsv_upper_lower = self.hsv_lower_lower
         self.hsv_upper_upper = self.hsv_lower_upper
@@ -116,7 +121,7 @@ class ObjectTracker():
     def run(self):
         """Run the Distance Tracker with the input from the camera"""
         bridge = CvBridge()
-        rate = rospy.Rate(10)
+        rate = rospy.Rate(24)
         while not rospy.is_shutdown():
             target_found, target_centroid, dist, offset = self.find_target()
             #print("EST DISTANCE: " + str(dist) + ' inches')
@@ -137,24 +142,27 @@ class ObjectTracker():
                 self.current_sum += self.current_point
                 self.count += 1
                 self.current_slope = new_slope
+                #TODO pitch averaging
 
                 #Publish everything
-                self.average_heading_pub.publish(self.average)
-                self.heading_setpoint_pub.publish(self.heading_setpoint)
                 self.pose.header.seq = 1
                 self.pose.header.stamp = rospy.Time.now()
                 self.pose.header.frame_id = "sofi_cam"
-                self.pose.pose.position.x = distance
+                self.pose.pose.position.x = dist
                 self.pose.pose.position.y = offset[0]
                 self.pose.pose.position.z = offset[1]
                 self.pose.pose.orientation.x = 0
                 self.pose.pose.orientation.y = 0
                 self.pose.pose.orientation.z = 0
                 self.pose.pose.orientation.w = 1
+
                 self.pose_pub.publish(self.pose)
+                self.found_pub.publish(True)
+                self.average_heading_pub.publish(self.average)
+                #TODO publish the pitch average
+
             else:
-                #TODO logic for when the target is not found
-                pass
+                self.found_pub.publish(False)
 
             rate.sleep()
 
@@ -166,6 +174,6 @@ if __name__ == '__main__':
     rospy.init_node('state_estimation', anonymous=True)
     tracker = ObjectTracker()
     rospy.Subscriber('/raspicam_node/image/compressed', CompressedImage, tracker.callback)
-    print("Beginning position tracker at 10hz\n")
+    print("Beginning position tracker at 24hz\n")
     tracker.run()
     print("Done\n")

@@ -1,0 +1,15 @@
+HSV_lower_val1: 130
+HSV_lower_val2: 25
+HSV_lower_val3: 25
+HSV_upper_val1: 145
+HSV_upper_val2: 255
+HSV_upper_val3: 235
+rosdistro: 'melodic'
+
+#roslaunch:
+#  uris: {host_sofi_desktop__39539: 'http://sofi-desktop:39539/', host_sofi_desktop__46361: 'http://sofi-desktop:46361/'}
+#rosversion: '1.14.7
+
+#  '
+#run_id: 80d2eeac-de1e-11ea-820a-b827ebbe6759
+#string_color: purple

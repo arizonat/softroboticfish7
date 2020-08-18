@@ -1,0 +1,7 @@
+string_color: 'yellow'
+HSV_lower_val1: 14
+HSV_lower_val2: 55
+HSV_lower_val3: 55
+HSV_upper_val1: 55
+HSV_upper_val2: 255
+HSV_upper_val3: 235

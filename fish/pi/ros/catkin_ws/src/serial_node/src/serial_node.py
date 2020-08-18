@@ -8,6 +8,7 @@ from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import Imu
 from std_msgs.msg import Float64
+import tf
 #from geometry_msgs.msg import PoseStamped
 
 class SerialBridge():
@@ -25,10 +26,13 @@ class SerialBridge():
         rospy.Subscriber("command", String, self.callback)
 
         self.cmd_arr_order = ['start', 'pitch', 'yaw', 'thrust', 'frequency']
-        self._mbedSerial = serial.Serial(mbedPort, baudrate=mbedBaud, timeout=None, bytesize=serial.EIGHTBITS, parity = serial.PARITY_NONE, stopbits = serial.STOPBITS_ONE)
+        self._mbedSerial = serial.Serial(mbedPort, baudrate=mbedBaud, timeout=0, bytesize=serial.EIGHTBITS, parity = serial.PARITY_NONE, stopbits = serial.STOPBITS_ONE)
         self._mbedUpdateInterval = mbedUpdateInterval
         self.CMD_MAX = 6
         self.CMD_MIN = 0
+
+        self.buf = []
+        self.incomingStringLength = 31
 
     def writeCmdArray(self, cmd):
         bytecmds = self.safeCmdToBytes(cmd)
@@ -67,7 +71,12 @@ class SerialBridge():
         self._mbedSerial.flushOutput()
         self.writeBytes(cmd)
 
+    def convert(self, s):
+        str1 = ""
+        return(str1.join(s))
+
     def parseSensorData(self, data):
+        data = data.replace(" ","")
         arr = data.split(",")
         values = [float(i) for i in arr]
         return values
@@ -75,17 +84,25 @@ class SerialBridge():
     def listen(self):
         while not rospy.is_shutdown():
             if self._mbedSerial.inWaiting():
-                bytesToRead = self._mbedSerial.inWaiting()
-                x = self._mbedSerial.read(bytesToRead)
-                print(x),
-                data = self.parseSensorData(x)
-                quaternion = tf.transformations.quaternion_from_euler(data[1], data[0], data[2])
-                imu_msg = Imu()
-                imu_msg.orientation = quaternion
-                self.imu_pub(imu_msg)
-                angle_to_true_north = Float64()
-                angle_to_true_north.data = data[3]
-                #print(data)
+                #bytesToRead = self._mbedSerial.inWaiting()
+                x = self._mbedSerial.read_until()
+                self.buf.append(x)
+                if len(self.buf) > self.incomingStringLength:
+                    self._mbedSerial.flush()
+                    msg = self.convert(self.buf)
+                    data = self.parseSensorData(msg)
+                    rospy.loginfo(data)
+                    quat_array = tf.transformations.quaternion_from_euler(data[1], data[0], data[2])
+                    imu_msg = Imu()
+                    imu_msg.orientation.w = quat_array[0]
+                    imu_msg.orientation.x = quat_array[1]
+                    imu_msg.orientation.y = quat_array[2]
+                    imu_msg.orientation.z = quat_array[3]
+                    self.imu_pub.publish(imu_msg)
+                    angle_to_true_north = Float64()
+                    angle_to_true_north.data = data[3]
+                    self.compass_pub.publish(angle_to_true_north)
+                    self.buf = []
 
     def callback(self, msg):
         cmd = msg.data

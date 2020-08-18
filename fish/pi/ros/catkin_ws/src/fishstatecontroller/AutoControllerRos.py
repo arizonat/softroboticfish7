@@ -35,8 +35,8 @@ class NaiveColorTargetTracker():
 
     # red stretches 2 bands in hsv
     # these values are for yellow, keeping the 2 bands for red in the future
-    self.hsv_lower_lower = (130,25,25)
-    self.hsv_lower_upper = (145,255,235)
+    self.hsv_lower_lower = (rospy.get_param("/HSV_lower_val1"),rospy.get_param("/HSV_lower_val2"),rospy.get_param("/HSV_lower_val3")) #(14,55,55)
+    self.hsv_lower_upper = (rospy.get_param("/HSV_upper_val1"),rospy.get_param("/HSV_upper_val2"),rospy.get_param("/HSV_upper_val3")) #(55,255,235)
     self.hsv_upper_lower = self.hsv_lower_lower
     self.hsv_upper_upper = self.hsv_lower_upper
 
@@ -134,7 +134,7 @@ class NaiveColorTargetTracker():
     return (target_found, target_centroid)
 
 class FishMbed():
-  def __init__(self, mbedPort='/dev/ttyACM1', mbedBaud=115200, mbedUpdateInterval=1.25):
+  def __init__(self, mbedPort='/dev/ttyACM0', mbedBaud=115200, mbedUpdateInterval=1.25):
     self.cmd_arr_order = ['start', 'pitch', 'yaw', 'thrust', 'frequency']
 
     self._mbedSerial = serial.Serial(mbedPort, baudrate=mbedBaud, timeout=None, bytesize=serial.EIGHTBITS, parity = serial.PARITY_NONE, stopbits = serial.STOPBITS_ONE)
@@ -193,13 +193,13 @@ class FishStateController():
     #['start', 'pitch', 'yaw', 'thrust', 'frequency']
     #[pitch: 0-6, yaw:0-6, thrust: 0-3, frequency: 0-3]
 
-    self.STARTUP = [1,1,1,1,1] #[0,3,3,0,1]
+    self.STARTUP = [1,1,1,1,1]
 
-    self.HARD_LEFT = [255,135,255,255,170] #[1,3,6,3,2]
-    self.HARD_RIGHT = [255,135,1,255,170] #[1,3,0,3,2]
-    self.SOFT_LEFT = [255,135,220,255,170] #[1,3,5,3,2]
-    self.SOFT_RIGHT = [255,135,45,255,170] #[1,3,1,3,2]
-    self.DO_NOTHING = [255,135,135,1,85] #[1,3,3,0,1]
+    self.HARD_LEFT = [255,135,255,255,170]
+    self.HARD_RIGHT = [255,135,1,255,170]
+    self.SOFT_LEFT = [255,135,220,255,170]
+    self.SOFT_RIGHT = [255,135,45,255,170]
+    self.DO_NOTHING = [255,135,135,1,85]
     self.GO_FORWARD = [255,135,135,255,255]
 
     self.transitionTo("INIT")

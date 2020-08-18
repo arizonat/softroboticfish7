@@ -2,8 +2,6 @@ from __future__ import print_function
 import serial
 import time
 
-# TODO: EVERYTHING
-
 inp = raw_input("Enter testname: testname\n")
 
 # Ports: /dev/serial0 for wired UART, /dev/ttyACM* for USB (use ls -l /dev to find ports)
@@ -17,11 +15,33 @@ print(ser.name)
 logfile = open("logs/" + testname, "w")
 ser.flush()
 
+buf = []
+incomingStrLength = 31
+data = ''
+
+def convert(s): 
+  
+    # initialization of string to "" 
+    str1 = "" 
+  
+    # using join function join the list s by  
+    # separating words by str1 
+    return(str1.join(s)) 
+
+
 while True:
     if ser.inWaiting():
-        bytesToRead = ser.inWaiting()
-        x = ser.read(bytesToRead)
+        x = ser.read_until()
+        buf.append(x)
+        #print(buf)
+        #print(len(buf))
+        if len(buf) > incomingStrLength:
+            ser.flush()
+            data = convert(buf)
+            print(data)
+            buf = []
+        #print(x),
         #print(x, end="")
-        logfile.write(x)
+        logfile.write(data)
         # time.sleep(0.25)
         logfile.flush()

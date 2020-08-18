@@ -1,0 +1,4 @@
+<launch>
+	#<rosparam file="$(find fishstatecontroller)/config/YellowConfig.yaml" />
+	<node name="dynamic_reconfigure_load" pkg="dynamic_reconfigure" type="dynparam" args="load /fishstatecontroller $(find fishstatecontroller)/config/YellowConfig.yaml" />
+</launch>
