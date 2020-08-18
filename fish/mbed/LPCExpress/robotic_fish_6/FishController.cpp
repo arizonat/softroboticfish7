@@ -57,18 +57,12 @@ FishController::FishController():
 {
 	streamFishStateEventController = 0;
 
+#ifdef pause_start
 	//Code block below to ensure fish is idle for initial period of time
 	clock_t startTime = clock();
 	double secondsPassed;
 	secondsPassed = (clock() - startTime)/CLOCKS_PER_SEC;
-	//double startTimer = 0;
 	double timeBeforeStart = 15; //Time in seconds that fish should be in initial state
-	//while(startTimer < timeBeforeStart)
-
-#ifdef newTimeBeforeStart
-	timeBeforeStart = newTimeBeforeStart;
-#endif
-
 	while(secondsPassed < timeBeforeStart)
 	{
 		secondsPassed = (clock() - startTime)/CLOCKS_PER_SEC;
@@ -85,14 +79,9 @@ FishController::FishController():
 		yaw = newYaw;
 		thrust = newThrust;
 		frequency = newFrequency;
-
-		//unsigned sleep(unsigned seconds);
-		//sleep(1);
-		//startTimer ++;
 	}
     	//Code block above to ensure fish is idle for initial period of time
-	if(secondsPassed >= timeBeforeStart)
-	{
+#endif
 		newSelectButton = resetSelectButtonValue;
 		newPitch = resetPitchValue;
 		newYaw = resetYawValue;
@@ -105,7 +94,6 @@ FishController::FishController():
 		yaw = newYaw;
 		thrust = newThrust;
 		frequency = newFrequency;
-	}
 
 #ifdef FISH4
     periodHalf = newPeriodHalf;
