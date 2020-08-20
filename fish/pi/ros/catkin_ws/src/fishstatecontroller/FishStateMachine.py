@@ -16,8 +16,12 @@
 #   - heading_setpoint
 #   - pitch_state (TODO)
 #   - pitch_setpoint (TODO)
-# Manual Testing Notes (TODO)
-# 
+# Manual Testing Notes
+# The results of each published topic in this node was tested for the following inputs:
+#   - target_found (topic) was True
+#   - target_found (topic) was False
+# Both of the above inputs were tested in each state (INIT, SEARCH, FOLLOW) of the state machine.
+# The program changed states and published to the pid_enable and heading... topics correctly 
 
 import rospy
 import roslib
@@ -76,7 +80,7 @@ class FishStateController():
             elif self.state == "FOLLOW":
                 if self.target_found:
                     self.update()
-                    print("Following target at: %d"%(self.fish_pose.pose.position))
+                    print("Following target at: %f, %f"%(self.fish_pose.pose.position.y, self.fish_pose.pose.position.z))
                 else:
                     self.transitionTo("SEARCH")
                     self.pid_enable_pub.publish(False)
@@ -99,7 +103,7 @@ class FishStateController():
         self.heading_state = ros_data
 
     def found_callback(self, ros_data):
-        self.target_found = ros_data
+        self.target_found = ros_data.data
 
     def pose_callback(self, ros_data):
         self.fish_pose = ros_data
