@@ -1,0 +1,13 @@
+<launch>
+    <node name="heading_controller" pkg="pid" type="controller" output="screen" >
+        <param name="Kp" value="5.0" />
+        <param name="Ki" value="0.0" />
+        <param name="Kd" value="0.1" />
+        <param name="upper_limit" value="10" />
+        <param name="lower_limit" value="-10" />
+        <param name="windup_limit" value="10" />
+        <param name="topic_from_plant" value="heading_state">
+        <param name="setpoint_topic" value="heading_setpoint">
+        <param name="topic_from_controller" value="heading_cmd">
+    </node>
+</launch>
