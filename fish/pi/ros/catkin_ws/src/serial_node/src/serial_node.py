@@ -33,7 +33,7 @@ class SerialBridge():
         self.CMD_MIN = 0
 
         self.buf = []
-        self.incomingStringLength = 31
+        self.incomingStringLength = 79
 
     def writeCmdArray(self, cmd):
         bytecmds = self.safeCmdToBytes(cmd)
@@ -82,6 +82,17 @@ class SerialBridge():
         values = [float(i) for i in arr]
         return values
 
+    # Listens to incoming fixed length data string from mbed.
+    # data[0]: roll
+    # data[1]: pitch
+    # data[2]: yaw
+    # data[3]: gyro_x
+    # data[4]: gyro_y
+    # data[5]: gyro_z
+    # data[6]: linaccel_x
+    # data[7]: linaccel_y
+    # data[8]: linaccel_z
+    # data[9]: angle to true north
     def listen(self):
         while not rospy.is_shutdown():
             if self._mbedSerial.inWaiting():
@@ -104,11 +115,17 @@ class SerialBridge():
                     imu_msg.orientation.z = quat_array[2]
                     imu_msg.orientation.w = quat_array[3]
                     imu_msg.orientation_covariance = [0.002, 0, 0, 0, 0.002, 0, 0, 0, 0.002]
+                    imu_msg.angular_velocity.x = data[3]
+                    imu_msg.angular_velocity.y = data[4]
+                    imu_msg.angular_velocity.z = data[5]
                     imu_msg.angular_velocity_covariance = [0.003, 0, 0, 0, 0.003, 0, 0, 0, 0.003]
+                    imu_msg.linear_acceleration.x = data[6]
+                    imu_msg.linear_acceleration.y = data[7]
+                    imu_msg.linear_acceleration.z = data[8]
                     imu_msg.linear_acceleration_covariance = [0.60, 0, 0, 0, 0.60, 0, 0, 0, 0.60]
                     self.imu_pub.publish(imu_msg)
                     angle_to_true_north = Float64()
-                    angle_to_true_north.data = data[3]
+                    angle_to_true_north.data = data[9]
                     self.compass_pub.publish(angle_to_true_north)
                     self.buf = []
 
