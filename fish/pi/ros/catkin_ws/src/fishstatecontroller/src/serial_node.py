@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-import serial
-from time import time, sleep
 
 import rospy
 import roslib
+import serial
+from time import time, sleep
 from std_msgs.msg import String, Float64
 from sensor_msgs.msg import Image, Imu
 import tf
