@@ -40,7 +40,7 @@
 #define resetPeriodHalfValue   416666    // 1/(2*frequency) -> us
 
 // Wait time setup to control when fish starts running after power on
-//#define pause_start
+#define pause_start
 
 // Value ranges
 #ifdef FISH4
