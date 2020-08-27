@@ -56,14 +56,6 @@ class ObjectTracker():
         self.hsv_upper_lower = self.hsv_lower_lower
         self.hsv_upper_upper = self.hsv_lower_upper
 
-        #for heading averaging
-        self.current_sum = 0
-        self.count = 0
-        self.current_slope = 0
-        self.last_point = 0
-        self.current_point = 0
-        self.average = 0
-
     def find_target(self):
         target_found, target_centroid, dist, offset = self.process_image(self.image)
         return (target_found, target_centroid, dist, offset)
@@ -104,7 +96,7 @@ class ObjectTracker():
         target_found = True
 
         #Calculate the object's distance and offset from center
-        height_px =  2 * target_centroid[1]
+        height_px =  2.0 * target_centroid[1]
         offset_px = -1.0*(target_centroid[0][0] - self.image_center[0]) , -1.0*(target_centroid[0][1] - self.image_center[1])
         distance = (self.focal_length * self.real_height) / height_px
         y_offset = (offset_px[0] * distance)/self.focal_length
@@ -122,6 +114,15 @@ class ObjectTracker():
         """Run the Distance Tracker with the input from the camera"""
         bridge = CvBridge()
         rate = rospy.Rate(24)
+
+        #for heading averaging
+        current_sum = 0.0
+        count = 0.0
+        current_slope = 0.0
+        last_point = 0.0
+        current_point = 0.0
+        average = 0.0
+
         while not rospy.is_shutdown():
             target_found, target_centroid, dist, offset = self.find_target()
             #print("EST DISTANCE: " + str(dist) + ' inches')
@@ -129,19 +130,24 @@ class ObjectTracker():
             #print("--------------")
             if target_found:
                 #heading averaging
-                self.last_point = self.current_point
-                self.current_point = offset[0]
-                new_slope = (self.current_point - self.last_point)
+                last_point = current_point
+                current_point = offset[0]
+                new_slope = (current_point - last_point)
                 if new_slope != 0:
                     new_slope = new_slope / abs(new_slope)
-                if self.current_slope == 1:
+                if current_slope == 1:
                     if new_slope < 0:
-                        self.average = self.current_sum / self.count
-                        self.current_sum = 0
-                        self.count = 0
-                self.current_sum += self.current_point
-                self.count += 1
-                self.current_slope = new_slope
+                        average = current_sum / count
+                        current_sum = 0.0
+                        count = 0.0
+                    #print("slope is 1")
+                current_sum += current_point
+                count += 1
+                #slope can never be 0 (kind of hacky solution to the situation where
+                # 'current_slope' is 0 and 'new_slope' is negative, which would cause
+                # the program to not take the average)
+                if new_slope != 0:
+                    current_slope = new_slope
                 #TODO pitch averaging
 
                 #Publish everything
@@ -158,7 +164,7 @@ class ObjectTracker():
 
                 self.pose_pub.publish(self.pose)
                 self.found_pub.publish(True)
-                self.average_heading_pub.publish(self.average)
+                self.average_heading_pub.publish(average)
                 #TODO publish the pitch average
 
             else:
