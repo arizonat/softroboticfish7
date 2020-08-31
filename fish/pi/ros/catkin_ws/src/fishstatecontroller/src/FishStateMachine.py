@@ -8,14 +8,18 @@
 #   - fish_pose
 #   - target_found
 #   - average_heading
-#   - average_pitch (TODO)
+#   - average_pitch
+#   - average_dist
 #   - target_centroid (TODO)
 # Published topics:
 #   - pid_enable
 #   - heading_state
 #   - heading_setpoint
-#   - pitch_state (TODO)
-#   - pitch_setpoint (TODO)
+#   - pitch_state
+#   - pitch_setpoint 
+#   - dist_state
+#   - dist_setpoint
+
 # Manual Testing Notes
 # The results of each published topic in this node was tested for the following inputs:
 #   - target_found (topic) was True
@@ -37,7 +41,7 @@ import numpy as np
 from fishstatecontroller.msg import State, Position
 
 class FishStateController():
-    def __init__(self, update_hz, heading_setpoint=0.0):
+    def __init__(self, update_hz, heading_setpoint=0.0, pitch_setpoint=0.0, dist_setpoint = 3.0):
         """
         update_hz: the update rate of the state machine
         """
@@ -58,8 +62,17 @@ class FishStateController():
         self.heading_state_pub = rospy.Publisher('heading_state', Float64, queue_size=10)
         self.heading_setpoint = heading_setpoint
         self.heading_setpoint_pub = rospy.Publisher('heading_setpoint', Float64, queue_size=10)
-        # TODO pitch state and setpoint parameters and publishers
-        # TODO distance state and setpoint parameters and publishers
+
+        self.pitch_state = None
+        self.pitch_state_pub = rospy.Publisher('pitch_state', Float64, queue_size=10)
+        self.pitch_setpoint = pitch_setpoint
+        self.pitch_setpoint_pub = rospy.Publisher('pitch_setpoint', Float64, queue_size=10)
+
+        self.dist_state = None
+        self.dist_state_pub = rospy.Publisher('dist_state', Float64, queue_size=10)
+        self.dist_setpoint = dist_setpoint
+        self.dist_setpoint_pub = rospy.Publisher('dist_setpoint', Float64, queue_size=10)
+
         self.transitionTo("INIT")
 
     def run(self):
@@ -96,11 +109,24 @@ class FishStateController():
 
     def update(self):
         self.pid_enable_pub.publish(True)
+        #heading
         self.heading_state_pub.publish(self.heading_state)
         self.heading_setpoint_pub.publish(self.heading_setpoint)
+        #pitch
+        self.pitch_state_pub.publish(self.pitch_state)
+        self.pitch_setpoint_pub.publish(self.pitch_setpoint)
+        #distance
+        self.dist_state_pub.publish(self.dist_state)
+        self.dist_setpoint_pub.publish(self.dist_setpoint)
 
     def heading_callback(self, ros_data):
         self.heading_state = ros_data
+
+    def pitch_callback(self, ros_data):
+        self.pitch_state = ros_data
+
+    def dist_callback(self, ros_data):
+        self.dist_state = ros_data
 
     def found_callback(self, ros_data):
         self.target_found = ros_data.data
@@ -114,9 +140,12 @@ if __name__ == '__main__':
     state_machine = FishStateController(update_hz)
  
     rospy.Subscriber('average_heading', Float64, state_machine.heading_callback)
+    rospy.Subscriber('average_pitch', Float64, state_machine.pitch_callback)
+    rospy.Subscriber('average_dist', Float64, state_machine.dist_callback)
+
     rospy.Subscriber('target_found', Bool, state_machine.found_callback)
     rospy.Subscriber('fish_pose', PoseStamped, state_machine.pose_callback)
 
     print("Beginning finite state machine at %d hz\n"%(update_hz))
     state_machine.run()
-    print("Done\n")
+    print("\ndone\n")

@@ -8,7 +8,7 @@ from std_msgs.msg import String, Float64
 from sensor_msgs.msg import Image, Imu
 import tf
 #from geometry_msgs.msg import PoseStamped
-
+#TODO need to look at the signs for the pitch, yaw, and thrust commands
 class SerialBridge():
     #MEASURE_TOPIC = "measurements"
     #IMU_TOPIC = "imu_data"
@@ -111,13 +111,13 @@ class SerialBridge():
 
     def heading_callback(self, ros_data):
         self.cmd_received = True
-        self.yaw = int(128 + ros_data)
+        self.yaw = int(128 + ros_data.data)
 
     def pitch_callback(self, ros_data):
-        self.pitch = int(128 + ros_data)
+        self.pitch = int(128 + ros_data.data)
     
     def thrust_callback(self, ros_data):
-        self.thrust = int(128 + ros_data)
+        self.thrust = int(128 + ros_data.data)
         #self.frequency = ?? (should frequency be dependent on the distance between the fish and the target?)
     
     def write(self):
@@ -145,4 +145,4 @@ if __name__ == '__main__':
     rospy.Subscriber('thrust_cmd', Float64, piSerial.thrust_callback)
     
     piSerial.write()
-    print("\nDone\n")
+    print("\ndone\n")

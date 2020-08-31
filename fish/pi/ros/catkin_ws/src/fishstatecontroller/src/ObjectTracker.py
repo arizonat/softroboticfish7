@@ -11,7 +11,8 @@
 #   - color_mask
 #   - target_found
 #   - average_heading
-#   - average_pitch (TODO)
+#   - average_pitch
+#   - average_dist
 # Manual Testing Notes
 # The result of each published topic was analyzed for the following inputs:
 #   - No input camera image (raspicam_node not running)
@@ -19,6 +20,9 @@
 #   - Stationary target found in picture
 #   - Moving target found in picture
 # All published topics behaved as expected
+#
+# TODO Perform some kind of averaging on the pitch and distance measurements (i.e.
+# a moving average with a 5-10 sample window size); see other TODOs
 
 import rospy
 import roslib
@@ -43,7 +47,8 @@ class ObjectTracker():
         self.mask_pub = rospy.Publisher('color_mask', Image, queue_size=10)
         self.found_pub = rospy.Publisher('target_found', Bool, queue_size=10)
         self.average_heading_pub = rospy.Publisher('average_heading', Float64, queue_size=10)
-        #self.average_pitch_pub = TODO
+        self.average_pitch_pub = rospy.Publisher('average_pitch', Float64, queue_size=10)
+        self.average_dist_pub = rospy.Publisher('average_dist', Float64, queue_size=10)
 
         # Initiate position msg instance and new publisher for data
         #self.position_msg = Position()
@@ -149,6 +154,7 @@ class ObjectTracker():
                 if new_slope != 0:
                     current_slope = new_slope
                 #TODO pitch averaging
+                #TODO dist averaging
 
                 #Publish everything
                 self.pose.header.seq = 1
@@ -165,7 +171,8 @@ class ObjectTracker():
                 self.pose_pub.publish(self.pose)
                 self.found_pub.publish(True)
                 self.average_heading_pub.publish(average)
-                #TODO publish the pitch average
+                self.average_pitch_pub.publish(offset[1])
+                self.average_dist_pub.publish(dist)
 
             else:
                 self.found_pub.publish(False)
@@ -182,4 +189,4 @@ if __name__ == '__main__':
     rospy.Subscriber('/raspicam_node/image/compressed', CompressedImage, tracker.callback)
     print("Beginning position tracker at 24hz\n")
     tracker.run()
-    print("Done\n")
+    print("\ndone\n")
