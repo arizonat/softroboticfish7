@@ -141,8 +141,8 @@ if __name__ == '__main__':
     piSerial = SerialBridge()
 
     rospy.Subscriber('heading_cmd', Float64, piSerial.heading_callback)
-    #rospy.Subscriber('pitch_cmd', Float64, piSerial.pitch_callback) TODO
-    #rospy.Subscriber('thrust_cmd', Float64, piSerial.thrust_callback) TODO
+    rospy.Subscriber('pitch_cmd', Float64, piSerial.pitch_callback)
+    rospy.Subscriber('thrust_cmd', Float64, piSerial.thrust_callback)
     
     piSerial.write()
     print("\nDone\n")
