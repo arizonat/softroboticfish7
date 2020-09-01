@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import serial
 from time import time, sleep
+import math
 
 import rospy
 import roslib
@@ -104,7 +105,7 @@ class SerialBridge():
                     msg = self.convert(self.buf)
                     data = self.parseSensorData(msg)
                     rospy.loginfo(data)
-                    quat_array = tf.transformations.quaternion_from_euler(data[1], data[0], data[2])
+                    quat_array = tf.transformations.quaternion_from_euler(data[1] * math.pi/180, data[0] * math.pi/180, data[2] * math.pi/180)
                     imu_msg = Imu()
                     h = Header()
                     h.stamp = rospy.Time.now()
