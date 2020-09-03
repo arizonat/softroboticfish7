@@ -111,13 +111,13 @@ class SerialBridge():
 
     def heading_callback(self, ros_data):
         self.cmd_received = True
-        self.yaw = int(128 + ros_data.data)
+        self.yaw = int(128 - (127 *ros_data.data))
 
     def pitch_callback(self, ros_data):
-        self.pitch = int(128 + ros_data.data)
+        self.pitch = int(128 - (127 * ros_data.data))
     
     def thrust_callback(self, ros_data):
-        self.thrust = int(128 + ros_data.data)
+        self.thrust = int(128 - (127 * ros_data.data))
         #self.frequency = ?? (should frequency be dependent on the distance between the fish and the target?)
     
     def write(self):
