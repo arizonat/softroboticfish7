@@ -16,7 +16,7 @@ logfile = open("logs/" + testname, "w")
 ser.flush()
 
 buf = []
-incomingStrLength = 31
+incomingStrLength = 79
 data = ''
 
 def convert(s): 
