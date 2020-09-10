@@ -37,8 +37,9 @@ int main() {
   pc.printf("SUCCESSFUL? %d\r\n", status);
   while(1) {
     // pc.printf("TEMP: %d\r\n", imu.getTemp());
-    Vector euler;
+    Vector euler; // = imu.getVector(VECTOR_EULER);
     unsigned char s, g, a, w;
+    imu.getCalibration(&s, &g, &a, &w);
     for(int i = 0; i < 10; i++) {
       euler = imu.getVector(VECTOR_EULER);
       imu.getCalibration(&s, &g, &a, &w);
@@ -46,15 +47,18 @@ int main() {
       pitch = abs(euler[2]/180.0);
       roll = abs(euler[1]/180.0);
       yaw = abs((euler[0]-180.0)/180.0);
-      wait_ms(100);
+//      wait_ms(100);
 
     }
 //    double tempfloat = 21.2;
-//    Vector gyro = imu.getVector(VECTOR_GYROSCOPE);
+    Vector gyro = imu.getVector(VECTOR_GYROSCOPE);
     Vector mag = imu.getVector(VECTOR_MAGNETOMETER);
+    Vector acc = imu.getVector(VECTOR_LINEARACCEL);
     char calibration[22];
     bool goodData = imu.getSensorOffsets(calibration);
+//    imu.setSensorOffsets(calibration);
     if(goodData && needData) {
+//      imu.setSensorOffsets(calibration);
       FILE *fp = fopen("/local/calib", "w");
       for(int i = 0; i < 22; i++) {
         fprintf(fp, "%c", calibration[i]);
@@ -65,6 +69,7 @@ int main() {
     }
 //    pc.printf("pitch: %.2f, roll: %.2f, yaw: %.2f, test: %.2f\r\n",euler[2], euler[1], euler[0], tempfloat);
 //    pc.printf("gyro_pitch: %.2f, gyro_roll: %.2f, gyro_yaw: %.2f\r\n", gyro[0], gyro[1], gyro[2]);
+//    pc.printf("acc_x: %.2f, acc_y: %.2f, acc_z: %.2f\r\n", acc[0], acc[1], acc[2]);
 //    pc.printf("mag_x: %.2f, mag_y: %.2f, mag_z: %.2f\r\n", mag[0], mag[1], mag[2]);
 //    pc.printf("sys: %d, gyro: %d, accel: %d, mag: %d\r\n", s, g, a, w);
     // pc.printf("tempfloat: %.2f\r\n", tempfloat);
@@ -76,11 +81,13 @@ int main() {
 //    pc.printf("Angle to true north: %.2f\r\n", angle2TrueNorth);
 //    pi->printf("Angle to true north: %.2f\r\n", angle2TrueNorth);
 
-    pi->printf("%07.2f,%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0], angle2TrueNorth);
+//    pi->printf("%07.2f,%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0], angle2TrueNorth);
+    pi->printf("%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0], gyro[0], gyro[1], gyro[2], acc[0], acc[1], acc[2], angle2TrueNorth);
 
 //    pi->printf("%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0]);
 //    pc.printf("%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0]);
-    wait(1.0);
+//    wait(0.1);
+    wait_ms(100);
   }
 
   return 0;
