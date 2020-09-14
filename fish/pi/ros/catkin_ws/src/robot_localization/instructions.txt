@@ -1,3 +1,16 @@
 This directory (.../catkin_ws/src/robot_localization) is for reference ONLY.
 
-<WIP>
+1. sudo apt-get install ros-kinetic-robot_localization
+
+2. Check for relevant files in /opt/ros/melodic/share/robot_localization
+
+3. Copy + paste fish repo's ekf_imu_only.launch into 'launch' folder
+
+4. Copy + paste fish repo's ekf_imu_only.yaml into 'params' folder
+
+5. To source, run source /opt/ros/melodic/setup.bash in separate terminal. 
+
+6. Roslaunch ekf_imu_only.launch for 'imu only' EKF node, remember to have IMU data being published in the background beforehand.
+
+7. For info on how to add more sensors, check out the robot_localization wiki http://docs.ros.org/melodic/api/robot_localization/html/index.html
+ 
