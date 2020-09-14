@@ -1,6 +1,6 @@
 This directory (.../catkin_ws/src/robot_localization) is for reference ONLY.
 
-1. sudo apt-get install ros-kinetic-robot_localization
+1. sudo apt-get install ros-melodic-robot_localization
 
 2. Check for relevant files in /opt/ros/melodic/share/robot_localization
 
