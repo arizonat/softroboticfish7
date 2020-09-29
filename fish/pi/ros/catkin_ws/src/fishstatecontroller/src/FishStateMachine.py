@@ -19,6 +19,9 @@
 #   - pitch_setpoint 
 #   - dist_state
 #   - dist_setpoint
+#   - heading_cmd
+#   - pitch_cmd
+#   - thrust_cmd
 
 # Manual Testing Notes
 # The results of each published topic in this node was tested for the following inputs:
@@ -73,6 +76,10 @@ class FishStateController():
         self.dist_setpoint = dist_setpoint
         self.dist_setpoint_pub = rospy.Publisher('dist_setpoint', Float64, queue_size=10)
 
+        self.heading_cmd_pub = rospy.Publisher('heading_cmd', Float64, queue_size=10)
+        self.pitch_cmd_pub = rospy.Publisher('pitch_cmd', Float64, queue_size=10)
+        self.thrust_cmd_pub = rospy.Publisher('thrust_cmd', Float64, queue_size=10)
+
         self.transitionTo("INIT")
 
     def run(self):
@@ -86,13 +93,14 @@ class FishStateController():
             elif self.state == "SEARCH":
                 if self.target_found:
                     self.transitionTo("FOLLOW")
-                    self.update()
+                    self.publish_states()
                 else:
                     self.pid_enable_pub.publish(False)
+                    self.publish_search_cmd() #Publish HARD LEFT
 
             elif self.state == "FOLLOW":
                 if self.target_found:
-                    self.update()
+                    self.publish_states()
                     print("Following target at: %f, %f"%(self.fish_pose.pose.position.y, self.fish_pose.pose.position.z))
                 else:
                     self.transitionTo("SEARCH")
@@ -107,7 +115,7 @@ class FishStateController():
         self.state_msg.state = self.state
         self.state_pub.publish(self.state_msg)
 
-    def update(self):
+    def publish_states(self):
         self.pid_enable_pub.publish(True)
         #heading
         self.heading_state_pub.publish(self.heading_state)
@@ -118,6 +126,12 @@ class FishStateController():
         #distance
         self.dist_state_pub.publish(self.dist_state)
         self.dist_setpoint_pub.publish(self.dist_setpoint)
+
+    def publish_search_cmd(self):
+        #Publish a hard left to the heading, pitch, and thrust commands if in SEARCH state
+        self.heading_cmd_pub.publish(1)
+        self.pitch_cmd_pub.publish(0)
+        self.thrust_cmd_pub.publish(1)
 
     def heading_callback(self, ros_data):
         self.heading_state = ros_data
