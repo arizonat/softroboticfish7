@@ -1,0 +1,78 @@
+<!--Launch the entire SoFi autocontroller process></!-->
+
+<launch>
+
+<!--Launch the raspicam node/!-->
+    <arg name="enable_raw" default="false"/>
+    <arg name="enable_imv" default="false"/>
+    <arg name="camera_id" default="0"/>
+    <arg name="camera_frame_id" default="raspicam"/>
+    <arg name="camera_name" default="camerav2_410x308"/>
+
+    <node type="raspicam_node" pkg="raspicam_node" name="raspicam_node" output="screen">
+        <param name="private_topics" value="true"/>
+
+        <param name="camera_frame_id" value="$(arg camera_frame_id)"/>
+        <param name="enable_raw" value="$(arg enable_raw)"/>
+        <param name="enable_imv" value="$(arg enable_imv)"/>
+        <param name="camera_id" value="$(arg camera_id)"/>
+
+        <param name="camera_info_url" value="package://raspicam_node/camera_info/camerav2_410x308.yaml"/>
+        <param name="camera_name" value="$(arg camera_name)"/>
+        <param name="width" value="410"/>
+        <param name="height" value="308"/>
+
+        <param name="framerate" value="30"/>
+        <param name="exposure_mode" value="antishake"/>
+        <param name="shutter_speed" value="0"/>
+    </node>
+
+<!--Launch the state estimation node/!-->
+    <node type="fishstatecontroller" pkg="fishstatecontroller" name="state_estimation" output="screen" />
+
+<!--Launch the finite state machine node/!-->
+    <node type="fishstatecontroller" pkg="fishstatecontroller" name="finite_state_machine" output="screen" />
+
+<!--Launch the PID controller nodes/!-->
+    <node name="heading_controller" pkg="pid" type="controller" output="screen" >
+        <param name="Kp" value="1.5" />
+        <param name="Ki" value="0.0" />
+        <param name="Kd" value="0.0" />
+        <param name="upper_limit" value="1" />
+        <param name="lower_limit" value="-1" />
+        <param name="windup_limit" value="1" />
+        <param name="topic_from_plant" value="heading_state" />
+        <param name="setpoint_topic" value="heading_setpoint" />
+        <param name="topic_from_controller" value="heading_cmd" />
+    </node>
+
+    <node name="pitch_controller" pkg="pid" type="controller" output="screen" >
+        <param name="Kp" value="1.5" />
+        <param name="Ki" value="0.0" />
+        <param name="Kd" value="0.0" />
+        <param name="upper_limit" value="1" />
+        <param name="lower_limit" value="-1" />
+        <param name="windup_limit" value="1" />
+        <param name="topic_from_plant" value="pitch_state" />
+        <param name="setpoint_topic" value="pitch_setpoint" />
+        <param name="topic_from_controller" value="pitch_cmd" />
+    </node>
+
+    <node name="thrust_controller" pkg="pid" type="controller" output="screen" >
+        <param name="Kp" value="1.5" />
+        <param name="Ki" value="0.0" />
+        <param name="Kd" value="0.0" />
+        <param name="upper_limit" value="1" />
+        <param name="lower_limit" value="-1" />
+        <param name="windup_limit" value="1" />
+        <param name="topic_from_plant" value="dist_state" />
+        <param name="setpoint_topic" value="dist_setpoint" />
+        <param name="topic_from_controller" value="thrust_cmd" />
+    </node>
+
+    <node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" />
+
+<!--Launch the serial node/!-->
+    <node type="fishstatecontroller" pkg="fishstatecontroller" name="serial" output="screen" /> 
+
+</launch>
