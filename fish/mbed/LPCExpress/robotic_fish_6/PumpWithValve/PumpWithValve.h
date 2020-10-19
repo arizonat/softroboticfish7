@@ -19,7 +19,7 @@
 
 #define count2rev 			12
 #define valveMotorGearRatio 297.92
-#define KpFreq	 			50000.0//10000.0 // frequency on the order of 10^-7
+#define KpFreq	 			10000.0//10000.0 // frequency on the order of 10^-7
 #define KdFreq	 			0.00
 #define valveOffsetGain 	0.5
 
