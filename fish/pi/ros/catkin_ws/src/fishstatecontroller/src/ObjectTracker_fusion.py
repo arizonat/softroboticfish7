@@ -28,7 +28,8 @@ import rospy
 import roslib
 from std_msgs.msg import String, Float64, Bool
 from sensor_msgs.msg import Image, CompressedImage, Imu
-from geometry_msgs.msg import PoseStamped
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import PoseStamped, PoseWithCovariance, PoseWithCovarianceStamped
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
@@ -44,8 +45,8 @@ class ObjectTracker():
 
         self.imu_msg = None
         self.imu_pub = rospy.Publisher('/imu/data', Imu, queue_size=10)
-        self.pose = PoseStamped()
-        self.pose_pub = rospy.Publisher('fish_pose', PoseStamped, queue_size=10)
+        self.pose = PoseWithCovarianceStamped() #TODO replace with Odometry (?)
+        self.pose_pub = rospy.Publisher('fish_pose', PoseWithCovarianceStamped, queue_size=10)
         self.mask_pub = rospy.Publisher('color_mask', Image, queue_size=10)
         self.found_pub = rospy.Publisher('target_found', Bool, queue_size=10)
         self.average_heading_pub = rospy.Publisher('average_heading', Float64, queue_size=10)
@@ -159,24 +160,30 @@ class ObjectTracker():
                 #TODO dist averaging
 
                 #TODO IMU + Camera data fusion
-                #Publish PosewithCovarianceStamped and IMU messages for EKF to fuse
+                #Publish Odometry and IMU messages for EKF to fuse
                 #NOTE: All sensor data should in "sofi_cam" frame
 
                 #Publish IMU data
+                #TODO Convert IMU to Twist
+                 # Or should serial node convert?
+                self.imu_pub.publish(ros_data)
 
                 #Publish Camera data
-
-                #Publish everything
                 self.pose.header.seq = 1
                 self.pose.header.stamp = rospy.Time.now()
                 self.pose.header.frame_id = "sofi_cam"
-                self.pose.pose.position.x = dist
-                self.pose.pose.position.y = offset[0]
-                self.pose.pose.position.z = offset[1]
-                self.pose.pose.orientation.x = 0
-                self.pose.pose.orientation.y = 0
-                self.pose.pose.orientation.z = 0
-                self.pose.pose.orientation.w = 1
+
+                p = PoseWithCovariance
+                p.pose.position.x = dist
+                p.pose.position.y = offset[0]
+                p.pose.position.z = offset[1]
+                p.pose.orientation.x = 0
+                p.pose.orientation.y = 0
+                p.pose.pose.orientation.z = 0
+                p.pose.pose.orientation.w = 1
+                p.covariance = [] #TODO determine covariance matrix
+
+                self.pose.pose = p
 
                 self.pose_pub.publish(self.pose)
                 self.found_pub.publish(True)
