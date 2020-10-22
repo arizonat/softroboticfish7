@@ -29,7 +29,7 @@ import roslib
 from std_msgs.msg import String, Float64, Bool
 from sensor_msgs.msg import Image, CompressedImage, Imu
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import PoseStamped, PoseWithCovariance, PoseWithCovarianceStamped
+from geometry_msgs.msg import PoseStamped, PoseWithCovariance, PoseWithCovarianceStamped, TwistWithCovarianceStamped
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
@@ -43,8 +43,8 @@ class ObjectTracker():
         self.real_height = 1.25                 #the real height of the target object
         self.image_center = (635.08, 469.80)    #the image center of the camera
 
-        self.imu_msg = None
-        self.imu_pub = rospy.Publisher('/imu/data', Imu, queue_size=10)
+        self.twist_msg = None
+        self.twist_pub = rospy.Publisher('/fish_twist', TwistWithCovarianceStamped, queue_size=10)
         self.pose = PoseWithCovarianceStamped() #TODO replace with Odometry (?)
         self.pose_pub = rospy.Publisher('fish_pose', PoseWithCovarianceStamped, queue_size=10)
         self.mask_pub = rospy.Publisher('color_mask', Image, queue_size=10)
@@ -166,7 +166,7 @@ class ObjectTracker():
                 #Publish IMU data
                 #TODO Convert IMU to Twist
                  # Or should serial node convert?
-                self.imu_pub.publish(ros_data)
+                self.twist_pub.publish(self.twist_msg)
 
                 #Publish Camera data
                 self.pose.header.seq = 1
@@ -202,14 +202,14 @@ class ObjectTracker():
         bridge = CvBridge()
         self.image = bridge.compressed_imgmsg_to_cv2(ros_data, desired_encoding='passthrough')
 
-    def imu_cb(self, ros_data):
-        self.imu_msg = ros_data
+    def twist_cb(self, ros_data):
+        self.twist_msg = ros_data
 
 if __name__ == '__main__':
     rospy.init_node('state_estimation', anonymous=True)
     tracker = ObjectTracker()
     rospy.Subscriber('/raspicam_node/image/compressed', CompressedImage, tracker.callback)
-    rospy.Subscriber('/imu/data/pre_EKF', Imu, tracker.imu_cb)
+    rospy.Subscriber('/imu/data/vel', Imu, tracker.imu_cb)
     print("Beginning position tracker at 24hz\n")
     tracker.run()
     print("\ndone\n")
