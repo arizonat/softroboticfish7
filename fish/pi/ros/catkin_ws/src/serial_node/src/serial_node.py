@@ -23,7 +23,7 @@ class SerialBridge():
         #rospy.loginfo("Serial node started.")
         print('Serial node started.')
         
-        self.imu_pub = rospy.Publisher("/imu/data", Imu, queue_size=1)
+        self.imu_pub = rospy.Publisher("/imu/data/raw", Imu, queue_size=1)
         self.compass_pub = rospy.Publisher("angle_to_true_north", Float64, queue_size=1)
         rospy.Subscriber("command", String, self.callback)
 

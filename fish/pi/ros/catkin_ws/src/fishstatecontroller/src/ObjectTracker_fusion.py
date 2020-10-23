@@ -26,7 +26,7 @@
 
 import rospy
 import roslib
-from std_msgs.msg import String, Float64, Bool
+from std_msgs.msg import String, Float64, Bool, Header
 from sensor_msgs.msg import Image, CompressedImage, Imu
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import PoseStamped, PoseWithCovariance, PoseWithCovarianceStamped, TwistWithCovarianceStamped
@@ -37,12 +37,13 @@ from fishstatecontroller.msg import State, Position
 
 class ObjectTracker():
     def __init__(self):
-        self.image = np.zeros((960,1280,3), np.uint8)
+        self.image = np.zeros((308,410,3), np.uint8)
         self.subsample_ratio = 0.25             # amount to shrink image, maintains aspect ratio
-        self.focal_length = 993.0               #the focal length of the camera
-        self.real_height = 1.25                 #the real height of the target object
-        self.image_center = (635.08, 469.80)    #the image center of the camera
+        self.focal_length = 318.27               #the focal length of the camera
+        self.real_height = 2.0                 #the real height of the target object
+        self.image_center = (203.55, 150.58)    #the image center of the camera
 
+	self.imu_msg = None
         self.twist_msg = None
         self.twist_pub = rospy.Publisher('/fish_twist', TwistWithCovarianceStamped, queue_size=10)
         self.pose = PoseWithCovarianceStamped() #TODO replace with Odometry (?)
@@ -137,6 +138,7 @@ class ObjectTracker():
             #print("EST OFFSET: " + str(offset) + ' inches')
             #print("--------------")
             if target_found:
+                print("Found.")
                 #heading averaging
                 last_point = current_point
                 current_point = offset[0]
@@ -159,29 +161,45 @@ class ObjectTracker():
                 #TODO pitch averaging
                 #TODO dist averaging
 
-                #TODO IMU + Camera data fusion
-                #Publish Odometry and IMU messages for EKF to fuse
-                #NOTE: All sensor data should in "sofi_cam" frame
+                #IMU + Camera data fusion
+                #Publish Pose and Twist (w/ covariances) messages for EKF to fuse
+                #NOTE: All sensor data should in "sofi_cam" frame for now
 
-                #Publish IMU data
-                #TODO Convert IMU to Twist
-                 # Or should serial node convert?
+                #Convert and publish IMU data as Twist
+                self.twist_msg = TwistWithCovarianceStamped()
+                h = Header()
+                h.stamp = rospy.Time.now()
+                h.frame_id = "base_link" #TODO convert to base_link frame
+                self.twist_msg.header = h
+
+                # Compute cross product of IMU angular velocities and distance to object to estimate object's tangential velocity
+                omega = [-self.imu_msg.angular_velocity.x, -self.imu_msg.angular_velocity.y, -self.imu_msg.angular_velocity.z]
+                r = [dist, offset[0], offset[1]]
+                v_tan = np.cross(omega, r)
+
+                self.twist_msg.twist.twist.linear.x = v_tan[0]
+                self.twist_msg.twist.twist.linear.y = v_tan[1]
+                self.twist_msg.twist.twist.linear.z = v_tan[2]
+                self.twist_msg.twist.twist.angular.x = 0
+                self.twist_msg.twist.twist.angular.y = 0
+                self.twist_msg.twist.twist.angular.z = 0
+                self.twist_msg.twist.covariance = [0.003, 0, 0, 0, 0, 0, 0, 0.003, 0, 0, 0, 0, 0, 0, 0.003, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0.1] #TODO determine covariance matrix
                 self.twist_pub.publish(self.twist_msg)
 
                 #Publish Camera data
                 self.pose.header.seq = 1
                 self.pose.header.stamp = rospy.Time.now()
-                self.pose.header.frame_id = "sofi_cam"
+                self.pose.header.frame_id = "odom"
 
-                p = PoseWithCovariance
+                p = PoseWithCovariance()
                 p.pose.position.x = dist
                 p.pose.position.y = offset[0]
                 p.pose.position.z = offset[1]
                 p.pose.orientation.x = 0
                 p.pose.orientation.y = 0
-                p.pose.pose.orientation.z = 0
-                p.pose.pose.orientation.w = 1
-                p.covariance = [] #TODO determine covariance matrix
+                p.pose.orientation.z = 0
+                p.pose.orientation.w = 1
+                p.covariance = [0.003, 0, 0, 0, 0, 0, 0, 0.003, 0, 0, 0, 0, 0, 0, 0.003, 0, 0, 0, 0, 0, 0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0] #TODO determine covariance matrix
 
                 self.pose.pose = p
 
@@ -194,7 +212,7 @@ class ObjectTracker():
             else:
                 self.found_pub.publish(False)
 
-                #TODO IMU only fusion
+                #TODO IMU only
 
             rate.sleep()
 
@@ -202,14 +220,14 @@ class ObjectTracker():
         bridge = CvBridge()
         self.image = bridge.compressed_imgmsg_to_cv2(ros_data, desired_encoding='passthrough')
 
-    def twist_cb(self, ros_data):
-        self.twist_msg = ros_data
+    def imu_cb(self, ros_data):
+        self.imu_msg = ros_data
 
 if __name__ == '__main__':
     rospy.init_node('state_estimation', anonymous=True)
     tracker = ObjectTracker()
     rospy.Subscriber('/raspicam_node/image/compressed', CompressedImage, tracker.callback)
-    rospy.Subscriber('/imu/data/vel', Imu, tracker.imu_cb)
+    rospy.Subscriber('/imu/data/raw', Imu, tracker.imu_cb)
     print("Beginning position tracker at 24hz\n")
     tracker.run()
     print("\ndone\n")
