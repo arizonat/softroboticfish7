@@ -190,7 +190,10 @@ class ObjectTracker():
                     self.twist_msg.twist.covariance = [0.003, 0, 0, 0, 0, 0, 0, 0.003, 0, 0, 0, 0, 0, 0, 0.003, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0.1] #TODO determine covariance matrix
                     self.twist_pub.publish(self.twist_msg)
 
-                    #Publish Imu message
+                    #Publish Imu message (after flipping acceleration sign)
+                    self.imu_msg.linear_acceleration.x = -self.imu_msg.linear_acceleration.x
+                    self.imu_msg.linear_acceleration.y = -self.imu_msg.linear_acceleration.y
+                    self.imu_msg.linear_acceleration.z = -self.imu_msg.linear_acceleration.z
                     self.imu_pub.publish(self.imu_msg)
 
                 #Publish PoseWithCovarianceStamped from raspicam
