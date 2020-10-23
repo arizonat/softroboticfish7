@@ -44,6 +44,7 @@ class ObjectTracker():
         self.image_center = (203.55, 150.58)    #the image center of the camera
 
 	self.imu_msg = None
+        self.imu_pub = rospy.Publisher('/imu/data', Imu, queue_size=10)
         self.twist_msg = None
         self.twist_pub = rospy.Publisher('/fish_twist', TwistWithCovarianceStamped, queue_size=10)
         self.pose = PoseWithCovarianceStamped() #TODO replace with Odometry (?)
@@ -162,31 +163,37 @@ class ObjectTracker():
                 #TODO dist averaging
 
                 #IMU + Camera data fusion
-                #Publish Pose and Twist (w/ covariances) messages for EKF to fuse
                 #NOTE: All sensor data should in "sofi_cam" frame for now
 
-                #Convert and publish IMU data as Twist
-                self.twist_msg = TwistWithCovarianceStamped()
-                h = Header()
-                h.stamp = rospy.Time.now()
-                h.frame_id = "base_link" #TODO convert to base_link frame
-                self.twist_msg.header = h
+                #IMU
+                #1) Convert euler rates to linear velocities & publish separately
+                #2) Publish original Imu message
+                if self.imu_msg is not None:
+                    self.twist_msg = TwistWithCovarianceStamped()
+                    h = Header()
+                    h.stamp = rospy.Time.now()
+                    h.frame_id = "base_link" #TODO convert to base_link frame
+                    self.twist_msg.header = h
 
-                # Compute cross product of IMU angular velocities and distance to object to estimate object's tangential velocity
-                omega = [-self.imu_msg.angular_velocity.x, -self.imu_msg.angular_velocity.y, -self.imu_msg.angular_velocity.z]
-                r = [dist, offset[0], offset[1]]
-                v_tan = np.cross(omega, r)
+                    #Compute cross product of IMU angular velocities and distance to object to estimate object's tangential velocity
+                    omega = [-self.imu_msg.angular_velocity.x, -self.imu_msg.angular_velocity.y, -self.imu_msg.angular_velocity.z]
+                    r = [dist, offset[0], offset[1]]
+                    v_tan = np.cross(omega, r)
 
-                self.twist_msg.twist.twist.linear.x = v_tan[0]
-                self.twist_msg.twist.twist.linear.y = v_tan[1]
-                self.twist_msg.twist.twist.linear.z = v_tan[2]
-                self.twist_msg.twist.twist.angular.x = 0
-                self.twist_msg.twist.twist.angular.y = 0
-                self.twist_msg.twist.twist.angular.z = 0
-                self.twist_msg.twist.covariance = [0.003, 0, 0, 0, 0, 0, 0, 0.003, 0, 0, 0, 0, 0, 0, 0.003, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0.1] #TODO determine covariance matrix
-                self.twist_pub.publish(self.twist_msg)
+                    #Publish TwistWithCovarianceStamped message
+                    self.twist_msg.twist.twist.linear.x = v_tan[0]
+                    self.twist_msg.twist.twist.linear.y = v_tan[1]
+                    self.twist_msg.twist.twist.linear.z = v_tan[2]
+                    self.twist_msg.twist.twist.angular.x = 0
+                    self.twist_msg.twist.twist.angular.y = 0
+                    self.twist_msg.twist.twist.angular.z = 0
+                    self.twist_msg.twist.covariance = [0.003, 0, 0, 0, 0, 0, 0, 0.003, 0, 0, 0, 0, 0, 0, 0.003, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0.1] #TODO determine covariance matrix
+                    self.twist_pub.publish(self.twist_msg)
 
-                #Publish Camera data
+                    #Publish Imu message
+                    self.imu_pub.publish(self.imu_msg)
+
+                #Publish PoseWithCovarianceStamped from raspicam
                 self.pose.header.seq = 1
                 self.pose.header.stamp = rospy.Time.now()
                 self.pose.header.frame_id = "odom"
@@ -212,7 +219,7 @@ class ObjectTracker():
             else:
                 self.found_pub.publish(False)
 
-                #TODO IMU only
+                #TODO IMU only (?)
 
             rate.sleep()
 
