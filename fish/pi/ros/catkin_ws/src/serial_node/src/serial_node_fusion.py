@@ -11,7 +11,7 @@ from sensor_msgs.msg import Imu
 from std_msgs.msg import Float64
 from std_msgs.msg import Header
 import tf
-#from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import TwistWithCovarianceStamped
 
 class SerialBridge():
     #MEASURE_TOPIC = "measurements"
@@ -23,7 +23,7 @@ class SerialBridge():
         #rospy.loginfo("Serial node started.")
         print('Serial node started.')
         
-        self.imu_pub = rospy.Publisher("/imu/data/raw", Imu, queue_size=1)
+        self.twist_pub = rospy.Publisher("/imu/data/vel", TwistWithCovarianceStamped, queue_size=1)
         self.compass_pub = rospy.Publisher("angle_to_true_north", Float64, queue_size=1)
         rospy.Subscriber("command", String, self.callback)
 
@@ -105,26 +105,20 @@ class SerialBridge():
                     msg = self.convert(self.buf)
                     data = self.parseSensorData(msg)
                     rospy.loginfo(data)
-                    quat_array = tf.transformations.quaternion_from_euler(data[1] * math.pi/180, data[0] * math.pi/180, data[2] * math.pi/180)
-                    imu_msg = Imu()
+                    #quat_array = tf.transformations.quaternion_from_euler(data[1] * math.pi/180, data[0] * math.pi/180, data[2] * math.pi/180)
+                    twist_msg = TwistWithCovarianceStamped()
                     h = Header()
                     h.stamp = rospy.Time.now()
-                    h.frame_id = "base_link"
-                    imu_msg.header = h
-                    imu_msg.orientation.x = quat_array[0]
-                    imu_msg.orientation.y = quat_array[1]
-                    imu_msg.orientation.z = quat_array[2]
-                    imu_msg.orientation.w = quat_array[3]
-                    imu_msg.orientation_covariance = [0.002, 0, 0, 0, 0.002, 0, 0, 0, 0.002]
-                    imu_msg.angular_velocity.x = data[3]
-                    imu_msg.angular_velocity.y = data[4]
-                    imu_msg.angular_velocity.z = data[5]
-                    imu_msg.angular_velocity_covariance = [0.003, 0, 0, 0, 0.003, 0, 0, 0, 0.003]
-                    imu_msg.linear_acceleration.x = data[6]
-                    imu_msg.linear_acceleration.y = data[7]
-                    imu_msg.linear_acceleration.z = data[8]
-                    imu_msg.linear_acceleration_covariance = [0.60, 0, 0, 0, 0.60, 0, 0, 0, 0.60]
-                    self.imu_pub.publish(imu_msg)
+                    h.frame_id = "sofi_cam" #TODO convert to base_link frame
+                    twist_msg.header = h
+                    self.twist.twist.linear.x = 
+                    self.twist.twist.linear.y = 
+                    self.twist.twist.linear.z = 
+                    self.twist.twist.angular.x = 0
+                    self.twist.twist.angular.y = 0
+                    self.twist.twist.angular.z = 0
+                    self.twist.covariance = # TODO determine covariance matrix
+                    self.twist_pub.publish(twist_msg)
                     angle_to_true_north = Float64()
                     angle_to_true_north.data = data[9]
                     self.compass_pub.publish(angle_to_true_north)
