@@ -168,7 +168,8 @@ class FishController
 		void setIgnoreExternalCommands(bool ignore);
 		bool getIgnoreExternalCommands();
 		
-		// BCU Helper Functions
+		// BCU Helper Functions (FIHS6)
+#ifdef FISH6
         float getBCUVset();
         float getBCUSetDepth();
         float getBCUCurDepth();
@@ -183,6 +184,7 @@ class FishController
         float getError();
         float getVset();
         float getVfreq();
+#endif
 
     private:
 		// Misc State
@@ -207,9 +209,11 @@ class FishController
         volatile float thrust;
         volatile float frequency;
         
-        // Servos (Fish 6)
+        // Servos (FISH6)
+#ifdef FISH6
         Servo servoLeft;
         Servo servoRight;
+#endif
         
 
 #ifdef FISH4
@@ -221,9 +225,9 @@ class FishController
         volatile bool fullCycle;
         const float raiser;
         // Outputs for motor and servos
-        //PwmOut motorPWM;
-        //DigitalOut motorOutA;
-        //DigitalOut motorOutB;
+        PwmOut motorPWM;
+        DigitalOut motorOutA;
+        DigitalOut motorOutB;
         Servo servoLeft;
         Servo servoRight;
         //PwmOut brushlessMotor;

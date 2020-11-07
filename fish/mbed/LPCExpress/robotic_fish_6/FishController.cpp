@@ -29,21 +29,24 @@ FishController::FishController():
 	ignoreExternalCommands(false),
     tickerInterval(fishControllerTickerInterval),
 	inTickerCallback(false),
+
+    #ifdef FISH6
 	servoLeft(servoLeftPin),
     servoRight(servoRightPin),
+    #endif
 
 	#ifdef FISH4
     curTime(0),
     fullCycle(true),
     raiser(3.5),
     // Outputs for motor and servos
-    //motorPWM(motorPWMPin),
-    //motorOutA(motorOutAPin),
-    //motorOutB(motorOutBPin),
-    servoLeft(servoLeftPin),
-    servoRight(servoRightPin),
+    motorPWM(motorPWMPin),
+    motorOutA(motorOutAPin),
+    motorOutB(motorOutBPin),
+	servoLeft(servoLeftPin),
+	servoRight(servoRightPin),
     //brushlessMotor(p25),
-    //brushlessOffTime(30000),
+    brushlessOffTime(30000),
 	#endif
 
 /*	#ifdef FISH6 // these are declared in BCU class
@@ -289,7 +292,7 @@ void FishController::tickerCallback()
     //	test = 1;
 
     // Update the duty cycle
-    /*dutyCycle = raiser * sin(PI2 * frequency * curTime); // add factor 4.0 to get a cut off sinus
+    dutyCycle = raiser * sin(PI2 * frequency * curTime); // add factor 4.0 to get a cut off sinus
     if(dutyCycle > 1)
         dutyCycle = 1;
     if(dutyCycle < -1)
@@ -311,7 +314,8 @@ void FishController::tickerCallback()
         motorOutA.write(1);
         motorOutB.write(0);
         motorPWM.write(-1 * dutyCycle);
-    }*/
+    }
+
     // Update the brushless motor
     //brushlessMotor = dutyCycle * !brushlessOff;
     //brushlessMotor.pulsewidth_us(dutyCycle*500+1500);
@@ -332,7 +336,7 @@ void FishController::tickerCallback()
 {
     inTickerCallback = true; // so we don't asynchronously stop the controller in a bad point of the cycle
 
-    //NEW (If/Else statement taking into account selectButton to turn off fish)//
+    // If/Else statement taking into account selectButton to turn off fish)//
     if(newSelectButton ==0)
     {
     	pumpWithValve.writeToPins(0.0, 0.0);
@@ -520,7 +524,11 @@ void FishController::setLEDs(char mask, bool turnOn)
     buttonBoard.setLEDs(mask, turnOn);
 }
 
+
+
 /* BCU + Pressure Sensor Helper Functions */
+
+#ifdef FISH6
 
 float FishController::getBCUVset()
 {
@@ -583,4 +591,6 @@ float FishController::getVfreq()
 {
 	return pumpWithValve.getVfreq();
 }
+
+#endif
 
