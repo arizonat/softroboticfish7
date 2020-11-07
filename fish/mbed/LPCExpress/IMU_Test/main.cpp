@@ -68,10 +68,10 @@ int main() {
       needData = false;
     }
 //    pc.printf("pitch: %.2f, roll: %.2f, yaw: %.2f, test: %.2f\r\n",euler[2], euler[1], euler[0], tempfloat);
-    pc.printf("gyro_pitch: %.2f, gyro_roll: %.2f, gyro_yaw: %.2f\r\n", gyro[0], gyro[1], gyro[2]);
+//    pc.printf("gyro_pitch: %.2f, gyro_roll: %.2f, gyro_yaw: %.2f\r\n", gyro[0], gyro[1], gyro[2]);
 //    pc.printf("acc_x: %.2f, acc_y: %.2f, acc_z: %.2f\r\n", acc[0], acc[1], acc[2]);
 //    pc.printf("mag_x: %.2f, mag_y: %.2f, mag_z: %.2f\r\n", mag[0], mag[1], mag[2]);
-//    pc.printf("sys: %d, gyro: %d, accel: %d, mag: %d\r\n", s, g, a, w);
+    pc.printf("sys: %d, gyro: %d, accel: %d, mag: %d\r\n", s, g, a, w);
     // pc.printf("tempfloat: %.2f\r\n", tempfloat);
 
     /* Calculate heading in degrees, then angle to true North*/
