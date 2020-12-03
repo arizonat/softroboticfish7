@@ -26,6 +26,7 @@
 
 import rospy
 import roslib
+from math import atan2
 from std_msgs.msg import String, Float64, Bool
 from sensor_msgs.msg import Image, CompressedImage
 from geometry_msgs.msg import PoseStamped
@@ -36,11 +37,12 @@ from fishstatecontroller.msg import State, Position
 
 class ObjectTracker():
     def __init__(self):
-        self.image = np.zeros((308,410,3), np.uint8)
-        self.subsample_ratio = 0.25             # amount to shrink image, maintains aspect ratio
-        self.focal_length = 318.27               #the focal length of the camera
-        self.real_height = 2.0                 #the real height of the target object
-        self.image_center = (203.55, 150.58)    #the image center of the camera
+        self.image = np.zeros((240,320,3), np.uint8)
+        #self.subsample_ratio = 0.25             # amount to shrink image, maintains aspect ratio
+        #HARDCODED - for the 320x240 res
+        self.focal_length = 158.251               #the focal length of the camera
+        self.real_height = 3.1                 #the real height of the target object (cm)
+        self.image_center = (156.996, 111.74)    #the image center of the camera
 
         self.pose = PoseStamped()
         self.pose_pub = rospy.Publisher('fish_pose', PoseStamped, queue_size=10)
@@ -56,7 +58,7 @@ class ObjectTracker():
 
         # red stretches 2 bands in hsv
         # these values are for yellow, keeping the 2 bands for red in the future
-        self.hsv_lower_lower = (14,85,55)
+        self.hsv_lower_lower = (14,137,55)
         self.hsv_lower_upper = (30,255,235)
         self.hsv_upper_lower = self.hsv_lower_lower
         self.hsv_upper_upper = self.hsv_lower_upper
@@ -74,11 +76,11 @@ class ObjectTracker():
         target_centroid = None
 
         #Blur and resize the image, put into HSV color scale, and create an image mask
-        img_small = cv2.resize(image, None, fx=self.subsample_ratio, fy=self.subsample_ratio, interpolation=cv2.INTER_LINEAR)
-        img_small = cv2.GaussianBlur(img_small, (5,5), 0)
-        hsv_small = cv2.cvtColor(img_small, cv2.COLOR_BGR2HSV)
-        mask_l = cv2.inRange(hsv_small, self.hsv_lower_lower, self.hsv_lower_upper)
-        mask_u = cv2.inRange(hsv_small, self.hsv_upper_lower, self.hsv_upper_upper)
+        #img_small = cv2.resize(image, None, fx=self.subsample_ratio, fy=self.subsample_ratio, interpolation=cv2.INTER_LINEAR)
+        img_blur = cv2.GaussianBlur(image, (5,5), 0)
+        hsv_blur = cv2.cvtColor(img_blur, cv2.COLOR_BGR2HSV)
+        mask_l = cv2.inRange(hsv_blur, self.hsv_lower_lower, self.hsv_lower_upper)
+        mask_u = cv2.inRange(hsv_blur, self.hsv_upper_lower, self.hsv_upper_upper)
         mask = cv2.bitwise_or(mask_l, mask_u)
 
         #Publish the mask
@@ -97,7 +99,7 @@ class ObjectTracker():
         if radius < 5:
           return (False, None, None, None)
 
-        target_centroid = ((int(x/self.subsample_ratio),int(y/self.subsample_ratio)),int(radius/self.subsample_ratio))
+        target_centroid = ((int(x),int(y)),int(radius))
         target_found = True
 
         #Calculate the object's distance and offset from center
@@ -106,6 +108,9 @@ class ObjectTracker():
         distance = (self.focal_length * self.real_height) / height_px
         y_offset = (offset_px[0] * distance)/self.focal_length
         z_offset = (offset_px[1] * distance)/self.focal_length
+        heading_rad = atan2(y_offset, distance)     #heading in radians
+        #print("HEADING", heading_rad)
+        pitch_rad = atan2(z_offset, distance)       #pitch in radians
 
         # Publish distance and offset information to message file instead
         #self.position_msg.distance = str(distance)
@@ -113,7 +118,8 @@ class ObjectTracker():
         #self.position_msg.y_offset = str(y_offset)
         #self.position_pub.publish(self.position_msg)
 
-        return (target_found, target_centroid, distance, (y_offset, z_offset))
+        #return (target_found, target_centroid, distance, (y_offset, z_offset))
+        return (target_found, target_centroid, distance, (heading_rad, pitch_rad))
 
     def run(self):
         """Run the Distance Tracker with the input from the camera"""
@@ -130,8 +136,8 @@ class ObjectTracker():
 
         while not rospy.is_shutdown():
             target_found, target_centroid, dist, offset = self.find_target()
-            #print("EST DISTANCE: " + str(dist) + ' inches')
-            #print("EST OFFSET: " + str(offset) + ' inches')
+            #print("EST DISTANCE: " + str(dist) + ' cm')
+            #print("EST OFFSET: " + str(offset) + ' cm')
             #print("--------------")
             if target_found:
                 #heading averaging
