@@ -58,11 +58,8 @@ class ObjectTracker():
 
         # red stretches 2 bands in hsv
         # these values are for yellow, keeping the 2 bands for red in the future
-<<<<<<< HEAD
-        self.hsv_lower_lower = (1,85,55)
-=======
+        #self.hsv_lower_lower = (1,85,55)
         self.hsv_lower_lower = (14,137,55)
->>>>>>> d00fd550bee361c014c06bb4599f8d3967a197c4
         self.hsv_lower_upper = (30,255,235)
         self.hsv_upper_lower = self.hsv_lower_lower
         self.hsv_upper_upper = self.hsv_lower_upper
