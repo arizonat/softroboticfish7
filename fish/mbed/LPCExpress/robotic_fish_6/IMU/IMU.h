@@ -11,15 +11,20 @@
 #include "AdaBNO055.h"
 #include "mbed.h"
 
+#define PIN_IMU_TX p28
+#define PIN_IMU_RX p27
+
 class IMU
 {
 	public:
 		IMU();
-		void start();
+		bool start();
 		void calibrate(bool includeAccel);
-		char* readValues();
+		void readValues(char* data);
 	private:
 		bool needData;
+		bool goodData;
+		float calibrationLevel;
 		Vector euler;
 		Vector gyro;
 		Vector mag;
@@ -29,6 +34,7 @@ class IMU
 		float heading;
 		float declination;
 		float angle2TrueNorth;
+		BNO055 bno;
 
 };
 
