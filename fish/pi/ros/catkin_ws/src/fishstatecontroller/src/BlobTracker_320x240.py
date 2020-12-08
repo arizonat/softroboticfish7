@@ -58,14 +58,36 @@ class ObjectTracker():
 
         # red stretches 2 bands in hsv
         # these values are for yellow, keeping the 2 bands for red in the future
-<<<<<<< HEAD
-        self.hsv_lower_lower = (1,85,55)
-=======
         self.hsv_lower_lower = (14,137,55)
->>>>>>> d00fd550bee361c014c06bb4599f8d3967a197c4
         self.hsv_lower_upper = (30,255,235)
         self.hsv_upper_lower = self.hsv_lower_lower
         self.hsv_upper_upper = self.hsv_lower_upper
+
+        ###create a blob tracker###
+        params = cv2.SimpleBlobDetector_Params()
+        
+        # Change thresholds
+        params.minThreshold = 0
+        params.maxThreshold = 255
+
+        # Filter by Area.
+        params.filterByArea = True
+        params.minArea = 200
+        params.maxArea = 50000
+
+        # Filter by Circularity
+        params.filterByCircularity = True
+        params.minCircularity = 0.5
+
+        # Filter by Convexity
+        params.filterByConvexity = True
+        params.minConvexity = 0.5
+
+        # Filter by Inertia
+        params.filterByInertia = True
+        params.minInertiaRatio = 0.5
+
+        detector = cv2.SimpleBlobDetector(params)
 
     def find_target(self):
         target_found, target_centroid, dist, offset = self.process_image(self.image)
