@@ -21,6 +21,7 @@ class IMU
 		bool start();
 		void calibrate(bool includeAccel);
 		void readValues(char* data);
+		Vector getEuler();
 	private:
 		bool needData;
 		bool goodData;

@@ -56,3 +56,8 @@ void IMU::readValues(char* data)
 
 	sprintf(data, "%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f\n",euler[2], euler[1], euler[0], gyro[0], gyro[1], gyro[2], acc[0], acc[1], acc[2], angle2TrueNorth);
 }
+
+Vector IMU::getEuler()
+{
+	return euler;
+}
