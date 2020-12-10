@@ -22,6 +22,9 @@ class IMU
 		void calibrate(bool includeAccel);
 		void readValues(char* data);
 		Vector getEuler();
+		Vector getGyro();
+		Vector getAccels();
+		float getAnglefromNorth();
 	private:
 		bool needData;
 		bool goodData;

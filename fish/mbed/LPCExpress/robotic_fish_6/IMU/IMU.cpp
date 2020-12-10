@@ -61,3 +61,19 @@ Vector IMU::getEuler()
 {
 	return euler;
 }
+
+Vector IMU::getGyro()
+{
+	return gyro;
+}
+
+Vector IMU::getAccels()
+{
+	return acc;
+}
+
+float IMU::getAnglefromNorth()
+{
+	return angle2TrueNorth;
+}
+
