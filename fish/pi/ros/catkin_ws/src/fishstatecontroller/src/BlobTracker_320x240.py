@@ -51,6 +51,7 @@ class ObjectTracker():
         self.average_heading_pub = rospy.Publisher('average_heading', Float64, queue_size=10)
         self.average_pitch_pub = rospy.Publisher('average_pitch', Float64, queue_size=10)
         self.average_dist_pub = rospy.Publisher('average_dist', Float64, queue_size=10)
+	self.img_pub = rospy.Publisher('grey', Image, queue_size=10)
 
         # Initiate position msg instance and new publisher for data
         #self.position_msg = Position()
@@ -58,8 +59,8 @@ class ObjectTracker():
 
         # red stretches 2 bands in hsv
         # these values are for yellow, keeping the 2 bands for red in the future
-        self.hsv_lower_lower = (14,137,55)
-        self.hsv_lower_upper = (30,255,235)
+        self.hsv_lower_lower = (0,230,100)
+        self.hsv_lower_upper = (35,255,255)
         self.hsv_upper_lower = self.hsv_lower_lower
         self.hsv_upper_upper = self.hsv_lower_upper
 
@@ -67,27 +68,32 @@ class ObjectTracker():
         params = cv2.SimpleBlobDetector_Params()
         
         # Change thresholds
-        params.minThreshold = 0
-        params.maxThreshold = 255
+        params.minThreshold = 10
+        params.maxThreshold = 220
+	params.thresholdStep = 105
 
         # Filter by Area.
         params.filterByArea = True
-        params.minArea = 200
+        params.minArea = 250
         params.maxArea = 50000
 
         # Filter by Circularity
-        params.filterByCircularity = True
-        params.minCircularity = 0.5
+        params.filterByCircularity = False
+        params.minCircularity = 0.7
 
         # Filter by Convexity
-        params.filterByConvexity = True
+        params.filterByConvexity = False
         params.minConvexity = 0.5
 
         # Filter by Inertia
-        params.filterByInertia = True
-        params.minInertiaRatio = 0.5
+        params.filterByInertia = False
+        params.minInertiaRatio = 0.1
 
-        detector = cv2.SimpleBlobDetector(params)
+	#Filter by Color
+	params.filterByColor = True
+	params.blobColor = 255
+
+        self.detector = cv2.SimpleBlobDetector_create(params)
 
     def find_target(self):
         target_found, target_centroid, dist, offset = self.process_image(self.image)
@@ -112,7 +118,18 @@ class ObjectTracker():
         #Publish the mask
         mask_bgr8 = cv2.cvtColor(mask,cv2.COLOR_GRAY2BGR)
         bridge = CvBridge()
-        cv_mask = bridge.cv2_to_imgmsg(mask_bgr8, encoding='bgr8')
+        img_masked = image
+        img_masked[mask==0,:] = [0,0,0]
+        grey = cv2.cvtColor(img_masked, cv2.COLOR_BGR2GRAY)
+        grey_msg = bridge.cv2_to_imgmsg(grey, encoding='mono8')
+        #self.img_pub.publish(cv_grey)
+        
+	keypoints = self.detector.detect(grey)
+        grey_with_keypoints = cv2.drawKeypoints(grey, keypoints, np.array([]),(0,0,255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        greyk_msg = bridge.cv2_to_imgmsg(grey_with_keypoints, encoding='bgr8')
+        self.img_pub.publish(greyk_msg)
+
+	cv_mask = bridge.cv2_to_imgmsg(mask_bgr8, encoding='bgr8')
         self.mask_pub.publish(cv_mask)
 
         #find the largest contour of the mask or return False,None if target is not there
