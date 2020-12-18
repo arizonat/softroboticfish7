@@ -59,7 +59,7 @@ class ObjectTracker():
 
         # red stretches 2 bands in hsv
         # these values are for yellow, keeping the 2 bands for red in the future
-        self.hsv_lower_lower = (0,230,100)
+        self.hsv_lower_lower = (0,205,100)
         self.hsv_lower_upper = (35,255,255)
         self.hsv_upper_lower = self.hsv_lower_lower
         self.hsv_upper_upper = self.hsv_lower_upper
@@ -74,7 +74,7 @@ class ObjectTracker():
 
         # Filter by Area.
         params.filterByArea = True
-        params.minArea = 250
+        params.minArea = 150
         params.maxArea = 50000
 
         # Filter by Circularity
@@ -115,6 +115,13 @@ class ObjectTracker():
         mask_u = cv2.inRange(hsv_blur, self.hsv_upper_lower, self.hsv_upper_upper)
         mask = cv2.bitwise_or(mask_l, mask_u)
 
+        # Get rid of noise
+        kernel = np.ones((5,5),np.uint8)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+
+        # Get rid of small holes
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+
         #Publish the mask
         mask_bgr8 = cv2.cvtColor(mask,cv2.COLOR_GRAY2BGR)
         bridge = CvBridge()
@@ -124,8 +131,19 @@ class ObjectTracker():
         grey_msg = bridge.cv2_to_imgmsg(grey, encoding='mono8')
         #self.img_pub.publish(cv_grey)
         
-	keypoints = self.detector.detect(grey)
-        grey_with_keypoints = cv2.drawKeypoints(grey, keypoints, np.array([]),(0,0,255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+	keypoints = self.detector.detect(mask)
+        orig_keypoints = list(keypoints)
+        keypoints.sort(reverse=True, key=lambda k: k.size)
+
+        # filter on size
+        if len(keypoints) > 1:
+            keypoints = list(filter(lambda k: k.size/keypoints[0].size > 0.4, keypoints))
+
+            keypoints.sort(reverse=True, key=lambda k: k.pt[1])
+            keypoints = [keypoints[0]]
+            
+        grey_with_keypoints = cv2.drawKeypoints(grey, orig_keypoints, np.array([]),(0,0,255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        grey_with_keypoints = cv2.drawKeypoints(grey_with_keypoints, keypoints, np.array([]),(0,255,0),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
         greyk_msg = bridge.cv2_to_imgmsg(grey_with_keypoints, encoding='bgr8')
         self.img_pub.publish(greyk_msg)
 
@@ -133,17 +151,23 @@ class ObjectTracker():
         self.mask_pub.publish(cv_mask)
 
         #find the largest contour of the mask or return False,None if target is not there
-        cnts, cnt_hier = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)[-2:]
-        if len(cnts) == 0:
-          return (False, None, None, None)
-        cnt = max(cnts, key=cv2.contourArea)
-        ((x,y),radius) = cv2.minEnclosingCircle(cnt)
+        #cnts, cnt_hier = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)[-2:]
+        #if len(cnts) == 0:
+        #  return (False, None, None, None)
+        #cnt = max(cnts, key=cv2.contourArea)
+        #((x,y),radius) = cv2.minEnclosingCircle(cnt)
 
-        if radius < 5:
-          return (False, None, None, None)
+        if len(keypoints) > 1:
+            keypoint = keypoints[0]
+            ((x,y),radius) = (keypoint.pt, keypoint.size/2.0)
+        
+            if radius < 5:
+                return (False, None, None, None)
 
-        target_centroid = ((int(x),int(y)),int(radius))
-        target_found = True
+            target_centroid = ((int(x),int(y)),int(radius))
+            target_found = True
+        else:
+            return (target_found, target_centroid, 0.0, (0.0, 0.0))
 
         #Calculate the object's distance and offset from center
         height_px =  2.0 * target_centroid[1]
