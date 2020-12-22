@@ -4,6 +4,7 @@
 #include "mbed.h"
 #include "AcousticControl/AcousticController.h" // also need to define acousticControl in ToneDetector.h
 #include "SerialControl/SerialController.h"
+#include "StateController.h"
 #include "ROSControl/ROSController.h"
 
 Serial pc(USBTX, USBRX);
@@ -23,6 +24,8 @@ int main()
 	acousticController.run();
 	#endif
 
+#ifdef noStateControl
+//#define noStateControl
 	/* SERIAL CONTROL */
 	#ifdef serialControl
 	pc.baud(115200);
@@ -34,6 +37,16 @@ int main()
 	//  control threading here to actually be able to call that
 	serialController.run();
 	#endif
+#endif
+
+	/* STATE CONTROL */
+	#ifdef stateControl
+	pc.baud(115200);
+	stateController.initStateMachine(NULL, &pc);
+	stateController.runStateMachine();
+	#endif
+
+
 
 	/* ROS CONTROL */
 	#ifdef rosControl

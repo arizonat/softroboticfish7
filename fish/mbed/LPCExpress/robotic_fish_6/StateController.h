@@ -12,8 +12,8 @@
 
 #define serialDefaultBaudUSB 115200
 #define serialDefaultBaud 115200
-#define serialDefaultTX p9
-#define serialDefaultRX p10
+#define serialDefaultTX p13
+#define serialDefaultRX p14
 
 #define INIT 0
 #define NORMAL 1
@@ -42,15 +42,15 @@ private:
 	double secondCounter;
     //double heartrate = 2;  //Seconds between heartbeat messages
 	//int missedMessage = 0;
-	bool beatFound = 0;
-	int maxBeatTime = 2; //Maximum time since last beat detected before state moves to OFF
+	////bool beatFound = 0;
+	int maxBeatTime = 3; //Maximum time since last beat detected before state moves to OFF
 
 	uint8_t beatBuffer[20];
 	uint32_t beatBufferIndex = 0;
 
 	//For Tail Flex Mode
 	bool isActiveFlex = false;
-	float flexDegree;
+	float flexDegree; //Maybe scale of -1 to 1?
 
 	//To ensure transitioning
 	void transitionStateMachine();

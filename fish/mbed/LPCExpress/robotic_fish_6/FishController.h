@@ -10,8 +10,8 @@
 //#define debugFishState
 
 // Fish version (only define one of them)
-#define FISH6
-//#define FISH4
+//#define FISH6
+#define FISH4
 
 #include "mbed.h"
 #include "ButtonBoard.h"
@@ -84,7 +84,8 @@
 #define lowBatteryVoltagePin p16
 
 #ifdef FISH4
-#define motorPWMPin   p23
+#define motorPWMPin1  p23
+#define motorPWMPin2  p22 //copied
 #define motorOutAPin  p11
 #define motorOutBPin  p12
 #define servoLeftPin  p21
@@ -225,7 +226,9 @@ class FishController
         volatile bool fullCycle;
         const float raiser;
         // Outputs for motor and servos
-        PwmOut motorPWM;
+        //PwmOut motorPWM;
+        PwmOut motorPWM1;
+		PwmOut motorPWM2;
         DigitalOut motorOutA;
         DigitalOut motorOutB;
         Servo servoLeft;

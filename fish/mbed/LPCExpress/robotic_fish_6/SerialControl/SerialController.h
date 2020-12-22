@@ -27,6 +27,8 @@
 //#define debugValveControl			// whether to print valve control values (actual and commanded frequencies)
 //#define print2Pi					// whether to print data to Pi serial monitor
 #define printStatusSerialController // whether to print what's going on (i.e. when it gets commands, etc.)
+#define heartBeat 				// send messages over serial and check whether connection active
+#define no_loop					// safer serial copy without while loop for use in state machine
 //#define debugLEDsSerial    // LED1: initialized LED2: running LED3: receiving a character LED4: done (others turn off)
 //#define runTimeSerial 10000 	   // how long to run for (in milliseconds) if infiniteLoopSerial is undefined
 #define infiniteLoopSerial // if defined, will run forever (or until stop() is called from another thread)
@@ -54,9 +56,21 @@ public:
 	// Execution control
 	void run();
 	void stop();
+	void heartBeatRun();
+	void singleRun();
+	void stethoscope();
 	void lowBatteryCallback();
 	float printTime;
 	float valvePrintTime;
+
+	uint8_t stateSerialBuffer[20];
+	////uint8_t stateSerialBufferIndex = 0;
+
+	bool beatFound;
+	uint8_t beatBuffer[20];
+	uint8_t beatBufferIndex = 0;
+
+	bool something_found = false;
 private:
 	Timer programTimer;
 	bool terminated;

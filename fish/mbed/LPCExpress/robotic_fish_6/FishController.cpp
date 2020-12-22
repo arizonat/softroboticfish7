@@ -40,7 +40,9 @@ FishController::FishController():
     fullCycle(true),
     raiser(3.5),
     // Outputs for motor and servos
-    motorPWM(motorPWMPin),
+    //motorPWM(motorPWMPin),
+	motorPWM1(motorPWMPin1),
+	motorPWM2(motorPWMPin2),
     motorOutA(motorOutAPin),
     motorOutB(motorOutBPin),
 	servoLeft(servoLeftPin),
@@ -305,15 +307,17 @@ void FishController::tickerCallback()
     // Update the brushed motor
     if(dutyCycle >= 0)
     {
-        motorOutA.write(0);
-        motorOutB.write(1);
-        motorPWM.write(dutyCycle);
+        //motorOutA.write(0);
+        //motorOutB.write(1);
+        motorPWM1.write(dutyCycle);
+        motorPWM2.write(0);
     }
     else
     {
-        motorOutA.write(1);
-        motorOutB.write(0);
-        motorPWM.write(-1 * dutyCycle);
+        //motorOutA.write(1);
+        //motorOutB.write(0);
+    	motorPWM1.write(0);
+        motorPWM2.write(-1 * dutyCycle);
     }
 
     // Update the brushless motor

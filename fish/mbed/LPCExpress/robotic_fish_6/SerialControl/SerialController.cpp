@@ -4,6 +4,7 @@
 
 #include "SerialController.h"
 #include "FishController.h"
+#include <list>
 //#include "unistd.h"
 
 #ifdef serialControl
@@ -144,7 +145,7 @@ void SerialController::run()
 	programTimer.start();
 	while(!terminated)
 	{
-		if(serial->readable())
+		if(usbSerial->readable())
 		{
 			/*Code block below to ensure fish is idle for initial period of time
 			if(selectButton == 0)
@@ -162,7 +163,7 @@ void SerialController::run()
 			#endif
 
 			//usbSerial->printf("Processed <%s>: ", nextByte);
-			uint8_t nextByte = serial->getc();
+			uint8_t nextByte = usbSerial->getc();
 			serialBuffer[serialBufferIndex++] = nextByte;
 			//usbSerial->printf("%c", serialBufferIndex);
 
@@ -190,7 +191,7 @@ void SerialController::run()
 		
 		#ifdef print2Pi
 		if(programTimer.read_ms() - printTime > dataPeriod){
-			serial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
+			usbSerial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
 		    printTime = programTimer.read_ms();
 //		    usbSerial->printf("test");
 		}
@@ -213,6 +214,7 @@ void SerialController::run()
 		}
 		#endif
 	}
+
 	programTimer.stop();
 	#ifdef debugLEDsSerial
 	serialLEDs[0]->write(0);
@@ -241,6 +243,243 @@ void SerialController::run()
 	usbSerial->printf("\r\nSerial controller done!\r\n");
 	#endif
 }
+
+#ifdef no_loop
+
+void SerialController::singleRun()
+{
+	#ifdef enableAutoMode
+    fishController.streamFishStateEventController = 14;
+    fishController.startAutoMode();
+    #endif
+
+    // Moved to ticker instead of interrupt (see comments in init), so don't need this check
+    // Check for low battery voltage (also have the interrupt, but check that we're not starting with it low)
+	// if(lowBatteryVoltageInput == 0)
+	//	lowBatteryCallback();
+
+	#ifdef printStatusSerialController
+	usbSerial->printf("\r\nStarting to listen for serial commands 2\r\n");
+	#endif
+
+	#ifdef debugLEDsSerial
+	serialLEDs[0]->write(1);
+	serialLEDs[1]->write(1);
+	serialLEDs[2]->write(0);
+	serialLEDs[3]->write(0);
+	#endif
+
+	// Process any incoming serial commands
+
+	programTimer.reset();
+	programTimer.start();
+	for(int unit = 0; unit < 20; unit++)
+	{
+		usbSerial->printf("unit: %d", unit);
+		if(usbSerial->readable())
+		{
+			#ifdef debugLEDsSerial
+			serialLEDs[2]->write(1);
+
+			#endif
+
+			//usbSerial->printf("Processed <%s>: ", nextByte);
+			uint8_t thisByte = usbSerial->getc();
+			stateSerialBuffer[unit] = thisByte;
+			//usbSerial->printf("%c", unit);
+
+			// If we've received a complete command, process it now
+			if(thisByte == 0)
+			{
+				usbSerial->printf("Got zero!\n");
+				//usbSerial->printf((char*) (serialBuffer));
+				processSerialWord(stateSerialBuffer);
+
+				////stateSerialBufferIndex = 0;
+				break;
+			}
+		}
+		else
+		{
+			#ifdef debugLEDsSerial
+			serialLEDs[2]->write(0);
+			#endif
+		}
+
+
+		#ifndef infiniteLoopSerial
+		if(programTimer.read_ms() > runTimeSerial)
+			stop();
+		#endif
+
+		#ifdef print2Pi
+		if(programTimer.read_ms() - printTime > dataPeriod){
+			usbSerial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
+			printTime = programTimer.read_ms();
+	//		    usbSerial->printf("test");
+		}
+		#endif
+
+		#ifdef debugBCUControl
+		usbSerial->printf("V %f\t SDepth %f\t CDepth %f\t sPos %f\t CPos %f\r\n", fishController.getBCUVset(), fishController.getBCUSetDepth(), fishController.getBCUCurDepth(), fishController.getBCUSetPos(), fishController.getBCUCurPos());
+		wait_ms(250);
+		#endif
+
+		#ifdef debugSensor
+		usbSerial->printf("Pressure: %f\r\n", fishController.getreadPressure());
+		wait_ms(250);
+		#endif
+
+		#ifdef debugValveControl
+		if (programTimer.read_ms() - valvePrintTime > dataPeriod){
+			usbSerial->printf("Measured Freq: %f Command: %f Error: %f dV: %f Vset: %f Vfreq: %f\r\n", fishController.getActFreq(), fishController.getFreq(), fishController.getError(), fishController.getdVFreq(), fishController.getVset(), fishController.getVfreq());
+			valvePrintTime = programTimer.read_ms();
+		}
+		#endif
+	}
+
+	programTimer.stop();
+	#ifdef debugLEDsSerial
+	serialLEDs[0]->write(0);
+	serialLEDs[1]->write(0);
+	serialLEDs[2]->write(0);
+	serialLEDs[3]->write(0);
+	#endif
+
+	#ifdef printStatusSerialController
+	usbSerial->printf("\r\nSerial controller done!\r\n");
+	#endif
+}
+#endif
+
+#ifdef heartBeat
+void SerialController::stethoscope()
+{
+	uint8_t message_detect = usbSerial->getc();
+	if(message_detect != 0)
+	{
+		beatBuffer[0] = message_detect;
+		beatBufferIndex++;
+		beatFound = 1;
+		printf("beat detected \n");
+	}
+	else
+	{
+		beatFound = 0;
+		printf("beat not detected \n");
+	}
+}
+
+void SerialController::heartBeatRun()
+{
+	#ifdef enableAutoMode
+	fishController.streamFishStateEventController = 14;
+	fishController.startAutoMode();
+	#endif
+
+	#ifdef printStatusSerialController
+	usbSerial->printf("\r\nStarting to listen for serial commands \r\n");
+	#endif
+
+	#ifdef debugLEDsSerial
+	serialLEDs[0]->write(1);
+	serialLEDs[1]->write(1);
+	serialLEDs[2]->write(0);
+	serialLEDs[3]->write(0);
+	#endif
+
+	// Process any incoming serial commands
+
+	programTimer.reset();
+	programTimer.start();
+
+	//Heart Beat and Function
+	while(usbSerial->readable())
+	{
+		#ifdef debugLEDsSerial
+		serialLEDs[2]->write(1);
+
+		#endif
+
+		uint8_t nextBeat = usbSerial->getc();
+		beatBuffer[beatBufferIndex++] = nextBeat;
+
+		printf("checkpoint 1 \n");
+		if(nextBeat == 0)
+		{
+			//beatBuffer[beatBufferIndex] = 0;
+			processSerialWord(beatBuffer);
+			printf("buffer processed \n");
+
+			memset(beatBuffer, 0, 20*sizeof(beatBuffer[0]));
+			break;
+
+		}
+	}
+	printf(beatFound ? "true" : "false");
+
+	////////////////////////
+	#ifdef debugLEDsSerial
+	serialLEDs[2]->write(0);
+	#endif
+
+	#ifndef infiniteLoopSerial
+	if(programTimer.read_ms() > runTimeSerial)
+		stop();
+	#endif
+
+	#ifdef print2Pi
+	if(programTimer.read_ms() - printTime > dataPeriod){
+		usbSerial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
+		printTime = programTimer.read_ms();
+//		usbSerial->printf("test");
+	}
+	#endif
+
+	#ifdef debugBCUControl
+	usbSerial->printf("V %f\t SDepth %f\t CDepth %f\t sPos %f\t CPos %f\r\n", fishController.getBCUVset(), fishController.getBCUSetDepth(), fishController.getBCUCurDepth(), fishController.getBCUSetPos(), fishController.getBCUCurPos());
+	wait_ms(250);
+	#endif
+
+	#ifdef debugSensor
+	usbSerial->printf("Pressure: %f\r\n", fishController.getreadPressure());
+	wait_ms(250);
+	#endif
+
+	#ifdef debugValveControl
+	if (programTimer.read_ms() - valvePrintTime > dataPeriod){
+		usbSerial->printf("Measured Freq: %f Command: %f Error: %f dV: %f Vset: %f Vfreq: %f\r\n", fishController.getActFreq(), fishController.getFreq(), fishController.getError(), fishController.getdVFreq(), fishController.getVset(), fishController.getVfreq());
+		valvePrintTime = programTimer.read_ms();
+	}
+	#endif
+
+	programTimer.stop();
+	#ifdef debugLEDsSerial
+	serialLEDs[0]->write(0);
+	serialLEDs[1]->write(0);
+	serialLEDs[2]->write(0);
+	serialLEDs[3]->write(0);
+	#endif
+
+	#ifdef serialControllerControlFish
+//	  #ifdef enableAutoMode
+//    fishController.stopAutoMode();
+//    #endif
+
+	// If battery died, wait a bit for pi to clean up and shutdown and whatnot
+	if(lowBatteryVoltageInput == 0)
+	{
+		wait(90); // Give the Pi time to shutdown
+		fishController.setLEDs(255, false);
+	}
+	#endif
+
+	#ifdef printStatusSerialController
+	usbSerial->printf("\r\nSerial controller done!\r\n");
+	#endif
+}
+
+#endif
 
 
 void SerialController::lowBatteryCallback()

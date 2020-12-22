@@ -35,19 +35,20 @@ void StateController::transitionStateMachine()
 	{
 		case INIT:
 		{
-			usbSerial->printf("I'm transitioning states now.");
+			usbSerial->printf("I'm transitioning states now. \n");
 			break;
 		}
 
 		case NORMAL:
 		{
-			serialController.heartBeatRun();
+			serialController.stethoscope();
+			usbSerial-> printf("heartBeat found \n");
 			if(timer2.read() < maxBeatTime && isActiveFlex == false)
 			{
-				if(beatFound == 1)
+				if(serialController.beatFound)
 				{
 					//run fish controller
-					usbSerial->printf("I'm transitioning states now.");
+					usbSerial->printf("I'm remaining in the Normal State. \n");
 					break;
 				}
 			}
@@ -59,14 +60,15 @@ void StateController::transitionStateMachine()
 				if(isActiveFlex == true)  //Checks whether to transition to FLEX state. Otherwise go to OFF state.
 				{
 					state = FLEX;
-					usbSerial->printf("I'm transitioning states now.");
+					usbSerial->printf("I'm transitioning states now. \n");
 					break;
 				}
 
 				else
 				{
 					state = OFF;
-					usbSerial->printf("I'm transitioning states now.");
+					usbSerial->printf("I'm transitioning states now. \n");
+					fishController.stop();
 					break;
 					//pumpWithValve.writeToPins(0.0, 0.0);
 				}
@@ -75,18 +77,24 @@ void StateController::transitionStateMachine()
 
 		case OFF:
 		{
-			usbSerial->printf("I'm transitioning states now.");
-			serialController.heartBeatRun();
-			if(beatFound == 1)
+			serialController.stethoscope();
+			usbSerial-> printf("heartBeat done \n");
+			if(serialController.beatFound)
 			{
 				state = NORMAL;
+				usbSerial->printf("I'm transitioning states now. \n");
+				fishController.start();
+			}
+			else
+			{
+				usbSerial->printf("I'm remaining in the Off State.");
 			}
 			break;
 		}
 
 		case FLEX:
 		{
-			usbSerial->printf("I'm transitioning states now.");
+			usbSerial->printf("I'm transitioning states now. \n");
 			if(isActiveFlex == false)
 			{
 				state = NORMAL;
@@ -110,6 +118,7 @@ void StateController::runStateMachine()
 				{
 					usbSerial->printf("I'm in the init state.");
 					state = NORMAL;
+					fishController.start();
 					this->transitionStateMachine();
 				}
 				else
@@ -121,19 +130,12 @@ void StateController::runStateMachine()
 
 			case NORMAL:
 			{
-				usbSerial->printf("I'm in the Normal state.");
-				serial->printf("Sending messages over serial to pi");
+				usbSerial->printf("I'm in the Normal state. \n");
+				serial->printf("Sending messages over serial to pi \n");
 
 				timer2.reset();
-				//Use SerialController primary buffer to determine command to run
-					//Run FishController
-					//Or instead run serialController start function, which calls on FishController
-						//-Could call it? Or make it so only functionable here
-				serialController.start();
-					//Will this stop on its own?
-				//fishController.start();
-				//fishController.stop();
 
+				serialController.heartBeatRun();
 				this->transitionStateMachine();
 
 				break;
@@ -141,8 +143,8 @@ void StateController::runStateMachine()
 
 			case OFF:
 			{
-				usbSerial->printf("I'm in the off state.");
-				serial->printf("Cannot detect a serial connection");
+				usbSerial->printf("I'm in the off state. \n");
+				serial->printf("Cannot detect a serial connection \n");
 				this->transitionStateMachine();
 
 				break;
@@ -152,9 +154,8 @@ void StateController::runStateMachine()
 			{
 				usbSerial->printf("I'm in the flex state.");
 				this->transitionStateMachine();
-				//flexDegree = 100 //Degree of Flex, from -10 to 10?
+				//flexDegree
 					//Probably need to get period and scale based on degree
-				//Don't run fish controller while in this mode
 				//pumpWithValve.writeToPins()
 				break;
 			}
