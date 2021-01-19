@@ -143,6 +143,6 @@ if __name__ == '__main__':
     rospy.Subscriber('heading_cmd', Float64, piSerial.heading_callback)
     rospy.Subscriber('pitch_cmd', Float64, piSerial.pitch_callback)
     rospy.Subscriber('thrust_cmd', Float64, piSerial.thrust_callback)
-    
+    print("\nSerial Node: Beginning at 24hz")
     piSerial.write()
-    print("\ndone\n")
+    print("\nSerial Node: done\n")

@@ -70,6 +70,6 @@ class ManualController():
 if __name__ == '__main__':
     rospy.init_node('manual_controller', anonymous=True)  
     controller = ManualController()
-    print("\nStarting Manual Controller at 24hz")
+    print("\nManual Controller: Beginning at 24hz")
     controller.run()
     print("\nManual Controller: done")

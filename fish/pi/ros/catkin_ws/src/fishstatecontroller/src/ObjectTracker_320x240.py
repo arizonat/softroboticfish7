@@ -194,6 +194,6 @@ if __name__ == '__main__':
     rospy.init_node('state_estimation', anonymous=True)
     tracker = ObjectTracker()
     rospy.Subscriber('/raspicam_node/image/compressed', CompressedImage, tracker.callback)
-    print("Beginning position tracker at 24hz\n")
+    print("\nObject Tracker: Beginning at 24hz\n")
     tracker.run()
-    print("\ndone\n")
+    print("\nObject Tracker: done\n")

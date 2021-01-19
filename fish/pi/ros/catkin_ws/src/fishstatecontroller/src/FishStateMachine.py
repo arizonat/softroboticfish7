@@ -101,7 +101,7 @@ class FishStateController():
             elif self.state == "FOLLOW":
                 if self.target_found:
                     self.publish_states()
-                    print("Following target at: %f, %f"%(self.fish_pose.pose.position.y, self.fish_pose.pose.position.z))
+                    #print("Following target at: %f, %f"%(self.fish_pose.pose.position.y, self.fish_pose.pose.position.z))
                 else:
                     self.transitionTo("SEARCH")
                     self.pid_enable_pub.publish(False)
@@ -109,7 +109,7 @@ class FishStateController():
 
     def transitionTo(self, state_name):
         self.state = state_name
-        print(self.state)
+        #print(self.state)
         ###Can use below if adjust direction not important.
         self.state_msg.header.stamp = rospy.Time.now()
         self.state_msg.state = self.state
@@ -160,6 +160,6 @@ if __name__ == '__main__':
     rospy.Subscriber('target_found', Bool, state_machine.found_callback)
     rospy.Subscriber('fish_pose', PoseStamped, state_machine.pose_callback)
 
-    print("Beginning finite state machine at %d hz\n"%(update_hz))
+    print("Fish State Machine: Beginning at %d hz\n"%(update_hz))
     state_machine.run()
-    print("\ndone\n")
+    print("\nFish State Machine: done\n")
