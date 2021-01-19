@@ -130,8 +130,8 @@ class SerialBridge():
                 print(arr)
                 #rospy.loginfo(arr)
                 self.cmd_received = False
-            else:
-                self.writeOnce(self.DO_NOTHING)
+            #else:
+            #    self.writeOnce(self.DO_NOTHING)
             rate.sleep()
 
 if __name__ == '__main__':

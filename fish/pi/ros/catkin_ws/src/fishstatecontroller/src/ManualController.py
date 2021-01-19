@@ -38,9 +38,9 @@ class ManualController():
     
     def run(self):
         rate = rospy.Rate(24)
+        cv2.imshow("blank", self.image)
         while not rospy.is_shutdown():
-            #read for keyboard presses and set appropriate values for heading, pitch, and thrust
-            cv2.imshow("blank", self.image)            
+            #read for keyboard presses and set appropriate values for heading, pitch, and thrust        
             key = cv2.waitKey(0)
             if key == ord('a'):         #HARD LEFT
                 self.heading = -1.0
