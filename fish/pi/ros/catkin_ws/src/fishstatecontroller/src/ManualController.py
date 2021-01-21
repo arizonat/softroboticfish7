@@ -44,22 +44,22 @@ class ManualController():
             key = cv2.waitKey(0)
             if key == ord('a'):         #HARD LEFT
                 self.heading = -1.0
-                self.thrust = -0.33
+                self.thrust = -1.0
             elif key == ord('s'):       #SOFT LEFT
                 self.heading = -0.72
-                self.thrust = -0.33
+                self.thrust = -1.0
             elif key == ord('d'):       #GO FORWARD
                 self.heading = 0.0
                 self.thrust = -1.0
             elif key == ord('f'):       #SOFT RIGHT
                 self.heading = 0.72
-                self.thrust = -0.33
+                self.thrust = -1.0
             elif key == ord('g'):       #HARD RIGHT
                 self.heading = 1.0
-                self.thrust = -0.33
+                self.thrust = -1.0
             else:                       #DO NOTHING
                 self.heading = 0.0
-                self.thrust = 0.34
+                self.thrust = 1.0
 
             #publish the appropriate commands to the *_cmd topics
             self.heading_pub.publish(self.heading)

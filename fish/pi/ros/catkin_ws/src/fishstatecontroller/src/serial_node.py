@@ -111,7 +111,7 @@ class SerialBridge():
 
     def heading_callback(self, ros_data):
         self.cmd_received = True
-        self.yaw = int(128 - (127 *ros_data.data))
+        self.yaw = int(128 + (127 *ros_data.data))
 
     def pitch_callback(self, ros_data):
         self.pitch = int(128 - (127 * ros_data.data))
