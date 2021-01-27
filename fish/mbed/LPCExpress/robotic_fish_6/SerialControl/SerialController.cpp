@@ -4,6 +4,7 @@
 
 #include "SerialController.h"
 #include "FishController.h"
+#include "IMU/IMU.h"
 //#include "unistd.h"
 
 #ifdef serialControl
@@ -63,6 +64,10 @@ void SerialController::init(Serial* serialObject /* = NULL */, Serial* usbSerial
 	serialLEDs[2]->write(0);
 	serialLEDs[3]->write(0);
 	#endif
+
+	#ifdef writeIMU
+	toggleIMU = false;
+	#endif
 }
 
 // Parse the received word into the desired fish state
@@ -111,6 +116,19 @@ void SerialController::stop()
 void SerialController::run()
 {
 	
+	#ifdef writeIMU
+	//	IMU startup routine & calibration
+	usbSerial->printf("Starting the BNO055.\r\n");
+	bool status = imu.start();
+	usbSerial->printf("SUCCESSFUL? %d\r\n", status);
+	if (status)
+	{
+		usbSerial->printf("CALIBRATING.\r\n");
+		imu.calibrate(false);
+		usbSerial->printf("DONE.\r\n");
+	}
+	#endif
+
 	#ifdef serialControllerControlFish
     // Start the fish controller
     fishController.start();
@@ -188,6 +206,38 @@ void SerialController::run()
 			stop();
 		#endif
 		
+		#ifdef writeIMU
+		if (status)
+		{
+			if (fishController.getSelectButton() && !toggleIMU)
+				toggleIMU = true;
+			else if (fishController.getSelectButton() && toggleIMU)
+				toggleIMU = false;
+
+			// Write IMU data if toggled via the Select Button
+			// TODO: Determine appropriate toggle input
+			// TODO: Implement timer for serial writes
+			if(programTimer.read_ms() - IMUPrintTime > dataPeriod){
+				if (toggleIMU)
+				{
+					char data[79] = "";
+					imu.readValues(data);
+					Vector pry = imu.getEuler();
+					Vector w = imu.getGyro();
+					Vector accels = imu.getAccels();
+					float angle = imu.getAnglefromNorth();
+	//				serial->printf(data);
+					serial->printf("%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f,%07.2f\n",pry[2], pry[1], pry[0], w[0], w[1], w[2], accels[0], accels[1], accels[2], angle);
+					IMUPrintTime = programTimer.read_ms();
+	//				usbSerial->printf(data);
+	//				usbSerial->printf("pitch: %.2f, roll: %.2f, yaw: %.2f\r\n",pry[2], pry[1], pry[0]);
+
+				}
+			}
+		}
+
+		#endif
+
 		#ifdef print2Pi
 		if(programTimer.read_ms() - printTime > dataPeriod){
 			serial->printf("Start %d\t Pitch %f\t Yaw %f\t Thrust %f\t Freq %.8f\r\n", fishController.getSelectButton(), fishController.getPitch(), fishController.getYaw(), fishController.getThrust(), fishController.getFrequency());
@@ -225,9 +275,9 @@ void SerialController::run()
 	#ifdef serialControllerControlFish
     fishController.stop();
 
-//	#ifdef enableAutoMode
-//    fishController.stopAutoMode();
-//    #endif
+	#ifdef enableAutoMode
+    fishController.stopAutoMode();
+    #endif
 
     // If battery died, wait a bit for pi to clean up and shutdown and whatnot
     if(lowBatteryVoltageInput == 0)
