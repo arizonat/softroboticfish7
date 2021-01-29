@@ -157,7 +157,7 @@ class ObjectTracker():
         #cnt = max(cnts, key=cv2.contourArea)
         #((x,y),radius) = cv2.minEnclosingCircle(cnt)
 
-        if len(keypoints) > 1:
+        if len(keypoints) >= 1:
             keypoint = keypoints[0]
             ((x,y),radius) = (keypoint.pt, keypoint.size/2.0)
         
