@@ -127,7 +127,7 @@ class SerialBridge():
             if self.cmd_received:
                 arr = [255, self.pitch, self.yaw, self.thrust, self.frequency]
                 self.writeOnce(arr)
-                print(arr)
+                #print(arr)
                 #rospy.loginfo(arr)
                 self.cmd_received = False
             #else:

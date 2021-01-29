@@ -1,0 +1,3 @@
+<launch>
+    <node name="sofi_dashboard" pkg="rqt_gui" type="rqt_gui" output="screen" args="--perspective-file $(find fishstatecontroller)/launch/sofi_dashboard.perspective"/>
+</launch>
