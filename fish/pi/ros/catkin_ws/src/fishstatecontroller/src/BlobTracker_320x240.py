@@ -194,12 +194,12 @@ class ObjectTracker():
         rate = rospy.Rate(24)
 
         #for heading averaging
-        current_sum = 0.0
-        count = 0.0
         current_slope = 0.0
         last_point = 0.0
         current_point = 0.0
         average = 0.0
+        max_ = 0.0
+        min_ = 0.0
 
         while not rospy.is_shutdown():
             target_found, target_centroid, dist, offset = self.find_target()
@@ -207,25 +207,38 @@ class ObjectTracker():
             #print("EST OFFSET: " + str(offset) + ' cm')
             #print("--------------")
             if target_found:
-                #heading averaging
+                ###heading averaging###
                 last_point = current_point
                 current_point = offset[0]
                 new_slope = (current_point - last_point)
+
                 if new_slope != 0:
                     new_slope = new_slope / abs(new_slope)
+
+                #if current slope is positive
                 if current_slope == 1:
-                    if new_slope < 0:
-                        average = current_sum / count
-                        current_sum = 0.0
-                        count = 0.0
-                    #print("slope is 1")
-                current_sum += current_point
-                count += 1
-                #slope can never be 0 (kind of hacky solution to the situation where
-                # 'current_slope' is 0 and 'new_slope' is negative, which would cause
-                # the program to not take the average)
-                if new_slope != 0:
-                    current_slope = new_slope
+                    if new_slope <= 0:
+                        average = (max_ + min_) / 2.0
+                        min_ = max_
+                    elif new_slope > 0:
+                        max_ = current_point
+                #if current slope is negative
+                elif current_slope == -1:
+                    if new_slope >= 0:
+                        average = (max_ + min_) / 2.0
+                        max_ = min_
+                    elif new_slope < 0:
+                        min_ = current_point
+                #if current slope is zero
+                else:
+                    if new_slope == 0:
+                        average = max_
+                    elif new_slope > 0:
+                        max_ = current_point
+                    elif new_slope < 0:
+                        min_ = current_point
+
+                current_slope = new_slope
                 #TODO pitch averaging
                 #TODO dist averaging
 

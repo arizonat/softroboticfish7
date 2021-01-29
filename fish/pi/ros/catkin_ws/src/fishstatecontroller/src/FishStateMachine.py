@@ -80,6 +80,8 @@ class FishStateController():
         self.pitch_cmd_pub = rospy.Publisher('pitch_cmd', Float64, queue_size=10)
         self.thrust_cmd_pub = rospy.Publisher('thrust_cmd', Float64, queue_size=10)
 
+        self.search_direction = 1   #1 for search RIGHT, -1 for search LEFT
+
         self.transitionTo("INIT")
 
     def run(self):
@@ -102,6 +104,8 @@ class FishStateController():
                 if self.target_found:
                     self.publish_states()
                     #print("Following target at: %f, %f"%(self.fish_pose.pose.position.y, self.fish_pose.pose.position.z))
+                    direction = self.fish_pose.pose.position.y
+                    self.search_direction = - direction / abs(direction) #scale to +1/-1
                 else:
                     self.transitionTo("SEARCH")
                     self.pid_enable_pub.publish(False)
@@ -129,9 +133,9 @@ class FishStateController():
 
     def publish_search_cmd(self):
         #Publish a hard left to the heading, pitch, and thrust commands if in SEARCH state
-        self.heading_cmd_pub.publish(1)
+        self.heading_cmd_pub.publish(self.search_direction)
         self.pitch_cmd_pub.publish(0)
-        self.thrust_cmd_pub.publish(1)
+        self.thrust_cmd_pub.publish(-1)
 
     def heading_callback(self, ros_data):
         self.heading_state = ros_data
