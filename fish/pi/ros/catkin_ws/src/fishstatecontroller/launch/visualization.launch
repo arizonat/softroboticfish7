@@ -1,0 +1,4 @@
+<launch>
+    <node type="rviz" name="sofi_visualization" pkg="rviz" args="-d $(find fishstatecontroller)/launch/sofi.rviz"/>
+</launch>
+
