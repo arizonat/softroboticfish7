@@ -8,7 +8,7 @@
         <!--Launch the raspicam node/!-->
         <include file="$(find raspicam_node)/launch/camerav2_320x240.launch"/>
         <!--Launch the state estimation node/!-->
-        <node type="ObjectTracker_320x240.py" pkg="fishstatecontroller" name="state_estimation" output="screen" />
+        <node type="BlobTracker_320x240.py" pkg="fishstatecontroller" name="state_estimation" output="screen" />
         <!--Launch the finite state machine node/!-->
         <node type="FishStateMachine.py" pkg="fishstatecontroller" name="finite_state_machine" output="screen" />
         <!--Launch the PID controller nodes/!-->
