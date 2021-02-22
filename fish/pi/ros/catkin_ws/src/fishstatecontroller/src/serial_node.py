@@ -35,7 +35,7 @@ class SerialBridge():
         self.cmd_received = False
         self.pitch = 128
         self.yaw = 128
-        self.thrust = 128
+        self.thrust = 255
         self.frequency = 128
         self.DO_NOTHING = [255,135,135,1,85]
 

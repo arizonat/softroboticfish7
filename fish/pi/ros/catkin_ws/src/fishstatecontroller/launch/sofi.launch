@@ -2,17 +2,23 @@
 
 <launch>
     <arg name="auto_control" default="true"/>
-    <arg name="debug" default="true"/>
+    <arg name="debug" default="false"/>
+    <arg name="pitch_control" default="false" />
+    <arg name="thrust_control" default="false" />
 
     <group if="$(arg auto_control)">
         <!--Launch the raspicam node/!-->
-        <include file="$(find raspicam_node)/launch/camerav2_320x240.launch"/>
+        <include file="$(find fishstatecontroller)/launch/camerav2_320x240.launch"/>
         <!--Launch the state estimation node/!-->
         <node type="BlobTracker_320x240.py" pkg="fishstatecontroller" name="state_estimation" output="screen" />
         <!--Launch the finite state machine node/!-->
         <node type="FishStateMachine.py" pkg="fishstatecontroller" name="finite_state_machine" output="screen" />
         <!--Launch the PID controller nodes/!-->
-        <include file="$(find fishstatecontroller)/src/auto_controller.launch"/>
+        <include file="$(find fishstatecontroller)/src/auto_controller.launch">
+            <arg name="debug" value="$(arg debug)" />
+            <arg name="pitch_control" value="$(arg pitch_control)" />
+            <arg name="thrust_control" value="$(arg thrust_control)" />       
+        </include>
     </group>
 
     <group unless="$(arg auto_control)">
