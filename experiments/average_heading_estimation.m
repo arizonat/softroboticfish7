@@ -27,10 +27,13 @@ y_fir = y(1); %moving windowed average, evenly weighted, or finite impulse respo
 %win = floor(swim_T/sample_T);
 win = floor((1/cutoff_f)/(sample_T*2));
 
-% Setup simple butterworth filter (used by the PID ROS node)
+% Setup simple butterworth filter (used by the PID ROS node on the D-term?)
 order = 2;
 [bb, ba] = butter(order, cutoff_f/(sample_f/2));
 [y_b, z] = filter(bb, ba, y(1), zeros(1,order));
+
+% Setup Braden filter
+[y_br, m, y_min, y_max] = braden_filter(y(1), 0, 0, y(1), y(1));
 
 for t=2:size(x,2)
     dyt = y(t) - y(t-1);
@@ -43,14 +46,20 @@ for t=2:size(x,2)
     yt_fir = sum(y(max(t-win,1):t))/min(win,t);
     y_fir = [y_fir yt_fir];
     
+    % Update butterworth filter
     [yt_b, z] = filter(bb, ba, y(t), z);
     y_b = [y_b yt_b];
+    
+    % Update Braden filter
+    m_new = y(t)-y(t-1);
+    [yt_br, m, y_min, y_max] = braden_filter(y(t), m_new, m, y_min, y_max);
+    y_br = [y_br yt_br];
 end
 
 sum(abs(y-y_diir))
 sum(abs(y-y_fir))
 sum(abs(y-y_b))
-
+sum(abs(y-y_br))
 
 %% Plot
 close all;
@@ -62,4 +71,5 @@ plot(x,y_ball);
 plot(x,y_diir);
 plot(x,y_fir);
 plot(x,y_b);
-legend("target","iir","fir","butter")
+plot(x,y_br);
+legend("target","iir","fir","butter","braden")
