@@ -9,13 +9,13 @@ sample_T = 1/sample_f;
 
 tf = 30; % seconds
 
-x = 1:sample_T:tf;
-y_swim = 0.2*sin(2*pi*swim_f*x);
-y_ball = sin(2*pi*ball_f*x+10);
+ts = 0:sample_T:tf;
+y_swim = 0.2*sin(2*pi*swim_f*ts + 2*pi*swim_f*2.5);
+y_ball = sin(2*pi*ball_f*ts + 2*pi*ball_f*2.5);
 y = y_swim + y_ball; % y is the observed signal
 
 %% Attempt to estimate signal
-cutoff_f = ball_f*7; %swim_f*0.5;
+cutoff_f = 1.25;%ball_f*11;%ball_f*5; %swim_f*0.5;
 
 % Setup simple IIR filter
 y_diir = y(1); %exponential smoothing or infinite impulse response filter
@@ -25,7 +25,8 @@ alpha = sample_T/(RC+sample_T);
 % Setup simple FIR filter
 y_fir = y(1); %moving windowed average, evenly weighted, or finite impulse response
 %win = floor(swim_T/sample_T);
-win = floor((1/cutoff_f)/(sample_T*2));
+%win = floor((1/cutoff_f)/(sample_T*2));
+win = 20;
 
 % Setup simple butterworth filter (used by the PID ROS node on the D-term?)
 order = 2;
@@ -35,7 +36,16 @@ order = 2;
 % Setup Braden filter
 [y_br, m, y_min, y_max] = braden_filter(y(1), 0, 0, y(1), y(1));
 
-for t=2:size(x,2)
+% Setup sampled Braden filter
+sampler_f = swim_f*2;
+sampler_T = 1/sampler_f;
+t0 = ts(1);
+x0 = y(1);
+x1 = y(1);
+y_sbr = x0;
+yt_sbr = x0;
+
+for t=2:size(ts,2)
     dyt = y(t) - y(t-1);
     
     % Update simple IIR filter
@@ -54,22 +64,36 @@ for t=2:size(x,2)
     m_new = y(t)-y(t-1);
     [yt_br, m, y_min, y_max] = braden_filter(y(t), m_new, m, y_min, y_max);
     y_br = [y_br yt_br];
+    
+    % Update Sampled Braden filter
+    if ts(t)-t0 > sampler_T
+        xf = y(t);
+        yt_sbr = mean([xf x0]);
+        t0 = ts(t);
+        x0 = xf;
+    end
+    y_sbr = [y_sbr yt_sbr];
 end
 
-sum(abs(y-y_diir))
-sum(abs(y-y_fir))
-sum(abs(y-y_b))
-sum(abs(y-y_br))
+disp(["Cutoff frequency: " num2str(cutoff_f)])
+disp("L1 errors:")
+disp(["No filter: " num2str(sum(abs(y_ball-y)))])
+disp(["Exponential smoothing: " num2str(sum(abs(y_ball-y_diir)))])
+disp(["Windowed average smoothing: " num2str(sum(abs(y_ball-y_fir)))])
+disp(["Butterworth filter: " num2str(sum(abs(y_ball-y_b)))])
+disp(["Braden filter: " num2str(sum(abs(y_ball-y_br)))])
+disp(["Fixed rate Braden filter: " num2str(sum(abs(y_ball-y_sbr)))])
 
 %% Plot
 close all;
 figure;
 hold on;
-%plot(x,y_swim);
-plot(x,y_ball);
-%plot(x,y);
-plot(x,y_diir);
-plot(x,y_fir);
-plot(x,y_b);
-plot(x,y_br);
-legend("target","iir","fir","butter","braden")
+plot(ts,y_ball);
+plot(ts,y);
+plot(ts,y_diir);
+plot(ts,y_fir);
+plot(ts,y_b);
+plot(ts,y_br);
+plot(ts,y_sbr);
+%legend("target","signal","fir","braden","sbr")
+legend("target","signal","iir","fir","butter","braden","sbr")
