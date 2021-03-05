@@ -256,7 +256,8 @@ class ObjectTracker():
 
                 self.pose_pub.publish(self.pose)
                 self.found_pub.publish(True)
-                self.average_heading_pub.publish(average)
+                #self.average_heading_pub.publish(average)
+                self.average_heading_pub.publish(offset[0])     #hack to filter oscillations in PID node
                 self.average_pitch_pub.publish(offset[1])
                 self.average_dist_pub.publish(dist)
 
