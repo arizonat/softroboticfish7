@@ -13,7 +13,6 @@
         <param name="topic_from_plant" value="heading_state" />
         <param name="setpoint_topic" value="heading_setpoint" />
         <param name="topic_from_controller" value="heading_cmd" />
-        <param name="cutoff_frequency" value="0.25" />
     </node>
     
     <group if="$(arg pitch_control)">

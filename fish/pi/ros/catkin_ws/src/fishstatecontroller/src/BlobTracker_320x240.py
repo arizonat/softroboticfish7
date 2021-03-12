@@ -26,7 +26,7 @@
 
 import rospy
 import roslib
-from math import atan2
+from math import atan2, tan, pi
 from std_msgs.msg import String, Float64, Bool
 from sensor_msgs.msg import Image, CompressedImage
 from geometry_msgs.msg import PoseStamped
@@ -44,6 +44,11 @@ class ObjectTracker():
         self.real_height = 3.1                 #the real height of the target object (cm)
         self.image_center = (156.996, 111.74)    #the image center of the camera
 
+        self.avg_array = [0, 0, 0]              # heading average at n=0,-1,-2
+        self.filtered_avg_array = [0, 0, 0]     # filtered heading average at n=0,-1,-2
+        self.delta_T = 0.0
+        self.prev_T = 0.0
+
         self.pose = PoseStamped()
         self.pose_pub = rospy.Publisher('fish_pose', PoseStamped, queue_size=10)
         self.mask_pub = rospy.Publisher('color_mask', Image, queue_size=10)
@@ -51,7 +56,7 @@ class ObjectTracker():
         self.average_heading_pub = rospy.Publisher('average_heading', Float64, queue_size=10)
         self.average_pitch_pub = rospy.Publisher('average_pitch', Float64, queue_size=10)
         self.average_dist_pub = rospy.Publisher('average_dist', Float64, queue_size=10)
-	self.img_pub = rospy.Publisher('grey', Image, queue_size=10)
+        self.img_pub = rospy.Publisher('grey', Image, queue_size=10)
 
         # Initiate position msg instance and new publisher for data
         #self.position_msg = Position()
@@ -66,11 +71,11 @@ class ObjectTracker():
 
         ###create a blob tracker###
         params = cv2.SimpleBlobDetector_Params()
-        
+
         # Change thresholds
         params.minThreshold = 10
         params.maxThreshold = 220
-	params.thresholdStep = 105
+        params.thresholdStep = 105
 
         # Filter by Area.
         params.filterByArea = True
@@ -89,9 +94,9 @@ class ObjectTracker():
         params.filterByInertia = False
         params.minInertiaRatio = 0.1
 
-	#Filter by Color
-	params.filterByColor = True
-	params.blobColor = 255
+        #Filter by Color
+        params.filterByColor = True
+        params.blobColor = 255
 
         self.detector = cv2.SimpleBlobDetector_create(params)
 
@@ -206,39 +211,48 @@ class ObjectTracker():
             #print("EST DISTANCE: " + str(dist) + ' cm')
             #print("EST OFFSET: " + str(offset) + ' cm')
             #print("--------------")
+
+            #Calculate delta_T
+            if (self.prev_T != 0):
+                self.delta_T = rospy.get_time() - self.prev_T
+            self.prev_T = rospy.get_time()
+
             if target_found:
-                ###heading averaging###
-                last_point = current_point
-                current_point = offset[0]
-                new_slope = (current_point - last_point)
+#(Old averaging method)
+#                ###heading averaging###
+#                last_point = current_point
+#                current_point = offset[0]
+#                new_slope = (current_point - last_point)
+#
+#                if new_slope != 0:
+#                    new_slope = new_slope / abs(new_slope)
+#
+#                #if current slope is positive
+#                if current_slope == 1:
+#                    if new_slope <= 0:
+#                        average = (max_ + min_) / 2.0
+#                        min_ = max_
+#                    elif new_slope > 0:
+#                        max_ = current_point
+#                #if current slope is negative
+#                elif current_slope == -1:
+#                    if new_slope >= 0:
+#                        average = (max_ + min_) / 2.0
+#                        max_ = min_
+#                    elif new_slope < 0:
+#                        min_ = current_point
+#                #if current slope is zero
+#                else:
+#                    if new_slope == 0:
+#                        average = max_
+#                    elif new_slope > 0:
+#                        max_ = current_point
+#                    elif new_slope < 0:
+#                        min_ = current_point
+#
+#                current_slope = new_slope
 
-                if new_slope != 0:
-                    new_slope = new_slope / abs(new_slope)
-
-                #if current slope is positive
-                if current_slope == 1:
-                    if new_slope <= 0:
-                        average = (max_ + min_) / 2.0
-                        min_ = max_
-                    elif new_slope > 0:
-                        max_ = current_point
-                #if current slope is negative
-                elif current_slope == -1:
-                    if new_slope >= 0:
-                        average = (max_ + min_) / 2.0
-                        max_ = min_
-                    elif new_slope < 0:
-                        min_ = current_point
-                #if current slope is zero
-                else:
-                    if new_slope == 0:
-                        average = max_
-                    elif new_slope > 0:
-                        max_ = current_point
-                    elif new_slope < 0:
-                        min_ = current_point
-
-                current_slope = new_slope
+                average = self.filter_heading(offset[0], 0.25)
                 #TODO pitch averaging
                 #TODO dist averaging
 
@@ -256,8 +270,8 @@ class ObjectTracker():
 
                 self.pose_pub.publish(self.pose)
                 self.found_pub.publish(True)
-                #self.average_heading_pub.publish(average)
-                self.average_heading_pub.publish(offset[0])     #hack to filter oscillations in PID node
+                self.average_heading_pub.publish(average)
+                #self.average_heading_pub.publish(offset[0])     #hack to filter oscillations in PID node
                 self.average_pitch_pub.publish(offset[1])
                 self.average_dist_pub.publish(dist)
 
@@ -265,6 +279,39 @@ class ObjectTracker():
                 self.found_pub.publish(False)
 
             rate.sleep()
+
+    def filter_heading(self, current_heading, f_c):
+        """
+        Run a 2nd Order Butterworth LPF on the fish heading measurements
+        Based heavily on ROS PID Node Implementation of the 2nd order Butterworth LPF:
+        [PASTE URL]
+
+        current_heading: (float) the most current heading/yaw reading in radians
+        f_c: (float) the cutoff frequency of the LPF in Hz
+        delta_T: (float) the sampling rate of the 
+        """
+
+        #time step
+        self.avg_array = [current_heading] + self.avg_array[0:2]
+
+        tan_filt = tan((2.0*pi*f_c)*self.delta_T/2.0)
+        #tan_filt cannot be equal to 0
+        if ((tan_filt <= 0.) and (tan_filt > -0.01)):
+            tan_filt = -0.01
+        if ((tan_filt >= 0.) and (tan_filt < 0.01)):
+            tan_filt = 0.01
+        
+        #using the coefficients from the ROS PID node LPF implementation
+        c = 1.0/tan_filt
+        b_k = 1.0/(1.0 + 1.4142*c + c**2)
+        a_1 = (-2.0 * (c**2) + 2.0)
+        a_2 = (1.0 - 1.4141*c + c**2)
+
+        self.filtered_avg_array[2] = self.filtered_avg_array[1]
+        self.filtered_avg_array[1] = self.filtered_avg_array[0]
+        self.filtered_avg_array[0] = b_k * (self.avg_array[0] + 2*self.avg_array[1] + self.avg_array[2] - a_1 * self.filtered_avg_array[1] - a_2 * self.filtered_avg_array[2])
+
+        return self.filtered_avg_array[0]
 
     def callback(self, ros_data):
         bridge = CvBridge()
