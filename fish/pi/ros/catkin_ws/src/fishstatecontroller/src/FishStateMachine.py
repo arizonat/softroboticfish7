@@ -156,7 +156,9 @@ class FishStateController():
 if __name__ == '__main__':
     rospy.init_node('finite_state_machine', anonymous=True)
     update_hz = 24
-    state_machine = FishStateController(update_hz)
+    heading_setpoint = rospy.get_param("~heading_setpoint", 0.0)
+    
+    state_machine = FishStateController(update_hz, heading_setpoint=heading_setpoint)
  
     rospy.Subscriber('average_heading', Float64, state_machine.heading_callback)
     rospy.Subscriber('average_pitch', Float64, state_machine.pitch_callback)

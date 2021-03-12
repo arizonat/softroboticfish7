@@ -12,7 +12,9 @@
         <!--Launch the state estimation node/!-->
         <node type="BlobTracker_320x240.py" pkg="fishstatecontroller" name="state_estimation" output="screen" />
         <!--Launch the finite state machine node/!-->
-        <node type="FishStateMachine.py" pkg="fishstatecontroller" name="finite_state_machine" output="screen" />
+        <node type="FishStateMachine.py" pkg="fishstatecontroller" name="finite_state_machine" output="screen">
+	      <param name="heading_setpoint" type="double" value="0.0" />
+	</node>
         <!--Launch the PID controller nodes/!-->
         <include file="$(find fishstatecontroller)/src/auto_controller.launch">
             <arg name="debug" value="$(arg debug)" />
