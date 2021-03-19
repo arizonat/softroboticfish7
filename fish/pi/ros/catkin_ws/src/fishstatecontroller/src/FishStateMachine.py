@@ -118,7 +118,7 @@ class FishStateController():
                     count = self.LOST_DELAY
 
                 self.publish_states()
-                print("Following target at: %f, %f"%(self.fish_pose.pose.position.y, self.fish_pose.pose.position.z))
+                #print("Following target at: %f, %f"%(self.fish_pose.pose.position.y, self.fish_pose.pose.position.z))
                 direction = self.fish_pose.pose.position.y
                 self.search_direction = - direction / abs(direction) #scale to +1/-1
 
@@ -126,7 +126,7 @@ class FishStateController():
 
     def transitionTo(self, state_name):
         self.state = state_name
-        print(self.state)
+        #print(self.state)
         ###Can use below if adjust direction not important.
         self.state_msg.header.stamp = rospy.Time.now()
         self.state_msg.state = self.state
