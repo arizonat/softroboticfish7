@@ -44,7 +44,7 @@ import numpy as np
 from fishstatecontroller.msg import State, Position
 
 class FishStateController():
-    def __init__(self, update_hz, heading_setpoint=0.0, pitch_setpoint=0.0, dist_setpoint = 3.0):
+    def __init__(self, update_hz, heading_setpoint=0.0, pitch_setpoint=0.0, dist_setpoint = 3.0, lost_delay=10):
         """
         update_hz: the update rate of the state machine
         """
@@ -82,10 +82,13 @@ class FishStateController():
 
         self.search_direction = None   #1 for search RIGHT, -1 for search LEFT
 
+        self.LOST_DELAY = lost_delay    #in frames
+
         self.transitionTo("INIT")
 
     def run(self):
         rate = rospy.Rate(self.update_hz)
+        count = self.LOST_DELAY
         while not rospy.is_shutdown():
             if self.state == "INIT":
                 self.pid_enable_pub.publish(False)
@@ -101,19 +104,29 @@ class FishStateController():
                     self.publish_search_cmd() #Publish HARD LEFT
 
             elif self.state == "FOLLOW":
-                if self.target_found:
-                    self.publish_states()
-                    #print("Following target at: %f, %f"%(self.fish_pose.pose.position.y, self.fish_pose.pose.position.z))
-                    direction = self.fish_pose.pose.position.y
-                    self.search_direction = - direction / abs(direction) #scale to +1/-1
+                #if target is not found, wait 10 frames before we transition to SEARCH
+                if not self.target_found:
+                    if count == 0:
+                        self.transitionTo("SEARCH")
+                        self.pid_enable_pub.publish(False)
+                        count = self.LOST_DELAY
+                        continue
+                    else:
+                        count -= 1                    
+                #if target is found, reset the count
                 else:
-                    self.transitionTo("SEARCH")
-                    self.pid_enable_pub.publish(False)
+                    count = self.LOST_DELAY
+
+                self.publish_states()
+                print("Following target at: %f, %f"%(self.fish_pose.pose.position.y, self.fish_pose.pose.position.z))
+                direction = self.fish_pose.pose.position.y
+                self.search_direction = - direction / abs(direction) #scale to +1/-1
+
             rate.sleep()
 
     def transitionTo(self, state_name):
         self.state = state_name
-        #print(self.state)
+        print(self.state)
         ###Can use below if adjust direction not important.
         self.state_msg.header.stamp = rospy.Time.now()
         self.state_msg.state = self.state

@@ -277,6 +277,9 @@ class ObjectTracker():
 
             else:
                 self.found_pub.publish(False)
+                self.average_heading_pub.publish(average)
+                self.average_pitch_pub.publish(offset[1])
+                self.average_dist_pub.publish(dist)
 
             rate.sleep()
 
