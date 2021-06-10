@@ -10,8 +10,8 @@
 //#define debugFishState
 
 // Fish version (only define one of them)
-#define FISH6
-//#define FISH4
+//#define FISH6
+#define FISH4
 
 #include "mbed.h"
 #include "ButtonBoard.h"

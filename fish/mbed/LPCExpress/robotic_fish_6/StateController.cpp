@@ -41,7 +41,7 @@ void StateController::transitionStateMachine()
 
 		case NORMAL:
 		{
-			serialController.heartBeatRun();
+//			serialController.heartBeatRun();
 			if(timer2.read() < maxBeatTime && isActiveFlex == false)
 			{
 				if(beatFound == 1)
@@ -76,7 +76,7 @@ void StateController::transitionStateMachine()
 		case OFF:
 		{
 			usbSerial->printf("I'm transitioning states now.");
-			serialController.heartBeatRun();
+//			serialController.heartBeatRun();
 			if(beatFound == 1)
 			{
 				state = NORMAL;
@@ -129,7 +129,7 @@ void StateController::runStateMachine()
 					//Run FishController
 					//Or instead run serialController start function, which calls on FishController
 						//-Could call it? Or make it so only functionable here
-				serialController.start();
+//				serialController.start();
 					//Will this stop on its own?
 				//fishController.start();
 				//fishController.stop();

@@ -105,8 +105,8 @@ FishController::FishController():
     brushlessOff = false;
 #endif
 
-    buttonBoard.registerCallback(&FishController::buttonCallback);
-    buttonBoard.setLEDs(255, false);
+//    buttonBoard.registerCallback(&FishController::buttonCallback);
+//    buttonBoard.setLEDs(255, false);
 
     autoModeIndex = 0;
     autoModeCount = 0;
@@ -171,14 +171,14 @@ void FishController::start()
 {
 
     // Blink button board LEDs to indicate startup
-    for(uint8_t i = 0; i < 3; i++)
-    {
-        buttonBoard.setLEDs(255, true);
-        wait_ms(500);
-        buttonBoard.setLEDs(255, false);
-        wait_ms(500);
-    }
-    
+//    for(uint8_t i = 0; i < 3; i++)
+//    {
+//        buttonBoard.setLEDs(255, true);
+//        wait_ms(500);
+//        buttonBoard.setLEDs(255, false);
+//        wait_ms(500);
+//    }
+//
 #ifdef FISH6
     buoyancyControlUnit.start();
     pumpWithValve.start();
@@ -230,7 +230,7 @@ void FishController::stop()
 
 
     // Light the LEDs to indicate termination
-    buttonBoard.setLEDs(255, true);
+//    buttonBoard.setLEDs(255, true);
 }
 
 //============================================
@@ -521,7 +521,7 @@ void FishController::printDebugState()
 
 void FishController::setLEDs(char mask, bool turnOn)
 {
-    buttonBoard.setLEDs(mask, turnOn);
+//    buttonBoard.setLEDs(mask, turnOn);
 }
 
 
